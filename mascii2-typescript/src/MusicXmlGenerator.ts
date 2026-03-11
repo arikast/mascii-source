@@ -2,7 +2,7 @@ import { writeFileSync } from 'fs';
 import { ParseResult } from './ParseResult';
 import { Part } from './musicelements/Part';
 import { Note, NoteSpelling } from './musicelements/Note';
-import { MetaInfoElement, TimeSig, KeySig, Tempo, Title, Copyright, Patch, Lyric } from './musicelements/MetaInfo';
+import { MetaInfoElement, TimeSig, KeySig, Tempo, Title, Copyright, Composer, Lyricist, Patch, Lyric } from './musicelements/MetaInfo';
 import { Accidental } from './musicelements/Accidental';
 import { TICKS_PER_BEAT } from './MasciiSyntaxEventListener';
 
@@ -265,13 +265,17 @@ export class MusicXmlGenerator {
         let tempo: Tempo | null = null;
         let title: string | undefined;
         let copyright: string | undefined;
+        let composer: string | undefined;
+        let lyricist: string | undefined;
 
         for (const me of result.getGlobalMetas()) {
-            if (me instanceof TimeSig)    timeSig   = me;
-            else if (me instanceof KeySig)     keySig    = me;
-            else if (me instanceof Tempo)      tempo     = me;
-            else if (me instanceof Title)      title     = me.getRawValue();
-            else if (me instanceof Copyright)  copyright = me.getRawValue();
+            if (me instanceof TimeSig)        timeSig   = me;
+            else if (me instanceof KeySig)    keySig    = me;
+            else if (me instanceof Tempo)     tempo     = me;
+            else if (me instanceof Title)     title     = me.getRawValue();
+            else if (me instanceof Copyright) copyright = me.getRawValue();
+            else if (me instanceof Composer)  composer  = me.getRawValue();
+            else if (me instanceof Lyricist)  lyricist  = me.getRawValue();
         }
 
         const barCount    = parts[0]?.getBarCount() ?? 0;
@@ -288,6 +292,8 @@ export class MusicXmlGenerator {
         }
 
         x.open('identification');
+        if (composer) x.leaf('creator', esc(composer), 'type="composer"');
+        if (lyricist) x.leaf('creator', esc(lyricist), 'type="lyricist"');
         if (copyright) x.leaf('rights', esc(copyright));
         x.open('encoding').leaf('software', 'mascii2-typescript').close('encoding');
         x.close('identification');

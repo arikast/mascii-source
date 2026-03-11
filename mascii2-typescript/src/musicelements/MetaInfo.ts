@@ -65,6 +65,8 @@ export class Tempo extends GlobalMeta {
 
 export class Title extends GlobalMeta {}
 export class Copyright extends GlobalMeta {}
+export class Composer extends GlobalMeta {}
+export class Lyricist extends GlobalMeta {}
 export class Lyric extends GlobalMeta {}
 export class FreeText extends GlobalMeta {}
 
@@ -137,4 +139,6 @@ export class MetaInfo {
     tempo: Tempo | undefined;
     title: Title | undefined;
     copyright: Copyright | undefined;
+    composer: Composer | undefined;
+    lyricist: Lyricist | undefined;
 }

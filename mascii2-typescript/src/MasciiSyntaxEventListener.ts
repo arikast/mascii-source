@@ -16,7 +16,7 @@ import {
 } from './antlr-generated/MasciiParser';
 import { Part } from './musicelements/Part';
 import { TimeSlot } from './musicelements/TimeSlot';
-import { MetaInfo, MetaInfoElement, TimeSig, KeySig, Tempo, Title, Copyright, Patch, Lyric } from './musicelements/MetaInfo';
+import { MetaInfo, MetaInfoElement, TimeSig, KeySig, Tempo, Title, Copyright, Composer, Lyricist, Patch, Lyric } from './musicelements/MetaInfo';
 import { splitHeaderValues, asLyrics, mergeBIntoA, times } from './util/MasciiUtil';
 
 export const TICKS_PER_BEAT = 480;
@@ -146,6 +146,22 @@ export class MasciiSyntaxEventListener extends MasciiParserListener {
                 cop.setStartingAt(currentTime);
                 this.globalMetaInfoChanges.push(cop);
                 this.defaultMeta.copyright = cop;
+                break;
+            }
+            case 'composer': {
+                const composer = new Composer();
+                composer.setRawValue(headerContent);
+                composer.setStartingAt(currentTime);
+                this.globalMetaInfoChanges.push(composer);
+                this.defaultMeta.composer = composer;
+                break;
+            }
+            case 'lyrics': {
+                const lyricist = new Lyricist();
+                lyricist.setRawValue(headerContent);
+                lyricist.setStartingAt(currentTime);
+                this.globalMetaInfoChanges.push(lyricist);
+                this.defaultMeta.lyricist = lyricist;
                 break;
             }
             case 'patch': {

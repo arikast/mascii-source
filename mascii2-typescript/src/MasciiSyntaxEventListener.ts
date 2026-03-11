@@ -193,6 +193,14 @@ export class MasciiSyntaxEventListener extends MasciiParserListener {
                 }
                 break;
             }
+            case 'clefs': {
+                if (this.partCount() === 0) this.initParts(headerVals.length);
+                for (let i = 0; i < headerVals.length && i < this.parts!.length; i++) {
+                    const s = headerVals[i]!.trim();
+                    if (s.length > 0) this.parts![i]!.setClef(s.toLowerCase());
+                }
+                break;
+            }
             default: break;
         }
     }

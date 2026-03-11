@@ -245,6 +245,26 @@ class Xml {
 }
 
 // ---------------------------------------------------------------------------
+// Clef resolution
+// ---------------------------------------------------------------------------
+
+interface ClefSpec { sign: string; line: number }
+
+function resolveClef(name: string): ClefSpec {
+    switch (name.toLowerCase()) {
+        case 'treble':         return { sign: 'G', line: 2 };
+        case 'bass':           return { sign: 'F', line: 4 };
+        case 'alto':           return { sign: 'C', line: 3 };
+        case 'tenor':          return { sign: 'C', line: 4 };
+        case 'soprano':        return { sign: 'C', line: 1 };
+        case 'mezzo-soprano':  return { sign: 'C', line: 2 };
+        case 'baritone':       return { sign: 'F', line: 3 };
+        case 'percussion':     return { sign: 'percussion', line: 2 };
+        default:               return { sign: 'G', line: 2 }; // default to treble
+    }
+}
+
+// ---------------------------------------------------------------------------
 // MusicXmlGenerator
 // ---------------------------------------------------------------------------
 
@@ -331,13 +351,14 @@ export class MusicXmlGenerator {
             }
 
             x.open('part', `id="${pid}"`);
+            const clef = resolveClef(part.getClef());
             for (let m = 0; m < barCount; m++) {
                 const mStart = m * measureTicks;
                 const notesInMeasure = part.getNoteStream().filter(
                     n => n.getStart() >= mStart && n.getStart() < mStart + measureTicks,
                 );
                 this.writeMeasure(x, m + 1, notesInMeasure, mStart, measureTicks,
-                    m === 0, timeSig, keySig, tempo, lyricsByTick);
+                    m === 0, timeSig, keySig, tempo, lyricsByTick, clef);
             }
             x.close('part');
         });
@@ -357,6 +378,7 @@ export class MusicXmlGenerator {
         keySig: KeySig | null,
         tempo: Tempo | null,
         lyricsByTick: Map<number, string[]>,
+        clef: ClefSpec,
     ): void {
         x.open('measure', `number="${num}"`);
 
@@ -375,7 +397,7 @@ export class MusicXmlGenerator {
             x.leaf('beats', timeSig.timeNumerator);
             x.leaf('beat-type', timeSig.timeDenominator);
             x.close('time');
-            x.open('clef').leaf('sign', 'G').leaf('line', 2).close('clef');
+            x.open('clef').leaf('sign', clef.sign).leaf('line', clef.line).close('clef');
             x.close('attributes');
 
             if (tempo) {

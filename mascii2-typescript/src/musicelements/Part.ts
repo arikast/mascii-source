@@ -8,6 +8,7 @@ export class Part {
     barCount = 0;
     channel = -1;
     patch = 0;
+    clef = 'treble';
 
     // index of start of current measure block within noteStream
     currentMeasureBlockIndex = 0;
@@ -58,6 +59,8 @@ export class Part {
     setBarCount(n: number): void { this.barCount = n; }
     getChannel(): number { return this.channel; }
     setChannel(ch: number): void { this.channel = ch; }
+    getClef(): string { return this.clef; }
+    setClef(clef: string): void { this.clef = clef; }
 
     startAndFinishNoteHere(pitch: string): void {
         const slot = this.peekTiming();

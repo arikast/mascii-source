@@ -2,7 +2,7 @@ import { writeFileSync } from 'fs';
 import { ParseResult } from './ParseResult';
 import { Part } from './musicelements/Part';
 import { Note, NoteSpelling } from './musicelements/Note';
-import { MetaInfoElement, TimeSig, KeySig, Tempo, Title, Copyright, Patch } from './musicelements/MetaInfo';
+import { MetaInfoElement, TimeSig, KeySig, Tempo, Title, Copyright, Patch, Lyric } from './musicelements/MetaInfo';
 import { Accidental } from './musicelements/Accidental';
 import { TICKS_PER_BEAT } from './MasciiSyntaxEventListener';
 
@@ -315,6 +315,15 @@ export class MusicXmlGenerator {
         // parts
         parts.forEach((part, i) => {
             const pid = `P${i + 1}`;
+            // Build tick → verse-texts map for this part's lyrics
+            const lyricsByTick = new Map<number, string[]>();
+            for (const me of part.getMetaInfoChanges()) {
+                if (me instanceof Lyric) {
+                    const verses = (me.getRawValue() ?? '').split('\n').filter(v => v.length > 0);
+                    if (verses.length > 0) lyricsByTick.set(me.getStartingAt(), verses);
+                }
+            }
+
             x.open('part', `id="${pid}"`);
             for (let m = 0; m < barCount; m++) {
                 const mStart = m * measureTicks;
@@ -322,7 +331,7 @@ export class MusicXmlGenerator {
                     n => n.getStart() >= mStart && n.getStart() < mStart + measureTicks,
                 );
                 this.writeMeasure(x, m + 1, notesInMeasure, mStart, measureTicks,
-                    m === 0, timeSig, keySig, tempo);
+                    m === 0, timeSig, keySig, tempo, lyricsByTick);
             }
             x.close('part');
         });
@@ -341,6 +350,7 @@ export class MusicXmlGenerator {
         timeSig: TimeSig,
         keySig: KeySig | null,
         tempo: Tempo | null,
+        lyricsByTick: Map<number, string[]>,
     ): void {
         x.open('measure', `number="${num}"`);
 
@@ -382,9 +392,9 @@ export class MusicXmlGenerator {
         for (const ev of events) {
             if (ev.kind === 'note') {
                 const [first, ...chordRest] = ev.notes;
-                this.writeNote(x, first!.spelling, ev.ticks, ev.tr, false);
+                this.writeNote(x, first!.spelling, first!.getStart(), ev.ticks, ev.tr, false, lyricsByTick);
                 for (const cn of chordRest) {
-                    this.writeNote(x, cn.spelling, ev.ticks, ev.tr, true);
+                    this.writeNote(x, cn.spelling, cn.getStart(), ev.ticks, ev.tr, true, lyricsByTick);
                 }
             } else {
                 this.writeRest(x, ev.ticks, ev.tr);
@@ -397,9 +407,11 @@ export class MusicXmlGenerator {
     private writeNote(
         x: Xml,
         sp: NoteSpelling,
+        startTick: number,
         ticks: number,
         tr: NoteTypeResult,
         isChord: boolean,
+        lyricsByTick: Map<number, string[]>,
     ): void {
         x.open('note');
         if (isChord) x.selfClose('chord');
@@ -410,6 +422,17 @@ export class MusicXmlGenerator {
         x.close('pitch');
         x.leaf('duration', ticks);
         this.writeTypeBody(x, tr);
+        if (!isChord) {
+            const verses = lyricsByTick.get(startTick);
+            if (verses) {
+                for (let v = 0; v < verses.length; v++) {
+                    x.open('lyric', `number="${v + 1}"`);
+                    x.leaf('syllabic', 'single');
+                    x.leaf('text', esc(verses[v]!));
+                    x.close('lyric');
+                }
+            }
+        }
         x.close('note');
     }
 

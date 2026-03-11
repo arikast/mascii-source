@@ -33,6 +33,7 @@ export class MidiGenerator {
 
         for (const part of parts) {
             const track = new MidiWriter.Track();
+            const lyrics: Lyric[] = [];
 
             // Global meta events on first track only
             if (partCount === 0) {
@@ -41,14 +42,23 @@ export class MidiGenerator {
                 }
             }
 
-            // Track-level meta (patch/program changes, lyrics)
+            // Track-level meta (patch/program changes); collect lyrics separately
             for (const me of part.getMetaInfoChanges()) {
-                this.applyTrackMetaToTrack(track, me, part);
+                if (me instanceof Lyric) {
+                    lyrics.push(me);
+                } else {
+                    this.applyTrackMetaToTrack(track, me, part);
+                }
             }
 
             // Notes
             for (const note of part.getNoteStream()) {
                 this.addNote(track, part.getChannel(), note);
+            }
+
+            // Apply lyrics at their correct tick positions
+            if (lyrics.length > 0) {
+                this.applyLyricsAtTick(track, lyrics);
             }
 
             tracks.push(track);
@@ -94,10 +104,22 @@ export class MidiGenerator {
                     channel: part.getChannel() + 1, // midi-writer-js uses 1-based channels
                 }),
             );
-        } else if (me instanceof Lyric) {
-            // Lyrics are placed at start of track (delta limitation of midi-writer-js)
-            // TODO: proper per-note tick placement requires custom MIDI byte writing
-            track.addLyric(me.getRawValue() ?? '');
+        }
+    }
+
+    private applyLyricsAtTick(track: MidiTrack, lyrics: Lyric[]): void {
+        // Build the track first so all NoteEvents are expanded into NoteOnEvent/NoteOffEvent
+        // with their absolute tick values populated.
+        (track as any).buildData({ ticksPerBeat: TICKS_PER_BEAT });
+
+        // Insert each lyric at the correct tick position using mergeSingleEvent.
+        // The LyricEvent is pre-encoded with delta=0, so it will land at the same
+        // tick as the preceding event (the NoteOn at the same tick).
+        const sorted = [...lyrics].sort((a, b) => a.getStartingAt() - b.getStartingAt());
+        for (const lyric of sorted) {
+            const lyricEvent = new MidiWriter.LyricEvent({ text: lyric.getRawValue() ?? '' });
+            (lyricEvent as any).tick = lyric.getStartingAt();
+            (track as any).mergeSingleEvent(lyricEvent);
         }
     }
 

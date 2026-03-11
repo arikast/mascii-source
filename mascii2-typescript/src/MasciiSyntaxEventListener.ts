@@ -311,40 +311,23 @@ export class MasciiSyntaxEventListener extends MasciiParserListener {
         const normalDot = ctx._normal_dot as unknown;
         const inverseDot = ctx._inverse_dot as unknown;
 
-        if (normalDot != null) {
-            if (ctx.DBL_DOTTED_list().length > 0) {
-                const mytime = this.curPart().popTiming();
-                const nexttime = this.curPart().popTiming();
-                let lucre = Math.floor(nexttime.duration / 2);
-                lucre += Math.floor(lucre / 2);
-                stealNextNeighborsTime(mytime, nexttime, lucre);
-                this.curPart().pushTiming(nexttime);
-                this.curPart().pushTiming(mytime);
-            } else if (ctx.DOTTED_list().length > 0) {
-                const mytime = this.curPart().popTiming();
-                const nexttime = this.curPart().popTiming();
-                const lucre = Math.floor(nexttime.duration / 2);
-                stealNextNeighborsTime(mytime, nexttime, lucre);
-                this.curPart().pushTiming(nexttime);
-                this.curPart().pushTiming(mytime);
+        const dotToken = ctx.MULTI_DOTTED_list()[0];
+        const dotCount = dotToken ? dotToken.getText().length : 0;
+        if (dotCount > 0 && (normalDot != null || inverseDot != null)) {
+            const mytime = this.curPart().popTiming();
+            const nexttime = this.curPart().popTiming();
+            // Compute lucre as the sum of the geometric series: half + quarter + ... (dotCount terms)
+            const baseTime = normalDot != null ? nexttime : mytime;
+            let amount = Math.floor(baseTime.duration / 2);
+            let lucre = amount;
+            for (let d = 1; d < dotCount; d++) {
+                amount = Math.floor(amount / 2);
+                lucre += amount;
             }
-        } else if (inverseDot != null) {
-            if (ctx.DBL_DOTTED_list().length > 0) {
-                const mytime = this.curPart().popTiming();
-                const nexttime = this.curPart().popTiming();
-                let lucre = Math.floor(mytime.duration / -2);
-                lucre += Math.floor(lucre / 2);
-                stealNextNeighborsTime(mytime, nexttime, lucre);
-                this.curPart().pushTiming(nexttime);
-                this.curPart().pushTiming(mytime);
-            } else if (ctx.DOTTED_list().length > 0) {
-                const mytime = this.curPart().popTiming();
-                const nexttime = this.curPart().popTiming();
-                const lucre = Math.floor(mytime.duration / -2);
-                stealNextNeighborsTime(mytime, nexttime, lucre);
-                this.curPart().pushTiming(nexttime);
-                this.curPart().pushTiming(mytime);
-            }
+            if (inverseDot != null) lucre = -lucre;
+            stealNextNeighborsTime(mytime, nexttime, lucre);
+            this.curPart().pushTiming(nexttime);
+            this.curPart().pushTiming(mytime);
         }
     }
 

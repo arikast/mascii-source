@@ -36,34 +36,33 @@ export default class MasciiParser extends Parser {
 	public static readonly SHARP = 17;
 	public static readonly FLAT = 18;
 	public static readonly NATURAL = 19;
-	public static readonly DBL_DOTTED = 20;
-	public static readonly DOTTED = 21;
-	public static readonly TIE = 22;
-	public static readonly NOTE_END_ALL = 23;
-	public static readonly COMMENT = 24;
-	public static readonly NEWLINE = 25;
-	public static readonly SPACE = 26;
-	public static readonly OPEN_META = 27;
-	public static readonly OPEN_LYRICS = 28;
-	public static readonly F_OPEN_SCOPED = 29;
-	public static readonly F_CLOSE_SCOPED = 30;
-	public static readonly F_OPEN_UNSCOPED = 31;
-	public static readonly F_CLOSE_UNSCOPED = 32;
-	public static readonly CLOSE_META = 33;
-	public static readonly HEADER_NAME_VAL_SEP = 34;
-	public static readonly HEADER_ENTITY = 35;
-	public static readonly HEADER_VAL_SEP = 36;
-	public static readonly M_COMMENT = 37;
-	public static readonly M_NEWLINE = 38;
-	public static readonly M_INLINE_SEP = 39;
-	public static readonly M_SPACE = 40;
-	public static readonly OPEN_QUOTE = 41;
-	public static readonly CLOSE_LYRICS = 42;
-	public static readonly IMPLICIT_CLOSE_LYRICS = 43;
-	public static readonly LYRICS = 44;
-	public static readonly L_NEWLINE = 45;
-	public static readonly CLOSE_QUOTE = 46;
-	public static readonly QUOTED_TEXT = 47;
+	public static readonly MULTI_DOTTED = 20;
+	public static readonly TIE = 21;
+	public static readonly NOTE_END_ALL = 22;
+	public static readonly COMMENT = 23;
+	public static readonly NEWLINE = 24;
+	public static readonly SPACE = 25;
+	public static readonly OPEN_META = 26;
+	public static readonly OPEN_LYRICS = 27;
+	public static readonly F_OPEN_SCOPED = 28;
+	public static readonly F_CLOSE_SCOPED = 29;
+	public static readonly F_OPEN_UNSCOPED = 30;
+	public static readonly F_CLOSE_UNSCOPED = 31;
+	public static readonly CLOSE_META = 32;
+	public static readonly HEADER_NAME_VAL_SEP = 33;
+	public static readonly HEADER_ENTITY = 34;
+	public static readonly HEADER_VAL_SEP = 35;
+	public static readonly M_COMMENT = 36;
+	public static readonly M_NEWLINE = 37;
+	public static readonly M_INLINE_SEP = 38;
+	public static readonly M_SPACE = 39;
+	public static readonly OPEN_QUOTE = 40;
+	public static readonly CLOSE_LYRICS = 41;
+	public static readonly IMPLICIT_CLOSE_LYRICS = 42;
+	public static readonly LYRICS = 43;
+	public static readonly L_NEWLINE = 44;
+	public static readonly CLOSE_QUOTE = 45;
+	public static readonly QUOTED_TEXT = 46;
 	public static override readonly EOF = Token.EOF;
 	public static readonly RULE_music = 0;
 	public static readonly RULE_metainfo = 1;
@@ -107,12 +106,12 @@ export default class MasciiParser extends Parser {
                                                             null, "'#'", 
                                                             "'@'", "'='", 
                                                             null, null, 
-                                                            null, "'*'", 
+                                                            "'*'", null, 
                                                             null, null, 
-                                                            null, "'{'", 
-                                                            null, "'('", 
-                                                            "')'", "'['", 
-                                                            "']'", "'}'" ];
+                                                            "'{'", null, 
+                                                            "'('", "')'", 
+                                                            "'['", "']'", 
+                                                            "'}'" ];
 	public static readonly symbolicNames: (string | null)[] = [ null, "OPEN_SCOPED", 
                                                              "CLOSE_SCOPED", 
                                                              "OPEN_UNSCOPED", 
@@ -129,9 +128,8 @@ export default class MasciiParser extends Parser {
                                                              "DBL_FLAT", 
                                                              "SHARP", "FLAT", 
                                                              "NATURAL", 
-                                                             "DBL_DOTTED", 
-                                                             "DOTTED", "TIE", 
-                                                             "NOTE_END_ALL", 
+                                                             "MULTI_DOTTED", 
+                                                             "TIE", "NOTE_END_ALL", 
                                                              "COMMENT", 
                                                              "NEWLINE", 
                                                              "SPACE", "OPEN_META", 
@@ -195,7 +193,7 @@ export default class MasciiParser extends Parser {
 					{
 					this.state = 62;
 					_la = this._input.LA(1);
-					if(!(_la===25 || _la===26)) {
+					if(!(_la===24 || _la===25)) {
 					this._errHandler.recoverInline(this);
 					}
 					else {
@@ -214,19 +212,19 @@ export default class MasciiParser extends Parser {
 			this.state = 73;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			while (((((_la - 25)) & ~0x1F) === 0 && ((1 << (_la - 25)) & 262147) !== 0)) {
+			while (((((_la - 24)) & ~0x1F) === 0 && ((1 << (_la - 24)) & 262147) !== 0)) {
 				{
 				this.state = 71;
 				this._errHandler.sync(this);
 				switch (this._input.LA(1)) {
-				case 26:
+				case 25:
 					{
 					this.state = 69;
 					this.match(MasciiParser.SPACE);
 					}
 					break;
-				case 25:
-				case 43:
+				case 24:
+				case 42:
 					{
 					this.state = 70;
 					this.newline();
@@ -270,12 +268,12 @@ export default class MasciiParser extends Parser {
 			this.state = 81;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			while (_la===25 || _la===26) {
+			while (_la===24 || _la===25) {
 				{
 				{
 				this.state = 78;
 				_la = this._input.LA(1);
-				if(!(_la===25 || _la===26)) {
+				if(!(_la===24 || _la===25)) {
 				this._errHandler.recoverInline(this);
 				}
 				else {
@@ -293,7 +291,7 @@ export default class MasciiParser extends Parser {
 			this.state = 88;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			while (_la===38) {
+			while (_la===37) {
 				{
 				{
 				this.state = 85;
@@ -309,7 +307,7 @@ export default class MasciiParser extends Parser {
 			this.state = 95;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			while (_la===38) {
+			while (_la===37) {
 				{
 				{
 				this.state = 92;
@@ -331,7 +329,7 @@ export default class MasciiParser extends Parser {
 					{
 					this.state = 99;
 					_la = this._input.LA(1);
-					if(!(_la===25 || _la===26)) {
+					if(!(_la===24 || _la===25)) {
 					this._errHandler.recoverInline(this);
 					}
 					else {
@@ -392,7 +390,7 @@ export default class MasciiParser extends Parser {
 						this.state = 109;
 						this._errHandler.sync(this);
 						_la = this._input.LA(1);
-					} while (_la===38 || _la===39);
+					} while (_la===37 || _la===38);
 					this.state = 111;
 					this.header();
 					}
@@ -438,7 +436,7 @@ export default class MasciiParser extends Parser {
 			{
 			this.state = 121;
 			_la = this._input.LA(1);
-			if(!(_la===38 || _la===39)) {
+			if(!(_la===37 || _la===38)) {
 			this._errHandler.recoverInline(this);
 			}
 			else {
@@ -526,7 +524,7 @@ export default class MasciiParser extends Parser {
 			this.state = 130;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			if (_la===35 || _la===47) {
+			if (_la===34 || _la===46) {
 				{
 				this.state = 129;
 				this.header_value();
@@ -536,7 +534,7 @@ export default class MasciiParser extends Parser {
 			this.state = 138;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			while (_la===36) {
+			while (_la===35) {
 				{
 				{
 				this.state = 132;
@@ -544,7 +542,7 @@ export default class MasciiParser extends Parser {
 				this.state = 134;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
-				if (_la===35 || _la===47) {
+				if (_la===34 || _la===46) {
 					{
 					this.state = 133;
 					this.header_value();
@@ -583,7 +581,7 @@ export default class MasciiParser extends Parser {
 			{
 			this.state = 141;
 			_la = this._input.LA(1);
-			if(!(_la===35 || _la===47)) {
+			if(!(_la===34 || _la===46)) {
 			this._errHandler.recoverInline(this);
 			}
 			else {
@@ -988,7 +986,7 @@ export default class MasciiParser extends Parser {
 			this.state = 209;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			if (_la===26) {
+			if (_la===25) {
 				{
 				this.state = 208;
 				this.match(MasciiParser.SPACE);
@@ -1053,18 +1051,10 @@ export default class MasciiParser extends Parser {
 			this.state = 223;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			if (_la===20 || _la===21) {
+			if (_la===20) {
 				{
 				this.state = 222;
-				localctx._inverse_dot = this._input.LT(1);
-				_la = this._input.LA(1);
-				if(!(_la===20 || _la===21)) {
-				    localctx._inverse_dot = this._errHandler.recoverInline(this);
-				}
-				else {
-					this._errHandler.reportMatch(this);
-				    this.consume();
-				}
+				localctx._inverse_dot = this.match(MasciiParser.MULTI_DOTTED);
 				}
 			}
 
@@ -1074,7 +1064,7 @@ export default class MasciiParser extends Parser {
 			case 1:
 			case 3:
 			case 7:
-			case 22:
+			case 21:
 				{
 				this.state = 227;
 				this._errHandler.sync(this);
@@ -1087,7 +1077,7 @@ export default class MasciiParser extends Parser {
 						this._errHandler.sync(this);
 						switch (this._input.LA(1)) {
 						case 7:
-						case 22:
+						case 21:
 							{
 							this.state = 225;
 							this.notes();
@@ -1126,7 +1116,7 @@ export default class MasciiParser extends Parser {
 			this.state = 235;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			if (_la===22) {
+			if (_la===21) {
 				{
 				this.state = 234;
 				this.duration_doubled();
@@ -1136,18 +1126,10 @@ export default class MasciiParser extends Parser {
 			this.state = 238;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			if (_la===20 || _la===21) {
+			if (_la===20) {
 				{
 				this.state = 237;
-				localctx._normal_dot = this._input.LT(1);
-				_la = this._input.LA(1);
-				if(!(_la===20 || _la===21)) {
-				    localctx._normal_dot = this._errHandler.recoverInline(this);
-				}
-				else {
-					this._errHandler.reportMatch(this);
-				    this.consume();
-				}
+				localctx._normal_dot = this.match(MasciiParser.MULTI_DOTTED);
 				}
 			}
 
@@ -1190,7 +1172,7 @@ export default class MasciiParser extends Parser {
 				this.state = 244;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
-			} while (_la===22);
+			} while (_la===21);
 			}
 		}
 		catch (re) {
@@ -1583,7 +1565,7 @@ export default class MasciiParser extends Parser {
 			{
 			this.state = 290;
 			_la = this._input.LA(1);
-			if(!(_la===25 || _la===43)) {
+			if(!(_la===24 || _la===42)) {
 			this._errHandler.recoverInline(this);
 			}
 			else {
@@ -1621,7 +1603,7 @@ export default class MasciiParser extends Parser {
 			this.state = 295;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			if (_la===42) {
+			if (_la===41) {
 				{
 				this.state = 294;
 				this.match(MasciiParser.CLOSE_LYRICS);
@@ -1645,7 +1627,7 @@ export default class MasciiParser extends Parser {
 		return localctx;
 	}
 
-	public static readonly _serializedATN: number[] = [4,1,47,298,2,0,7,0,2,
+	public static readonly _serializedATN: number[] = [4,1,46,298,2,0,7,0,2,
 	1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,7,7,2,8,7,8,2,9,7,9,2,
 	10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,14,7,14,2,15,7,15,2,16,7,16,2,17,
 	7,17,2,18,7,18,2,19,7,19,2,20,7,20,2,21,7,21,2,22,7,22,2,23,7,23,2,24,7,
@@ -1669,78 +1651,78 @@ export default class MasciiParser extends Parser {
 	8,23,11,23,12,23,268,1,24,1,24,3,24,273,8,24,1,25,1,25,1,26,1,26,4,26,279,
 	8,26,11,26,12,26,280,3,26,283,8,26,1,27,1,27,1,27,1,28,1,28,1,28,1,29,1,
 	29,1,30,1,30,1,30,3,30,296,8,30,1,30,0,0,31,0,2,4,6,8,10,12,14,16,18,20,
-	22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,0,5,1,0,25,
-	26,1,0,38,39,2,0,35,35,47,47,1,0,20,21,2,0,25,25,43,43,308,0,65,1,0,0,0,
-	2,81,1,0,0,0,4,105,1,0,0,0,6,121,1,0,0,0,8,123,1,0,0,0,10,127,1,0,0,0,12,
-	130,1,0,0,0,14,141,1,0,0,0,16,143,1,0,0,0,18,158,1,0,0,0,20,169,1,0,0,0,
-	22,180,1,0,0,0,24,182,1,0,0,0,26,193,1,0,0,0,28,203,1,0,0,0,30,206,1,0,
-	0,0,32,209,1,0,0,0,34,223,1,0,0,0,36,240,1,0,0,0,38,248,1,0,0,0,40,250,
-	1,0,0,0,42,254,1,0,0,0,44,263,1,0,0,0,46,266,1,0,0,0,48,270,1,0,0,0,50,
-	274,1,0,0,0,52,282,1,0,0,0,54,284,1,0,0,0,56,287,1,0,0,0,58,290,1,0,0,0,
-	60,292,1,0,0,0,62,64,7,0,0,0,63,62,1,0,0,0,64,67,1,0,0,0,65,63,1,0,0,0,
-	65,66,1,0,0,0,66,68,1,0,0,0,67,65,1,0,0,0,68,73,3,16,8,0,69,72,5,26,0,0,
-	70,72,3,58,29,0,71,69,1,0,0,0,71,70,1,0,0,0,72,75,1,0,0,0,73,71,1,0,0,0,
-	73,74,1,0,0,0,74,76,1,0,0,0,75,73,1,0,0,0,76,77,5,0,0,1,77,1,1,0,0,0,78,
-	80,7,0,0,0,79,78,1,0,0,0,80,83,1,0,0,0,81,79,1,0,0,0,81,82,1,0,0,0,82,84,
-	1,0,0,0,83,81,1,0,0,0,84,88,5,27,0,0,85,87,5,38,0,0,86,85,1,0,0,0,87,90,
-	1,0,0,0,88,86,1,0,0,0,88,89,1,0,0,0,89,91,1,0,0,0,90,88,1,0,0,0,91,95,3,
-	4,2,0,92,94,5,38,0,0,93,92,1,0,0,0,94,97,1,0,0,0,95,93,1,0,0,0,95,96,1,
-	0,0,0,96,98,1,0,0,0,97,95,1,0,0,0,98,102,5,33,0,0,99,101,7,0,0,0,100,99,
-	1,0,0,0,101,104,1,0,0,0,102,100,1,0,0,0,102,103,1,0,0,0,103,3,1,0,0,0,104,
-	102,1,0,0,0,105,115,3,8,4,0,106,108,3,6,3,0,107,106,1,0,0,0,108,109,1,0,
-	0,0,109,107,1,0,0,0,109,110,1,0,0,0,110,111,1,0,0,0,111,112,3,8,4,0,112,
-	114,1,0,0,0,113,107,1,0,0,0,114,117,1,0,0,0,115,113,1,0,0,0,115,116,1,0,
-	0,0,116,119,1,0,0,0,117,115,1,0,0,0,118,120,3,6,3,0,119,118,1,0,0,0,119,
-	120,1,0,0,0,120,5,1,0,0,0,121,122,7,1,0,0,122,7,1,0,0,0,123,124,3,10,5,
-	0,124,125,5,34,0,0,125,126,3,12,6,0,126,9,1,0,0,0,127,128,5,35,0,0,128,
-	11,1,0,0,0,129,131,3,14,7,0,130,129,1,0,0,0,130,131,1,0,0,0,131,138,1,0,
-	0,0,132,134,5,36,0,0,133,135,3,14,7,0,134,133,1,0,0,0,134,135,1,0,0,0,135,
-	137,1,0,0,0,136,132,1,0,0,0,137,140,1,0,0,0,138,136,1,0,0,0,138,139,1,0,
-	0,0,139,13,1,0,0,0,140,138,1,0,0,0,141,142,7,2,0,0,142,15,1,0,0,0,143,154,
-	3,18,9,0,144,146,3,58,29,0,145,147,3,58,29,0,146,145,1,0,0,0,147,148,1,
-	0,0,0,148,146,1,0,0,0,148,149,1,0,0,0,149,150,1,0,0,0,150,151,3,18,9,0,
-	151,153,1,0,0,0,152,144,1,0,0,0,153,156,1,0,0,0,154,152,1,0,0,0,154,155,
-	1,0,0,0,155,17,1,0,0,0,156,154,1,0,0,0,157,159,3,2,1,0,158,157,1,0,0,0,
-	158,159,1,0,0,0,159,160,1,0,0,0,160,166,3,20,10,0,161,162,3,58,29,0,162,
-	163,3,20,10,0,163,165,1,0,0,0,164,161,1,0,0,0,165,168,1,0,0,0,166,164,1,
-	0,0,0,166,167,1,0,0,0,167,19,1,0,0,0,168,166,1,0,0,0,169,175,3,22,11,0,
-	170,171,3,58,29,0,171,172,3,60,30,0,172,174,1,0,0,0,173,170,1,0,0,0,174,
-	177,1,0,0,0,175,173,1,0,0,0,175,176,1,0,0,0,176,21,1,0,0,0,177,175,1,0,
-	0,0,178,181,3,24,12,0,179,181,3,26,13,0,180,178,1,0,0,0,180,179,1,0,0,0,
-	181,23,1,0,0,0,182,190,3,28,14,0,183,186,5,6,0,0,184,187,3,28,14,0,185,
-	187,3,30,15,0,186,184,1,0,0,0,186,185,1,0,0,0,187,189,1,0,0,0,188,183,1,
-	0,0,0,189,192,1,0,0,0,190,188,1,0,0,0,190,191,1,0,0,0,191,25,1,0,0,0,192,
-	190,1,0,0,0,193,199,3,30,15,0,194,197,5,6,0,0,195,198,3,28,14,0,196,198,
-	3,30,15,0,197,195,1,0,0,0,197,196,1,0,0,0,198,200,1,0,0,0,199,194,1,0,0,
-	0,200,201,1,0,0,0,201,199,1,0,0,0,201,202,1,0,0,0,202,27,1,0,0,0,203,204,
-	3,32,16,0,204,29,1,0,0,0,205,207,5,26,0,0,206,205,1,0,0,0,206,207,1,0,0,
-	0,207,31,1,0,0,0,208,210,5,26,0,0,209,208,1,0,0,0,209,210,1,0,0,0,210,211,
-	1,0,0,0,211,216,3,34,17,0,212,213,5,26,0,0,213,215,3,34,17,0,214,212,1,
-	0,0,0,215,218,1,0,0,0,216,214,1,0,0,0,216,217,1,0,0,0,217,220,1,0,0,0,218,
-	216,1,0,0,0,219,221,5,26,0,0,220,219,1,0,0,0,220,221,1,0,0,0,221,33,1,0,
-	0,0,222,224,7,3,0,0,223,222,1,0,0,0,223,224,1,0,0,0,224,232,1,0,0,0,225,
-	228,3,44,22,0,226,228,3,38,19,0,227,225,1,0,0,0,227,226,1,0,0,0,228,229,
-	1,0,0,0,229,227,1,0,0,0,229,230,1,0,0,0,230,233,1,0,0,0,231,233,5,14,0,
-	0,232,227,1,0,0,0,232,231,1,0,0,0,233,235,1,0,0,0,234,236,3,36,18,0,235,
-	234,1,0,0,0,235,236,1,0,0,0,236,238,1,0,0,0,237,239,7,3,0,0,238,237,1,0,
-	0,0,238,239,1,0,0,0,239,35,1,0,0,0,240,242,5,22,0,0,241,243,5,22,0,0,242,
-	241,1,0,0,0,243,244,1,0,0,0,244,242,1,0,0,0,244,245,1,0,0,0,245,37,1,0,
-	0,0,246,249,3,42,21,0,247,249,3,40,20,0,248,246,1,0,0,0,248,247,1,0,0,0,
-	249,39,1,0,0,0,250,251,5,1,0,0,251,252,3,32,16,0,252,253,5,2,0,0,253,41,
-	1,0,0,0,254,255,5,3,0,0,255,256,3,32,16,0,256,257,5,4,0,0,257,43,1,0,0,
-	0,258,259,3,52,26,0,259,260,3,46,23,0,260,264,1,0,0,0,261,264,3,52,26,0,
-	262,264,3,46,23,0,263,258,1,0,0,0,263,261,1,0,0,0,263,262,1,0,0,0,264,45,
-	1,0,0,0,265,267,3,48,24,0,266,265,1,0,0,0,267,268,1,0,0,0,268,266,1,0,0,
-	0,268,269,1,0,0,0,269,47,1,0,0,0,270,272,5,7,0,0,271,273,3,50,25,0,272,
-	271,1,0,0,0,272,273,1,0,0,0,273,49,1,0,0,0,274,275,5,22,0,0,275,51,1,0,
-	0,0,276,283,3,56,28,0,277,279,3,54,27,0,278,277,1,0,0,0,279,280,1,0,0,0,
-	280,278,1,0,0,0,280,281,1,0,0,0,281,283,1,0,0,0,282,276,1,0,0,0,282,278,
-	1,0,0,0,283,53,1,0,0,0,284,285,5,22,0,0,285,286,5,7,0,0,286,55,1,0,0,0,
-	287,288,5,22,0,0,288,289,5,23,0,0,289,57,1,0,0,0,290,291,7,4,0,0,291,59,
-	1,0,0,0,292,293,5,28,0,0,293,295,5,44,0,0,294,296,5,42,0,0,295,294,1,0,
-	0,0,295,296,1,0,0,0,296,61,1,0,0,0,41,65,71,73,81,88,95,102,109,115,119,
-	130,134,138,148,154,158,166,175,180,186,190,197,201,206,209,216,220,223,
-	227,229,232,235,238,244,248,263,268,272,280,282,295];
+	22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,0,4,1,0,24,
+	25,1,0,37,38,2,0,34,34,46,46,2,0,24,24,42,42,308,0,65,1,0,0,0,2,81,1,0,
+	0,0,4,105,1,0,0,0,6,121,1,0,0,0,8,123,1,0,0,0,10,127,1,0,0,0,12,130,1,0,
+	0,0,14,141,1,0,0,0,16,143,1,0,0,0,18,158,1,0,0,0,20,169,1,0,0,0,22,180,
+	1,0,0,0,24,182,1,0,0,0,26,193,1,0,0,0,28,203,1,0,0,0,30,206,1,0,0,0,32,
+	209,1,0,0,0,34,223,1,0,0,0,36,240,1,0,0,0,38,248,1,0,0,0,40,250,1,0,0,0,
+	42,254,1,0,0,0,44,263,1,0,0,0,46,266,1,0,0,0,48,270,1,0,0,0,50,274,1,0,
+	0,0,52,282,1,0,0,0,54,284,1,0,0,0,56,287,1,0,0,0,58,290,1,0,0,0,60,292,
+	1,0,0,0,62,64,7,0,0,0,63,62,1,0,0,0,64,67,1,0,0,0,65,63,1,0,0,0,65,66,1,
+	0,0,0,66,68,1,0,0,0,67,65,1,0,0,0,68,73,3,16,8,0,69,72,5,25,0,0,70,72,3,
+	58,29,0,71,69,1,0,0,0,71,70,1,0,0,0,72,75,1,0,0,0,73,71,1,0,0,0,73,74,1,
+	0,0,0,74,76,1,0,0,0,75,73,1,0,0,0,76,77,5,0,0,1,77,1,1,0,0,0,78,80,7,0,
+	0,0,79,78,1,0,0,0,80,83,1,0,0,0,81,79,1,0,0,0,81,82,1,0,0,0,82,84,1,0,0,
+	0,83,81,1,0,0,0,84,88,5,26,0,0,85,87,5,37,0,0,86,85,1,0,0,0,87,90,1,0,0,
+	0,88,86,1,0,0,0,88,89,1,0,0,0,89,91,1,0,0,0,90,88,1,0,0,0,91,95,3,4,2,0,
+	92,94,5,37,0,0,93,92,1,0,0,0,94,97,1,0,0,0,95,93,1,0,0,0,95,96,1,0,0,0,
+	96,98,1,0,0,0,97,95,1,0,0,0,98,102,5,32,0,0,99,101,7,0,0,0,100,99,1,0,0,
+	0,101,104,1,0,0,0,102,100,1,0,0,0,102,103,1,0,0,0,103,3,1,0,0,0,104,102,
+	1,0,0,0,105,115,3,8,4,0,106,108,3,6,3,0,107,106,1,0,0,0,108,109,1,0,0,0,
+	109,107,1,0,0,0,109,110,1,0,0,0,110,111,1,0,0,0,111,112,3,8,4,0,112,114,
+	1,0,0,0,113,107,1,0,0,0,114,117,1,0,0,0,115,113,1,0,0,0,115,116,1,0,0,0,
+	116,119,1,0,0,0,117,115,1,0,0,0,118,120,3,6,3,0,119,118,1,0,0,0,119,120,
+	1,0,0,0,120,5,1,0,0,0,121,122,7,1,0,0,122,7,1,0,0,0,123,124,3,10,5,0,124,
+	125,5,33,0,0,125,126,3,12,6,0,126,9,1,0,0,0,127,128,5,34,0,0,128,11,1,0,
+	0,0,129,131,3,14,7,0,130,129,1,0,0,0,130,131,1,0,0,0,131,138,1,0,0,0,132,
+	134,5,35,0,0,133,135,3,14,7,0,134,133,1,0,0,0,134,135,1,0,0,0,135,137,1,
+	0,0,0,136,132,1,0,0,0,137,140,1,0,0,0,138,136,1,0,0,0,138,139,1,0,0,0,139,
+	13,1,0,0,0,140,138,1,0,0,0,141,142,7,2,0,0,142,15,1,0,0,0,143,154,3,18,
+	9,0,144,146,3,58,29,0,145,147,3,58,29,0,146,145,1,0,0,0,147,148,1,0,0,0,
+	148,146,1,0,0,0,148,149,1,0,0,0,149,150,1,0,0,0,150,151,3,18,9,0,151,153,
+	1,0,0,0,152,144,1,0,0,0,153,156,1,0,0,0,154,152,1,0,0,0,154,155,1,0,0,0,
+	155,17,1,0,0,0,156,154,1,0,0,0,157,159,3,2,1,0,158,157,1,0,0,0,158,159,
+	1,0,0,0,159,160,1,0,0,0,160,166,3,20,10,0,161,162,3,58,29,0,162,163,3,20,
+	10,0,163,165,1,0,0,0,164,161,1,0,0,0,165,168,1,0,0,0,166,164,1,0,0,0,166,
+	167,1,0,0,0,167,19,1,0,0,0,168,166,1,0,0,0,169,175,3,22,11,0,170,171,3,
+	58,29,0,171,172,3,60,30,0,172,174,1,0,0,0,173,170,1,0,0,0,174,177,1,0,0,
+	0,175,173,1,0,0,0,175,176,1,0,0,0,176,21,1,0,0,0,177,175,1,0,0,0,178,181,
+	3,24,12,0,179,181,3,26,13,0,180,178,1,0,0,0,180,179,1,0,0,0,181,23,1,0,
+	0,0,182,190,3,28,14,0,183,186,5,6,0,0,184,187,3,28,14,0,185,187,3,30,15,
+	0,186,184,1,0,0,0,186,185,1,0,0,0,187,189,1,0,0,0,188,183,1,0,0,0,189,192,
+	1,0,0,0,190,188,1,0,0,0,190,191,1,0,0,0,191,25,1,0,0,0,192,190,1,0,0,0,
+	193,199,3,30,15,0,194,197,5,6,0,0,195,198,3,28,14,0,196,198,3,30,15,0,197,
+	195,1,0,0,0,197,196,1,0,0,0,198,200,1,0,0,0,199,194,1,0,0,0,200,201,1,0,
+	0,0,201,199,1,0,0,0,201,202,1,0,0,0,202,27,1,0,0,0,203,204,3,32,16,0,204,
+	29,1,0,0,0,205,207,5,25,0,0,206,205,1,0,0,0,206,207,1,0,0,0,207,31,1,0,
+	0,0,208,210,5,25,0,0,209,208,1,0,0,0,209,210,1,0,0,0,210,211,1,0,0,0,211,
+	216,3,34,17,0,212,213,5,25,0,0,213,215,3,34,17,0,214,212,1,0,0,0,215,218,
+	1,0,0,0,216,214,1,0,0,0,216,217,1,0,0,0,217,220,1,0,0,0,218,216,1,0,0,0,
+	219,221,5,25,0,0,220,219,1,0,0,0,220,221,1,0,0,0,221,33,1,0,0,0,222,224,
+	5,20,0,0,223,222,1,0,0,0,223,224,1,0,0,0,224,232,1,0,0,0,225,228,3,44,22,
+	0,226,228,3,38,19,0,227,225,1,0,0,0,227,226,1,0,0,0,228,229,1,0,0,0,229,
+	227,1,0,0,0,229,230,1,0,0,0,230,233,1,0,0,0,231,233,5,14,0,0,232,227,1,
+	0,0,0,232,231,1,0,0,0,233,235,1,0,0,0,234,236,3,36,18,0,235,234,1,0,0,0,
+	235,236,1,0,0,0,236,238,1,0,0,0,237,239,5,20,0,0,238,237,1,0,0,0,238,239,
+	1,0,0,0,239,35,1,0,0,0,240,242,5,21,0,0,241,243,5,21,0,0,242,241,1,0,0,
+	0,243,244,1,0,0,0,244,242,1,0,0,0,244,245,1,0,0,0,245,37,1,0,0,0,246,249,
+	3,42,21,0,247,249,3,40,20,0,248,246,1,0,0,0,248,247,1,0,0,0,249,39,1,0,
+	0,0,250,251,5,1,0,0,251,252,3,32,16,0,252,253,5,2,0,0,253,41,1,0,0,0,254,
+	255,5,3,0,0,255,256,3,32,16,0,256,257,5,4,0,0,257,43,1,0,0,0,258,259,3,
+	52,26,0,259,260,3,46,23,0,260,264,1,0,0,0,261,264,3,52,26,0,262,264,3,46,
+	23,0,263,258,1,0,0,0,263,261,1,0,0,0,263,262,1,0,0,0,264,45,1,0,0,0,265,
+	267,3,48,24,0,266,265,1,0,0,0,267,268,1,0,0,0,268,266,1,0,0,0,268,269,1,
+	0,0,0,269,47,1,0,0,0,270,272,5,7,0,0,271,273,3,50,25,0,272,271,1,0,0,0,
+	272,273,1,0,0,0,273,49,1,0,0,0,274,275,5,21,0,0,275,51,1,0,0,0,276,283,
+	3,56,28,0,277,279,3,54,27,0,278,277,1,0,0,0,279,280,1,0,0,0,280,278,1,0,
+	0,0,280,281,1,0,0,0,281,283,1,0,0,0,282,276,1,0,0,0,282,278,1,0,0,0,283,
+	53,1,0,0,0,284,285,5,21,0,0,285,286,5,7,0,0,286,55,1,0,0,0,287,288,5,21,
+	0,0,288,289,5,22,0,0,289,57,1,0,0,0,290,291,7,3,0,0,291,59,1,0,0,0,292,
+	293,5,27,0,0,293,295,5,43,0,0,294,296,5,41,0,0,295,294,1,0,0,0,295,296,
+	1,0,0,0,296,61,1,0,0,0,41,65,71,73,81,88,95,102,109,115,119,130,134,138,
+	148,154,158,166,175,180,186,190,197,201,206,209,216,220,223,227,229,232,
+	235,238,244,248,263,268,272,280,282,295];
 
 	private static __ATN: ATN;
 	public static get _ATN(): ATN {
@@ -2327,17 +2309,11 @@ export class Timed_elementContext extends ParserRuleContext {
 	public duration_doubled(): Duration_doubledContext {
 		return this.getTypedRuleContext(Duration_doubledContext, 0) as Duration_doubledContext;
 	}
-	public DBL_DOTTED_list(): TerminalNode[] {
-	    	return this.getTokens(MasciiParser.DBL_DOTTED);
+	public MULTI_DOTTED_list(): TerminalNode[] {
+	    	return this.getTokens(MasciiParser.MULTI_DOTTED);
 	}
-	public DBL_DOTTED(i: number): TerminalNode {
-		return this.getToken(MasciiParser.DBL_DOTTED, i);
-	}
-	public DOTTED_list(): TerminalNode[] {
-	    	return this.getTokens(MasciiParser.DOTTED);
-	}
-	public DOTTED(i: number): TerminalNode {
-		return this.getToken(MasciiParser.DOTTED, i);
+	public MULTI_DOTTED(i: number): TerminalNode {
+		return this.getToken(MasciiParser.MULTI_DOTTED, i);
 	}
 	public notes_list(): NotesContext[] {
 		return this.getTypedRuleContexts(NotesContext) as NotesContext[];

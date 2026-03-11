@@ -34,13 +34,19 @@ const STD: Array<{ type: string; ticks: number }> = [
     { type: '128th',   ticks: TICKS_PER_BEAT / 32 },
 ];
 
-// Expanded table: standard + dotted + double-dotted, sorted largest→smallest
+// Expanded table: standard + any number of dots, sorted largest→smallest
+// n-dotted duration = base * (2^(n+1) - 1) / 2^n  (requires base divisible by 2^n)
+const MAX_DOTS = 4;
 interface DurEntry { type: string; ticks: number; dots: number }
 const ALL_DURS: DurEntry[] = [];
 for (const { type, ticks } of STD) {
     ALL_DURS.push({ type, ticks, dots: 0 });
-    if (ticks % 2 === 0) ALL_DURS.push({ type, ticks: ticks * 3 / 2, dots: 1 });  // dotted
-    if (ticks % 4 === 0) ALL_DURS.push({ type, ticks: ticks * 7 / 4, dots: 2 }); // double-dotted
+    for (let d = 1; d <= MAX_DOTS; d++) {
+        const divisor = 1 << d; // 2^d
+        if (ticks % divisor === 0) {
+            ALL_DURS.push({ type, ticks: ticks * ((divisor * 2 - 1) / divisor), dots: d });
+        }
+    }
 }
 ALL_DURS.sort((a, b) => b.ticks - a.ticks);
 
@@ -161,9 +167,9 @@ function tickDur(tr: NoteTypeResult): number {
 }
 function tickDurDotted(tr: NoteTypeResult): number {
     const base = tickDur(tr);
-    if (tr.dots === 1) return base * 3 / 2;
-    if (tr.dots === 2) return base * 7 / 4;
-    return base;
+    if (tr.dots <= 0) return base;
+    const divisor = 1 << tr.dots; // 2^dots
+    return base * (divisor * 2 - 1) / divisor;
 }
 
 /**

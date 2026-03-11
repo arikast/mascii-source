@@ -25,7 +25,7 @@ To trigger Antlr to regenerate the Typescript files and run tests on the generat
 
 
 ### to convert a mascii file to musicxml
-use the command line tool: mascii-typescript/convert.sh
+make sure you have npm installed, then use the command line tool: mascii-typescript/convert.sh
 
 it supports -f musicxml and -f midi
 

@@ -1,0 +1,264 @@
+// Generated from MasciiLexer.g4 by ANTLR 4.13.2
+// noinspection ES6UnusedImports,JSUnusedGlobalSymbols,JSUnusedLocalSymbols
+import {
+	ATN,
+	ATNDeserializer,
+	CharStream,
+	DecisionState, DFA,
+	Lexer,
+	LexerATNSimulator,
+	RuleContext,
+	PredictionContextCache,
+	Token
+} from "antlr4";
+export default class MasciiLexer extends Lexer {
+	public static readonly OPEN_SCOPED = 1;
+	public static readonly CLOSE_SCOPED = 2;
+	public static readonly OPEN_UNSCOPED = 3;
+	public static readonly CLOSE_UNSCOPED = 4;
+	public static readonly ACCIDENTAL = 5;
+	public static readonly STAFF_SEPARATOR = 6;
+	public static readonly PITCH = 7;
+	public static readonly AMPLIFIER = 8;
+	public static readonly ABS_PITCH_RANGE = 9;
+	public static readonly REL_PITCH = 10;
+	public static readonly REL_PITCH_UP = 11;
+	public static readonly REL_PITCH_DOWN = 12;
+	public static readonly REPEAT_ELEMENT = 13;
+	public static readonly REST = 14;
+	public static readonly DBL_SHARP = 15;
+	public static readonly DBL_FLAT = 16;
+	public static readonly SHARP = 17;
+	public static readonly FLAT = 18;
+	public static readonly NATURAL = 19;
+	public static readonly DBL_DOTTED = 20;
+	public static readonly DOTTED = 21;
+	public static readonly TIE = 22;
+	public static readonly NOTE_END_ALL = 23;
+	public static readonly COMMENT = 24;
+	public static readonly NEWLINE = 25;
+	public static readonly SPACE = 26;
+	public static readonly OPEN_META = 27;
+	public static readonly OPEN_LYRICS = 28;
+	public static readonly F_OPEN_SCOPED = 29;
+	public static readonly F_CLOSE_SCOPED = 30;
+	public static readonly F_OPEN_UNSCOPED = 31;
+	public static readonly F_CLOSE_UNSCOPED = 32;
+	public static readonly CLOSE_META = 33;
+	public static readonly HEADER_SEP = 34;
+	public static readonly HEADER_ENTITY = 35;
+	public static readonly HEADER_VAL_SEP = 36;
+	public static readonly M_COMMENT = 37;
+	public static readonly M_NEWLINE = 38;
+	public static readonly M_SPACE = 39;
+	public static readonly CLOSE_LYRICS = 40;
+	public static readonly IMPLICIT_CLOSE_LYRICS = 41;
+	public static readonly LYRICS = 42;
+	public static readonly L_NEWLINE = 43;
+	public static readonly EOF = Token.EOF;
+	public static readonly METAINFO_MODE = 1;
+	public static readonly LYRICS_MODE = 2;
+
+	public static readonly channelNames: string[] = [ "DEFAULT_TOKEN_CHANNEL", "HIDDEN" ];
+	public static readonly literalNames: (string | null)[] = [ null, null, 
+                                                            null, null, 
+                                                            null, null, 
+                                                            null, null, 
+                                                            "'!'", null, 
+                                                            null, null, 
+                                                            null, null, 
+                                                            null, null, 
+                                                            null, "'#'", 
+                                                            "'@'", "'='", 
+                                                            null, null, 
+                                                            null, "'*'", 
+                                                            null, null, 
+                                                            null, "'{'", 
+                                                            null, "'('", 
+                                                            "')'", "'['", 
+                                                            "']'", "'}'" ];
+	public static readonly symbolicNames: (string | null)[] = [ null, "OPEN_SCOPED", 
+                                                             "CLOSE_SCOPED", 
+                                                             "OPEN_UNSCOPED", 
+                                                             "CLOSE_UNSCOPED", 
+                                                             "ACCIDENTAL", 
+                                                             "STAFF_SEPARATOR", 
+                                                             "PITCH", "AMPLIFIER", 
+                                                             "ABS_PITCH_RANGE", 
+                                                             "REL_PITCH", 
+                                                             "REL_PITCH_UP", 
+                                                             "REL_PITCH_DOWN", 
+                                                             "REPEAT_ELEMENT", 
+                                                             "REST", "DBL_SHARP", 
+                                                             "DBL_FLAT", 
+                                                             "SHARP", "FLAT", 
+                                                             "NATURAL", 
+                                                             "DBL_DOTTED", 
+                                                             "DOTTED", "TIE", 
+                                                             "NOTE_END_ALL", 
+                                                             "COMMENT", 
+                                                             "NEWLINE", 
+                                                             "SPACE", "OPEN_META", 
+                                                             "OPEN_LYRICS", 
+                                                             "F_OPEN_SCOPED", 
+                                                             "F_CLOSE_SCOPED", 
+                                                             "F_OPEN_UNSCOPED", 
+                                                             "F_CLOSE_UNSCOPED", 
+                                                             "CLOSE_META", 
+                                                             "HEADER_SEP", 
+                                                             "HEADER_ENTITY", 
+                                                             "HEADER_VAL_SEP", 
+                                                             "M_COMMENT", 
+                                                             "M_NEWLINE", 
+                                                             "M_SPACE", 
+                                                             "CLOSE_LYRICS", 
+                                                             "IMPLICIT_CLOSE_LYRICS", 
+                                                             "LYRICS", "L_NEWLINE" ];
+	public static readonly modeNames: string[] = [ "DEFAULT_MODE", "METAINFO_MODE", 
+                                                "LYRICS_MODE", ];
+
+	public static readonly ruleNames: string[] = [
+		"OPEN_SCOPED", "CLOSE_SCOPED", "OPEN_UNSCOPED", "CLOSE_UNSCOPED", "ACCIDENTAL", 
+		"STAFF_SEPARATOR", "PITCH", "AMPLIFIER", "ABS_PITCH_RANGE", "REL_PITCH", 
+		"REL_PITCH_UP", "REL_PITCH_DOWN", "REPEAT_ELEMENT", "REST", "DBL_SHARP", 
+		"DBL_FLAT", "SHARP", "FLAT", "NATURAL", "DBL_DOTTED", "DOTTED", "TIE", 
+		"NOTE_END_ALL", "COMMENT", "NEWLINE", "SPACE", "OPEN_META", "OPEN_LYRICS", 
+		"F_STAFF_SEP", "F_REST", "F_DOTTED", "F_TIE", "F_NOT_NEWLINE", "F_NEWLINE", 
+		"F_SPACE", "F_COMMENT", "F_OPEN_SCOPED", "F_CLOSE_SCOPED", "F_OPEN_UNSCOPED", 
+		"F_CLOSE_UNSCOPED", "CLOSE_META", "HEADER_SEP", "HEADER_ENTITY", "HEADER_VAL_SEP", 
+		"M_COMMENT", "M_NEWLINE", "M_SPACE", "CLOSE_LYRICS", "IMPLICIT_CLOSE_LYRICS", 
+		"LYRICS", "L_NEWLINE",
+	];
+
+
+	constructor(input: CharStream) {
+		super(input);
+		this._interp = new LexerATNSimulator(this, MasciiLexer._ATN, MasciiLexer.DecisionsToDFA, new PredictionContextCache());
+	}
+
+	public get grammarFileName(): string { return "MasciiLexer.g4"; }
+
+	public get literalNames(): (string | null)[] { return MasciiLexer.literalNames; }
+	public get symbolicNames(): (string | null)[] { return MasciiLexer.symbolicNames; }
+	public get ruleNames(): string[] { return MasciiLexer.ruleNames; }
+
+	public get serializedATN(): number[] { return MasciiLexer._serializedATN; }
+
+	public get channelNames(): string[] { return MasciiLexer.channelNames; }
+
+	public get modeNames(): string[] { return MasciiLexer.modeNames; }
+
+	public static readonly _serializedATN: number[] = [4,0,43,299,6,-1,6,-1,
+	6,-1,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,7,7,2,
+	8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,14,7,14,2,15,7,
+	15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,7,20,2,21,7,21,2,22,7,22,
+	2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,26,2,27,7,27,2,28,7,28,2,29,7,29,2,
+	30,7,30,2,31,7,31,2,32,7,32,2,33,7,33,2,34,7,34,2,35,7,35,2,36,7,36,2,37,
+	7,37,2,38,7,38,2,39,7,39,2,40,7,40,2,41,7,41,2,42,7,42,2,43,7,43,2,44,7,
+	44,2,45,7,45,2,46,7,46,2,47,7,47,2,48,7,48,2,49,7,49,2,50,7,50,1,0,1,0,
+	1,1,1,1,1,2,1,2,1,3,1,3,1,4,1,4,1,4,3,4,117,8,4,1,4,1,4,3,4,121,8,4,1,4,
+	1,4,3,4,125,8,4,1,5,1,5,1,6,1,6,4,6,131,8,6,11,6,12,6,132,3,6,135,8,6,1,
+	6,1,6,3,6,139,8,6,1,6,3,6,142,8,6,1,7,1,7,1,8,1,8,1,9,1,9,3,9,150,8,9,1,
+	10,1,10,1,11,1,11,1,12,1,12,1,13,1,13,1,14,1,14,1,14,1,15,1,15,1,15,1,16,
+	1,16,1,17,1,17,1,18,1,18,1,19,1,19,1,19,1,20,1,20,1,21,1,21,1,22,1,22,1,
+	23,1,23,1,23,1,23,1,24,3,24,186,8,24,1,24,1,24,3,24,190,8,24,1,25,1,25,
+	1,26,1,26,1,26,1,26,1,27,1,27,1,27,1,27,1,28,1,28,1,29,1,29,1,30,1,30,1,
+	31,1,31,1,32,4,32,211,8,32,11,32,12,32,212,1,33,3,33,216,8,33,1,33,1,33,
+	1,34,4,34,221,8,34,11,34,12,34,222,1,35,1,35,1,35,1,35,3,35,229,8,35,1,
+	35,3,35,232,8,35,1,36,1,36,1,37,1,37,1,38,1,38,1,39,1,39,1,40,1,40,1,40,
+	1,40,1,41,3,41,247,8,41,1,41,1,41,3,41,251,8,41,1,42,4,42,254,8,42,11,42,
+	12,42,255,1,43,3,43,259,8,43,1,43,1,43,3,43,263,8,43,1,44,1,44,1,44,1,44,
+	1,45,3,45,270,8,45,1,45,1,45,3,45,274,8,45,1,46,1,46,1,46,1,46,1,47,1,47,
+	1,47,1,47,1,48,1,48,1,48,1,48,1,49,4,49,289,8,49,11,49,12,49,290,1,50,3,
+	50,294,8,50,1,50,1,50,3,50,298,8,50,0,0,51,3,1,5,2,7,3,9,4,11,5,13,6,15,
+	7,17,8,19,9,21,10,23,11,25,12,27,13,29,14,31,15,33,16,35,17,37,18,39,19,
+	41,20,43,21,45,22,47,23,49,24,51,25,53,26,55,27,57,28,59,0,61,0,63,0,65,
+	0,67,0,69,0,71,0,73,0,75,29,77,30,79,31,81,32,83,33,85,34,87,35,89,36,91,
+	37,93,38,95,39,97,40,99,41,101,42,103,43,3,0,1,2,10,1,0,48,57,1,0,97,103,
+	1,0,65,71,2,0,88,88,120,120,2,0,10,10,13,13,1,0,13,13,1,0,10,10,2,0,9,9,
+	32,32,7,0,35,35,43,43,45,45,47,57,64,90,95,95,97,122,3,0,10,10,13,13,34,
+	34,317,0,3,1,0,0,0,0,5,1,0,0,0,0,7,1,0,0,0,0,9,1,0,0,0,0,11,1,0,0,0,0,13,
+	1,0,0,0,0,15,1,0,0,0,0,17,1,0,0,0,0,19,1,0,0,0,0,21,1,0,0,0,0,23,1,0,0,
+	0,0,25,1,0,0,0,0,27,1,0,0,0,0,29,1,0,0,0,0,31,1,0,0,0,0,33,1,0,0,0,0,35,
+	1,0,0,0,0,37,1,0,0,0,0,39,1,0,0,0,0,41,1,0,0,0,0,43,1,0,0,0,0,45,1,0,0,
+	0,0,47,1,0,0,0,0,49,1,0,0,0,0,51,1,0,0,0,0,53,1,0,0,0,0,55,1,0,0,0,0,57,
+	1,0,0,0,0,75,1,0,0,0,0,77,1,0,0,0,0,79,1,0,0,0,0,81,1,0,0,0,1,83,1,0,0,
+	0,1,85,1,0,0,0,1,87,1,0,0,0,1,89,1,0,0,0,1,91,1,0,0,0,1,93,1,0,0,0,1,95,
+	1,0,0,0,2,97,1,0,0,0,2,99,1,0,0,0,2,101,1,0,0,0,2,103,1,0,0,0,3,105,1,0,
+	0,0,5,107,1,0,0,0,7,109,1,0,0,0,9,111,1,0,0,0,11,124,1,0,0,0,13,126,1,0,
+	0,0,15,141,1,0,0,0,17,143,1,0,0,0,19,145,1,0,0,0,21,149,1,0,0,0,23,151,
+	1,0,0,0,25,153,1,0,0,0,27,155,1,0,0,0,29,157,1,0,0,0,31,159,1,0,0,0,33,
+	162,1,0,0,0,35,165,1,0,0,0,37,167,1,0,0,0,39,169,1,0,0,0,41,171,1,0,0,0,
+	43,174,1,0,0,0,45,176,1,0,0,0,47,178,1,0,0,0,49,180,1,0,0,0,51,185,1,0,
+	0,0,53,191,1,0,0,0,55,193,1,0,0,0,57,197,1,0,0,0,59,201,1,0,0,0,61,203,
+	1,0,0,0,63,205,1,0,0,0,65,207,1,0,0,0,67,210,1,0,0,0,69,215,1,0,0,0,71,
+	220,1,0,0,0,73,224,1,0,0,0,75,233,1,0,0,0,77,235,1,0,0,0,79,237,1,0,0,0,
+	81,239,1,0,0,0,83,241,1,0,0,0,85,246,1,0,0,0,87,253,1,0,0,0,89,258,1,0,
+	0,0,91,264,1,0,0,0,93,269,1,0,0,0,95,275,1,0,0,0,97,279,1,0,0,0,99,283,
+	1,0,0,0,101,288,1,0,0,0,103,293,1,0,0,0,105,106,3,75,36,0,106,4,1,0,0,0,
+	107,108,3,77,37,0,108,6,1,0,0,0,109,110,3,79,38,0,110,8,1,0,0,0,111,112,
+	3,81,39,0,112,10,1,0,0,0,113,125,3,33,15,0,114,125,3,31,14,0,115,117,3,
+	39,18,0,116,115,1,0,0,0,116,117,1,0,0,0,117,118,1,0,0,0,118,125,3,35,16,
+	0,119,121,3,39,18,0,120,119,1,0,0,0,120,121,1,0,0,0,121,122,1,0,0,0,122,
+	125,3,37,17,0,123,125,3,39,18,0,124,113,1,0,0,0,124,114,1,0,0,0,124,116,
+	1,0,0,0,124,120,1,0,0,0,124,123,1,0,0,0,125,12,1,0,0,0,126,127,3,59,28,
+	0,127,14,1,0,0,0,128,135,3,19,8,0,129,131,3,17,7,0,130,129,1,0,0,0,131,
+	132,1,0,0,0,132,130,1,0,0,0,132,133,1,0,0,0,133,135,1,0,0,0,134,128,1,0,
+	0,0,134,130,1,0,0,0,134,135,1,0,0,0,135,136,1,0,0,0,136,138,3,21,9,0,137,
+	139,3,11,4,0,138,137,1,0,0,0,138,139,1,0,0,0,139,142,1,0,0,0,140,142,3,
+	27,12,0,141,134,1,0,0,0,141,140,1,0,0,0,142,16,1,0,0,0,143,144,5,33,0,0,
+	144,18,1,0,0,0,145,146,7,0,0,0,146,20,1,0,0,0,147,150,3,25,11,0,148,150,
+	3,23,10,0,149,147,1,0,0,0,149,148,1,0,0,0,150,22,1,0,0,0,151,152,7,1,0,
+	0,152,24,1,0,0,0,153,154,7,2,0,0,154,26,1,0,0,0,155,156,7,3,0,0,156,28,
+	1,0,0,0,157,158,3,61,29,0,158,30,1,0,0,0,159,160,3,35,16,0,160,161,3,35,
+	16,0,161,32,1,0,0,0,162,163,3,37,17,0,163,164,3,37,17,0,164,34,1,0,0,0,
+	165,166,5,35,0,0,166,36,1,0,0,0,167,168,5,64,0,0,168,38,1,0,0,0,169,170,
+	5,61,0,0,170,40,1,0,0,0,171,172,3,43,20,0,172,173,3,43,20,0,173,42,1,0,
+	0,0,174,175,3,63,30,0,175,44,1,0,0,0,176,177,3,65,31,0,177,46,1,0,0,0,178,
+	179,5,42,0,0,179,48,1,0,0,0,180,181,3,73,35,0,181,182,1,0,0,0,182,183,6,
+	23,0,0,183,50,1,0,0,0,184,186,3,53,25,0,185,184,1,0,0,0,185,186,1,0,0,0,
+	186,187,1,0,0,0,187,189,3,69,33,0,188,190,3,53,25,0,189,188,1,0,0,0,189,
+	190,1,0,0,0,190,52,1,0,0,0,191,192,3,71,34,0,192,54,1,0,0,0,193,194,5,123,
+	0,0,194,195,1,0,0,0,195,196,6,26,1,0,196,56,1,0,0,0,197,198,5,34,0,0,198,
+	199,1,0,0,0,199,200,6,27,2,0,200,58,1,0,0,0,201,202,5,124,0,0,202,60,1,
+	0,0,0,203,204,5,37,0,0,204,62,1,0,0,0,205,206,5,46,0,0,206,64,1,0,0,0,207,
+	208,5,95,0,0,208,66,1,0,0,0,209,211,8,4,0,0,210,209,1,0,0,0,211,212,1,0,
+	0,0,212,210,1,0,0,0,212,213,1,0,0,0,213,68,1,0,0,0,214,216,7,5,0,0,215,
+	214,1,0,0,0,215,216,1,0,0,0,216,217,1,0,0,0,217,218,7,6,0,0,218,70,1,0,
+	0,0,219,221,7,7,0,0,220,219,1,0,0,0,221,222,1,0,0,0,222,220,1,0,0,0,222,
+	223,1,0,0,0,223,72,1,0,0,0,224,225,5,45,0,0,225,226,5,45,0,0,226,228,1,
+	0,0,0,227,229,3,67,32,0,228,227,1,0,0,0,228,229,1,0,0,0,229,231,1,0,0,0,
+	230,232,3,69,33,0,231,230,1,0,0,0,231,232,1,0,0,0,232,74,1,0,0,0,233,234,
+	5,40,0,0,234,76,1,0,0,0,235,236,5,41,0,0,236,78,1,0,0,0,237,238,5,91,0,
+	0,238,80,1,0,0,0,239,240,5,93,0,0,240,82,1,0,0,0,241,242,5,125,0,0,242,
+	243,1,0,0,0,243,244,6,40,3,0,244,84,1,0,0,0,245,247,3,95,46,0,246,245,1,
+	0,0,0,246,247,1,0,0,0,247,248,1,0,0,0,248,250,5,58,0,0,249,251,3,95,46,
+	0,250,249,1,0,0,0,250,251,1,0,0,0,251,86,1,0,0,0,252,254,7,8,0,0,253,252,
+	1,0,0,0,254,255,1,0,0,0,255,253,1,0,0,0,255,256,1,0,0,0,256,88,1,0,0,0,
+	257,259,3,95,46,0,258,257,1,0,0,0,258,259,1,0,0,0,259,260,1,0,0,0,260,262,
+	5,44,0,0,261,263,3,95,46,0,262,261,1,0,0,0,262,263,1,0,0,0,263,90,1,0,0,
+	0,264,265,3,73,35,0,265,266,1,0,0,0,266,267,6,44,0,0,267,92,1,0,0,0,268,
+	270,3,53,25,0,269,268,1,0,0,0,269,270,1,0,0,0,270,271,1,0,0,0,271,273,3,
+	69,33,0,272,274,3,53,25,0,273,272,1,0,0,0,273,274,1,0,0,0,274,94,1,0,0,
+	0,275,276,3,71,34,0,276,277,1,0,0,0,277,278,6,46,0,0,278,96,1,0,0,0,279,
+	280,5,34,0,0,280,281,1,0,0,0,281,282,6,47,3,0,282,98,1,0,0,0,283,284,3,
+	103,50,0,284,285,1,0,0,0,285,286,6,48,3,0,286,100,1,0,0,0,287,289,8,9,0,
+	0,288,287,1,0,0,0,289,290,1,0,0,0,290,288,1,0,0,0,290,291,1,0,0,0,291,102,
+	1,0,0,0,292,294,3,71,34,0,293,292,1,0,0,0,293,294,1,0,0,0,294,295,1,0,0,
+	0,295,297,3,69,33,0,296,298,3,71,34,0,297,296,1,0,0,0,297,298,1,0,0,0,298,
+	104,1,0,0,0,28,0,1,2,116,120,124,132,134,138,141,149,185,189,212,215,222,
+	228,231,246,250,255,258,262,269,273,290,293,297,4,6,0,0,5,1,0,5,2,0,4,0,
+	0];
+
+	private static __ATN: ATN;
+	public static get _ATN(): ATN {
+		if (!MasciiLexer.__ATN) {
+			MasciiLexer.__ATN = new ATNDeserializer().deserialize(MasciiLexer._serializedATN);
+		}
+
+		return MasciiLexer.__ATN;
+	}
+
+
+	static DecisionsToDFA = MasciiLexer._ATN.decisionToState.map( (ds: DecisionState, index: number) => new DFA(ds, index) );
+}

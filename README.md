@@ -28,9 +28,19 @@ Antlr translates the grammer from these files into an equivalent set of java fil
 To regenerate the corresponding Java classes from those grammar files, do this:
 
 1. make sure you have Anltr 4 installed in your system
-1. cd antlr/scripts
-2. ./compile.sh
-3. ./export.sh
+2. cd antlr/scripts
+3. ./compile.sh
+    this step creates a bunch of generated files from the grammar source files
+4. ./export.sh
 
 The export step is what copies the antlr-generated java classes back into the main project.  You'll of course need to rebuild the project for any changes to take effect.
+
+
+### typescript version
+
+ node dist/index.js -f musicxml song.mascii
+                                                                                                                                                                                                                                            
+  - Default (-f midi) → outputs .mid via MidiGenerator                                                                                                                                                                                    
+  - -f musicxml → outputs .musicxml via MusicXmlGenerator
+  - Help text updated with the new option
 

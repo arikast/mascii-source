@@ -5,3 +5,7 @@ generated
 *.ogg
 *.mp3
 *.png
+*.musicxml
+mascii2/bin/
+node_modules/
+dist/

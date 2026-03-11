@@ -4,7 +4,8 @@ options { tokenVocab=MasciiLexer; }
 
 music:                              (SPACE|NEWLINE)* bars (SPACE|newline)* EOF;
 metainfo:                           (SPACE|NEWLINE)* OPEN_META M_NEWLINE* headers M_NEWLINE* CLOSE_META (SPACE|NEWLINE)* ; 
-headers:                            header ((M_NEWLINE|M_INLINE_SEP)+ header)* ;
+headers:                            header (header_delim+ header)* header_delim? ;
+header_delim:                       M_NEWLINE|M_INLINE_SEP ;
 header:                             header_name HEADER_NAME_VAL_SEP header_values;
 header_name:                        HEADER_ENTITY;
 header_values:                      HEADER_ENTITY? (HEADER_VAL_SEP HEADER_ENTITY?)* ;

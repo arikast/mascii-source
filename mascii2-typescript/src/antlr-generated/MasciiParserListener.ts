@@ -6,6 +6,7 @@ import {ParseTreeListener} from "antlr4";
 import { MusicContext } from "./MasciiParser.js";
 import { MetainfoContext } from "./MasciiParser.js";
 import { HeadersContext } from "./MasciiParser.js";
+import { Header_delimContext } from "./MasciiParser.js";
 import { HeaderContext } from "./MasciiParser.js";
 import { Header_nameContext } from "./MasciiParser.js";
 import { Header_valuesContext } from "./MasciiParser.js";
@@ -69,6 +70,16 @@ export default class MasciiParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitHeaders?: (ctx: HeadersContext) => void;
+	/**
+	 * Enter a parse tree produced by `MasciiParser.header_delim`.
+	 * @param ctx the parse tree
+	 */
+	enterHeader_delim?: (ctx: Header_delimContext) => void;
+	/**
+	 * Exit a parse tree produced by `MasciiParser.header_delim`.
+	 * @param ctx the parse tree
+	 */
+	exitHeader_delim?: (ctx: Header_delimContext) => void;
 	/**
 	 * Enter a parse tree produced by `MasciiParser.header`.
 	 * @param ctx the parse tree

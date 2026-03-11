@@ -4,8 +4,8 @@ options { tokenVocab=MasciiLexer; }
 
 music:                              (SPACE|NEWLINE)* bars (SPACE|newline)* EOF;
 metainfo:                           (SPACE|NEWLINE)* OPEN_META M_NEWLINE* headers M_NEWLINE* CLOSE_META (SPACE|NEWLINE)* ; 
-headers:                            header (M_NEWLINE+ header)* ;
-header:                             header_name HEADER_SEP header_values;
+headers:                            header ((M_NEWLINE|M_INLINE_SEP)+ header)* ;
+header:                             header_name HEADER_NAME_VAL_SEP header_values;
 header_name:                        HEADER_ENTITY;
 header_values:                      HEADER_ENTITY? (HEADER_VAL_SEP HEADER_ENTITY?)* ;
 bars:                               concurrent_block (newline newline+ concurrent_block)*; //a collection of blocks which together form the piece

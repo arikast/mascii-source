@@ -53,6 +53,9 @@ fragment
 F_SPACE:            [ \t]+ ; 
 
 fragment
+F_SEMICOLON:        ';';
+
+fragment
 F_COMMENT:          '--' F_NOT_NEWLINE? F_NEWLINE?; 
 
 F_OPEN_SCOPED:        '(' ;
@@ -63,11 +66,12 @@ F_CLOSE_UNSCOPED:     ']' ;
 
 mode METAINFO_MODE;
 CLOSE_META:         '}' -> popMode;
-HEADER_SEP:         M_SPACE? ':' M_SPACE? ;
+HEADER_NAME_VAL_SEP:         M_SPACE? ':' M_SPACE? ;
 HEADER_ENTITY:      [a-zA-Z_\-0-9/#@+]+;
 HEADER_VAL_SEP:     M_SPACE? ',' M_SPACE? ;
 M_COMMENT:          F_COMMENT -> skip; 
 M_NEWLINE:          SPACE? F_NEWLINE SPACE?;
+M_INLINE_SEP:       SPACE? F_SEMICOLON SPACE?;
 M_SPACE:            F_SPACE -> skip; 
 
 mode LYRICS_MODE;

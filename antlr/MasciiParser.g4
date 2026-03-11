@@ -4,10 +4,12 @@ options { tokenVocab=MasciiLexer; }
 
 music:                              (SPACE|NEWLINE)* bars (SPACE|newline)* EOF;
 metainfo:                           (SPACE|NEWLINE)* OPEN_META M_NEWLINE* headers M_NEWLINE* CLOSE_META (SPACE|NEWLINE)* ; 
-headers:                            header (M_NEWLINE+ header)* ;
-header:                             header_name HEADER_SEP header_values;
+headers:                            header (header_delim+ header)* header_delim? ;
+header_delim:                       M_NEWLINE|M_INLINE_SEP ;
+header:                             header_name HEADER_NAME_VAL_SEP header_values;
 header_name:                        HEADER_ENTITY;
-header_values:                      HEADER_ENTITY? (HEADER_VAL_SEP HEADER_ENTITY?)* ;
+header_values:                      header_value? (HEADER_VAL_SEP header_value?)* ;
+header_value:                       HEADER_ENTITY | QUOTED_TEXT;
 bars:                               concurrent_block (newline newline+ concurrent_block)*; //a collection of blocks which together form the piece
 concurrent_block:                   metainfo? staves_n_lyricsrow (newline staves_n_lyricsrow)* ; //a block of several vertically stacked musical parts to be played simultaneously
 staves_n_lyricsrow:                 stavesrow (newline lyrics_row)* ;
@@ -31,3 +33,4 @@ note_end_one:                       TIE PITCH ;
 note_end_all:                       TIE NOTE_END_ALL;        
 newline:                            NEWLINE | IMPLICIT_CLOSE_LYRICS ;
 lyrics_row:                         OPEN_LYRICS LYRICS CLOSE_LYRICS?; //a single horizontal musical part consisting of 1 or more (staff) measures 
+

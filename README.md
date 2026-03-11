@@ -12,35 +12,21 @@ Mascii is well suited for sharing musical snippets on forums and webpages or wik
 
 ## Developing Mascii
 
-#### Building the Mascii jar
-(For developers) Pre-built binaries of Mascii are available [here](https://github.com/arikast/mascii-quickstart), but if you'd like to build the Mascii engine from scratch, do this:
-
-1. ensure you have Java 1.8+ and Maven installed
-2. cd scripts
-3. ./build.sh
-
-This generates a jar in the mascii2/target directory.  To learn how to use this jar to create music, see [Mascii quickstart](https://github.com/arikast/mascii-quickstart).
-
+Starting from version 2.1 onwards, mascii has been ported to Typescript, which will receive all future development.  The legacy 2.0 version, written in Java, is preserved in the branch "legacy-java", where you'll also find instructions how to run it in that branch's version of this README.  Some java code may remain in this branch too for a while, but may be removed at any time.
+ 
 #### To regenerate the Mascii grammar 
 Mascii relies on the Antlr 4 lex/parse system, which uses grammar files to express the core syntax of Mascii.  The antlr source grammar files are in the antr/ directory, called MasciiLexer.g4 and MasciiParser.g4.
 
-Antlr translates the grammer from these files into an equivalent set of java files, which we then copy into the mascii2/src/main/java/com/kastkode/mascii2/antlrgenerated/ folder of this project.
-To regenerate the corresponding Java classes from those grammar files, do this:
+Antlr translates the grammar from these files into an equivalent set of Typescript files.
+To trigger Antlr to regenerate the Typescript files and run tests on the generated code:
 
 1. make sure you have Anltr 4 installed in your system
-2. cd antlr/scripts
-3. ./compile.sh
-    this step creates a bunch of generated files from the grammar source files
-4. ./export.sh
-
-The export step is what copies the antlr-generated java classes back into the main project.  You'll of course need to rebuild the project for any changes to take effect.
+2. `make all` 
 
 
-### typescript version
+### to convert a mascii file to musicxml
+use the command line tool: mascii-typescript/convert.sh
 
- node dist/index.js -f musicxml song.mascii
-                                                                                                                                                                                                                                            
-  - Default (-f midi) → outputs .mid via MidiGenerator                                                                                                                                                                                    
-  - -f musicxml → outputs .musicxml via MusicXmlGenerator
-  - Help text updated with the new option
+it supports -f musicxml and -f midi
+
 

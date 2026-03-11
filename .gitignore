@@ -6,6 +6,7 @@ generated
 *.mp3
 *.png
 *.musicxml
+.claude/
 mascii2/bin/
 node_modules/
 dist/

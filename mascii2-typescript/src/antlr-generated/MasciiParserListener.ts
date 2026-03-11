@@ -6,9 +6,11 @@ import {ParseTreeListener} from "antlr4";
 import { MusicContext } from "./MasciiParser.js";
 import { MetainfoContext } from "./MasciiParser.js";
 import { HeadersContext } from "./MasciiParser.js";
+import { Header_delimContext } from "./MasciiParser.js";
 import { HeaderContext } from "./MasciiParser.js";
 import { Header_nameContext } from "./MasciiParser.js";
 import { Header_valuesContext } from "./MasciiParser.js";
+import { Header_valueContext } from "./MasciiParser.js";
 import { BarsContext } from "./MasciiParser.js";
 import { Concurrent_blockContext } from "./MasciiParser.js";
 import { Staves_n_lyricsrowContext } from "./MasciiParser.js";
@@ -70,6 +72,16 @@ export default class MasciiParserListener extends ParseTreeListener {
 	 */
 	exitHeaders?: (ctx: HeadersContext) => void;
 	/**
+	 * Enter a parse tree produced by `MasciiParser.header_delim`.
+	 * @param ctx the parse tree
+	 */
+	enterHeader_delim?: (ctx: Header_delimContext) => void;
+	/**
+	 * Exit a parse tree produced by `MasciiParser.header_delim`.
+	 * @param ctx the parse tree
+	 */
+	exitHeader_delim?: (ctx: Header_delimContext) => void;
+	/**
 	 * Enter a parse tree produced by `MasciiParser.header`.
 	 * @param ctx the parse tree
 	 */
@@ -99,6 +111,16 @@ export default class MasciiParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitHeader_values?: (ctx: Header_valuesContext) => void;
+	/**
+	 * Enter a parse tree produced by `MasciiParser.header_value`.
+	 * @param ctx the parse tree
+	 */
+	enterHeader_value?: (ctx: Header_valueContext) => void;
+	/**
+	 * Exit a parse tree produced by `MasciiParser.header_value`.
+	 * @param ctx the parse tree
+	 */
+	exitHeader_value?: (ctx: Header_valueContext) => void;
 	/**
 	 * Enter a parse tree produced by `MasciiParser.bars`.
 	 * @param ctx the parse tree

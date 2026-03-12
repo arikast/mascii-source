@@ -6,6 +6,7 @@ generated
 *.mp3
 *.png
 *.musicxml
+.vscode/
 .claude/
 CLAUDE.md
 mascii2/bin/

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node --require ts-node/register --test test/**/*.ts",
+    "test": "TS_NODE_PROJECT=tsconfig.test.json node --require ts-node/register --test test/**/*.ts",
     "start": "npx ts-node src/index.ts",
     "build": "npx tsc"
   },

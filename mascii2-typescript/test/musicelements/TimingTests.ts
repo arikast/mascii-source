@@ -174,4 +174,34 @@ describe('TimingTests', () => {
         assert.equal(12, m.timeDenominator);
     });
 
+    test('tie1', () => {
+        const minuet = 'g_ _* b c';
+        const parts = parse(minuet).getParts() ?? [];
+        const p0 = parts[0]!.getNoteStream();
+        assert.equal(p0[0]!.spelling.degree, 'g');
+        assert.equal(p0[0]!.getDuration(), p0[1]!.getDuration() + p0[2]!.getDuration());
+    });
+
+    test('tie2', () => {
+        const minuet = 'ag_ _* b c';
+        const parts = parse(minuet).getParts() ?? [];
+        const p0 = parts[0]!.getNoteStream();
+        assert.equal(p0[0]!.spelling.degree, 'a');
+        assert.equal(p0[1]!.spelling.degree, 'g');
+        assert.equal(p0[2]!.spelling.degree, 'b');
+        assert.equal(p0[0]!.getDuration(), p0[2]!.getDuration());
+        assert.equal(p0[1]!.getDuration(), p0[2]!.getDuration() + p0[3]!.getDuration());
+    });
+
+    test('tie3', () => {
+        const minuet = 'g_ b_ _* c';
+        const parts = parse(minuet).getParts() ?? [];
+        const p0 = parts[0]!.getNoteStream();
+        assert.equal(p0[0]!.spelling.degree, 'g');
+        assert.equal(p0[1]!.spelling.degree, 'b');
+        assert.equal(p0[2]!.spelling.degree, 'c');
+        assert.equal(p0[0]!.getDuration(), 3 * p0[2]!.getDuration());
+        assert.equal(p0[1]!.getDuration(), 2 * p0[2]!.getDuration() );
+    });
+    
 });

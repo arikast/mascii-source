@@ -103,42 +103,107 @@ function splitIntoRests(ticks: number): NoteTypeResult[] {
 }
 
 // ---------------------------------------------------------------------------
+// Note segment model (handles measure-boundary splitting and voice assignment)
+// ---------------------------------------------------------------------------
+
+/**
+ * A NoteSegment is a slice of a Note within a single measure.
+ * For notes that don't cross measure boundaries, segStart==note.getStart()
+ * and segEnd==note.getStart()+note.getDuration().
+ * For tied notes that cross boundaries, the segment is clipped.
+ */
+interface NoteSegment {
+    note: Note;
+    segStart: number;
+    segEnd: number;
+    tieStart: boolean; // this segment continues into the next measure
+    tieStop: boolean;  // this segment continues from the previous measure
+}
+
+type VoiceSegments = NoteSegment[];
+
+/**
+ * Collect all note segments that overlap with [measureStart, measureEnd).
+ * Notes crossing the measure boundary are clipped and flagged with tieStart/tieStop.
+ */
+function computeSegmentsForMeasure(allNotes: Note[], measureStart: number, measureEnd: number): NoteSegment[] {
+    const segments: NoteSegment[] = [];
+    for (const note of allNotes) {
+        if (note.getDuration() <= 0) continue;
+        const noteStart = note.getStart();
+        const noteEnd   = noteStart + note.getDuration();
+        if (noteEnd <= measureStart || noteStart >= measureEnd) continue;
+        segments.push({
+            note,
+            segStart: Math.max(noteStart, measureStart),
+            segEnd:   Math.min(noteEnd, measureEnd),
+            tieStart: noteEnd > measureEnd,
+            tieStop:  noteStart < measureStart,
+        });
+    }
+    return segments;
+}
+
+/**
+ * Assign segments to non-overlapping voices using a greedy algorithm.
+ * Segments are sorted by segStart; each is placed in the first voice
+ * where the previous segment has already ended.
+ */
+function assignVoices(segments: NoteSegment[]): VoiceSegments[] {
+    const sorted = [...segments].sort((a, b) =>
+        a.segStart !== b.segStart ? a.segStart - b.segStart : a.segEnd - b.segEnd,
+    );
+    const voices: VoiceSegments[] = [];
+    for (const seg of sorted) {
+        let placed = false;
+        for (const v of voices) {
+            if (v[v.length - 1]!.segEnd <= seg.segStart) {
+                v.push(seg);
+                placed = true;
+                break;
+            }
+        }
+        if (!placed) voices.push([seg]);
+    }
+    return voices;
+}
+
+// ---------------------------------------------------------------------------
 // Measure-event model
 // ---------------------------------------------------------------------------
 
 type MeasureEvent =
-    | { kind: 'note'; notes: Note[]; ticks: number; tr: NoteTypeResult }
+    | { kind: 'note'; segments: NoteSegment[]; ticks: number; tr: NoteTypeResult }
     | { kind: 'rest'; ticks: number; tr: NoteTypeResult };
 
 /**
  * Build the ordered sequence of events (notes + implicit rests) for one
- * measure of one part.
- *
- * `notes` must all start within [measureStart, measureStart+measureTicks).
+ * voice within one measure.
  */
-function buildEvents(
-    notes: Note[],
+function buildVoiceEvents(
+    voice: VoiceSegments,
     measureStart: number,
-    measureTicks: number,
+    measureEnd: number,
 ): MeasureEvent[] {
     const events: MeasureEvent[] = [];
 
-    // Sort by start tick, then group simultaneous notes into chords
-    const sorted = [...notes].sort((a, b) => a.getStart() - b.getStart());
-    const chords: Note[][] = [];
-    for (const n of sorted) {
-        if (n.getDuration() <= 0) continue;
-        const last = chords[chords.length - 1];
-        if (last && last[0]!.getStart() === n.getStart()) last.push(n);
-        else chords.push([n]);
+    // Group simultaneous segments with identical duration as chords
+    const groups: NoteSegment[][] = [];
+    for (const seg of voice) {
+        const last = groups[groups.length - 1];
+        if (last && last[0]!.segStart === seg.segStart && last[0]!.segEnd === seg.segEnd) {
+            last.push(seg);
+        } else {
+            groups.push([seg]);
+        }
     }
 
     let cursor = measureStart;
-    for (const chord of chords) {
-        const start = chord[0]!.getStart();
-        const dur   = chord[0]!.getDuration();
+    for (const group of groups) {
+        const start = group[0]!.segStart;
+        const end   = group[0]!.segEnd;
+        const dur   = end - start;
 
-        // Fill any gap before this chord with rests
         if (start > cursor) {
             for (const tr of splitIntoRests(start - cursor)) {
                 events.push({ kind: 'rest', ticks: tr.dots === 0 ? tickDur(tr) : tickDurDotted(tr), tr });
@@ -146,14 +211,13 @@ function buildEvents(
         }
 
         const tr = ticksToNoteType(dur);
-        if (tr) events.push({ kind: 'note', notes: chord, ticks: dur, tr });
-        cursor = start + dur;
+        if (tr) events.push({ kind: 'note', segments: group, ticks: dur, tr });
+        cursor = end;
     }
 
-    // Fill trailing gap
-    const end = measureStart + measureTicks;
-    if (cursor < end) {
-        for (const tr of splitIntoRests(end - cursor)) {
+    // Fill trailing gap with rests
+    if (cursor < measureEnd) {
+        for (const tr of splitIntoRests(measureEnd - cursor)) {
             events.push({ kind: 'rest', ticks: tr.dots === 0 ? tickDur(tr) : tickDurDotted(tr), tr });
         }
     }
@@ -358,12 +422,10 @@ export class MusicXmlGenerator {
 
             x.open('part', `id="${pid}"`);
             const clef = resolveClef(part.getClef());
+            const allNotes = part.getNoteStream();
             for (let m = 0; m < barCount; m++) {
                 const mStart = m * measureTicks;
-                const notesInMeasure = part.getNoteStream().filter(
-                    n => n.getStart() >= mStart && n.getStart() < mStart + measureTicks,
-                );
-                this.writeMeasure(x, m + 1, notesInMeasure, mStart, measureTicks,
+                this.writeMeasure(x, m + 1, allNotes, mStart, measureTicks,
                     m === 0, timeSig, keySig, tempo, lyricsByTick, clef);
             }
             x.close('part');
@@ -376,7 +438,7 @@ export class MusicXmlGenerator {
     private writeMeasure(
         x: Xml,
         num: number,
-        notes: Note[],
+        allNotes: Note[],
         measureStart: number,
         measureTicks: number,
         isFirst: boolean,
@@ -419,19 +481,34 @@ export class MusicXmlGenerator {
             }
         }
 
-        // Build events and annotate tuplets
-        const events = buildEvents(notes, measureStart, measureTicks);
-        annotateTuplets(events);
+        const measureEnd = measureStart + measureTicks;
+        const segments = computeSegmentsForMeasure(allNotes, measureStart, measureEnd);
+        const voices = assignVoices(segments);
 
-        for (const ev of events) {
-            if (ev.kind === 'note') {
-                const [first, ...chordRest] = ev.notes;
-                this.writeNote(x, first!.spelling, first!.getStart(), ev.ticks, ev.tr, false, lyricsByTick);
-                for (const cn of chordRest) {
-                    this.writeNote(x, cn.spelling, cn.getStart(), ev.ticks, ev.tr, true, lyricsByTick);
+        // Ensure at least one voice so the measure is always filled with rests
+        if (voices.length === 0) voices.push([]);
+
+        for (let vi = 0; vi < voices.length; vi++) {
+            const voiceNum = vi + 1;
+            const voiceEvents = buildVoiceEvents(voices[vi]!, measureStart, measureEnd);
+            annotateTuplets(voiceEvents);
+
+            if (vi > 0) {
+                x.open('backup').leaf('duration', measureTicks).close('backup');
+            }
+
+            for (const ev of voiceEvents) {
+                if (ev.kind === 'note') {
+                    const [first, ...chordRest] = ev.segments;
+                    this.writeNote(x, first!.note.spelling, first!.note.getStart(), ev.ticks, ev.tr,
+                        false, lyricsByTick, voiceNum, first!.tieStop, first!.tieStart);
+                    for (const seg of chordRest) {
+                        this.writeNote(x, seg.note.spelling, seg.note.getStart(), ev.ticks, ev.tr,
+                            true, lyricsByTick, voiceNum, seg.tieStop, seg.tieStart);
+                    }
+                } else {
+                    this.writeRest(x, ev.ticks, ev.tr, voiceNum);
                 }
-            } else {
-                this.writeRest(x, ev.ticks, ev.tr);
             }
         }
 
@@ -441,11 +518,14 @@ export class MusicXmlGenerator {
     private writeNote(
         x: Xml,
         sp: NoteSpelling,
-        startTick: number,
+        originalStartTick: number,
         ticks: number,
         tr: NoteTypeResult,
         isChord: boolean,
         lyricsByTick: Map<number, string[]>,
+        voiceNum: number,
+        tieStop: boolean,
+        tieStart: boolean,
     ): void {
         x.open('note');
         if (isChord) x.selfClose('chord');
@@ -455,9 +535,13 @@ export class MusicXmlGenerator {
         x.leaf('octave', sp.octaveRangeBasis + sp.octaveAdjusts);
         x.close('pitch');
         x.leaf('duration', ticks);
-        this.writeTypeBody(x, tr);
-        if (!isChord) {
-            const verses = lyricsByTick.get(startTick);
+        if (tieStop) x.selfClose('tie', 'type="stop"');
+        if (tieStart) x.selfClose('tie', 'type="start"');
+        x.leaf('voice', voiceNum);
+        this.writeTypeBody(x, tr, tieStop, tieStart);
+        // Emit lyrics only on the first segment of a note (not on tie continuations)
+        if (!isChord && !tieStop) {
+            const verses = lyricsByTick.get(originalStartTick);
             if (verses) {
                 for (let v = 0; v < verses.length; v++) {
                     x.open('lyric', `number="${v + 1}"`);
@@ -470,15 +554,16 @@ export class MusicXmlGenerator {
         x.close('note');
     }
 
-    private writeRest(x: Xml, ticks: number, tr: NoteTypeResult): void {
+    private writeRest(x: Xml, ticks: number, tr: NoteTypeResult, voiceNum: number = 1): void {
         x.open('note');
         x.selfClose('rest');
         x.leaf('duration', ticks);
-        this.writeTypeBody(x, tr);
+        x.leaf('voice', voiceNum);
+        this.writeTypeBody(x, tr, false, false);
         x.close('note');
     }
 
-    private writeTypeBody(x: Xml, tr: NoteTypeResult): void {
+    private writeTypeBody(x: Xml, tr: NoteTypeResult, tieStop: boolean, tieStart: boolean): void {
         if (tr.actualNotes != null) {
             x.open('time-modification');
             x.leaf('actual-notes', tr.actualNotes);
@@ -488,13 +573,14 @@ export class MusicXmlGenerator {
         }
         x.leaf('type', tr.type);
         for (let d = 0; d < tr.dots; d++) x.selfClose('dot');
-        if (tr.tupletTag) {
+        const hasTuplet = tr.tupletTag != null;
+        const hasTie = tieStop || tieStart;
+        if (hasTuplet || hasTie) {
             x.open('notations');
-            if (tr.tupletTag === 'start') {
-                x.selfClose('tuplet', 'type="start" bracket="yes"');
-            } else {
-                x.selfClose('tuplet', 'type="stop"');
-            }
+            if (tieStop)  x.selfClose('tied', 'type="stop"');
+            if (tieStart) x.selfClose('tied', 'type="start"');
+            if (tr.tupletTag === 'start') x.selfClose('tuplet', 'type="start" bracket="yes"');
+            else if (tr.tupletTag === 'stop') x.selfClose('tuplet', 'type="stop"');
             x.close('notations');
         }
     }

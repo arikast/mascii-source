@@ -62,15 +62,15 @@ export class Part {
     getClef(): string { return this.clef; }
     setClef(clef: string): void { this.clef = clef; }
 
-    startAndFinishNoteHere(pitch: string): void {
+    startAndFinishNoteHere(pitch: string, srcOffset?: number): void {
         const slot = this.peekTiming();
-        const note = Note.withDuration(slot.offset, slot.duration, this.resolvePitch(pitch));
+        const note = Note.withDuration(slot.offset, slot.duration, this.resolvePitch(pitch), srcOffset);
         this.addNote(note);
     }
 
-    startNoteHere(pitch: string): void {
+    startNoteHere(pitch: string, srcOffset?: number): void {
         const slot = this.peekTiming();
-        const note = Note.startOnly(slot.offset, this.resolvePitch(pitch));
+        const note = Note.startOnly(slot.offset, this.resolvePitch(pitch), srcOffset);
         // if note already open at this pitch, it stays (we overwrite the reference)
         this.openNotes.set(note.getPitch(), note);
         this.addNote(note);

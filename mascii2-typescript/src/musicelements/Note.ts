@@ -123,6 +123,7 @@ export class Note {
     start: number;
     end: number;
     spelling: NoteSpelling;
+    srcOffset?: number;
 
     constructor(start: number, end: number, spelling: NoteSpelling) {
         this.start = start;
@@ -130,12 +131,16 @@ export class Note {
         this.spelling = spelling;
     }
 
-    static withDuration(start: number, duration: number, spelling: NoteSpelling): Note {
-        return new Note(start, start + duration, spelling);
+    static withDuration(start: number, duration: number, spelling: NoteSpelling, srcOffset?: number): Note {
+        const n = new Note(start, start + duration, spelling);
+        n.srcOffset = srcOffset;
+        return n;
     }
 
-    static startOnly(start: number, spelling: NoteSpelling): Note {
-        return new Note(start, start, spelling);
+    static startOnly(start: number, spelling: NoteSpelling, srcOffset?: number): Note {
+        const n = new Note(start, start, spelling);
+        n.srcOffset = srcOffset;
+        return n;
     }
 
     setDuration(duration: number): void {

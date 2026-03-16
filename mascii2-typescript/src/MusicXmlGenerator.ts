@@ -1,8 +1,9 @@
 import { writeFileSync } from 'fs';
 import { ParseResult } from './ParseResult';
 import { Part } from './musicelements/Part';
+import { getGeneralMidiPatchName } from './util/GeneralMidiPatchList';
 import { Note, NoteSpelling } from './musicelements/Note';
-import { MetaInfoElement, TimeSig, KeySig, Tempo, Title, Copyright, Composer, Lyricist, Patch, Lyric } from './musicelements/MetaInfo';
+import { MetaInfoElement, TimeSig, KeySig, Tempo, Title, Copyright, Composer, Lyricist, Patch, PartName, Lyric } from './musicelements/MetaInfo';
 import { Accidental } from './musicelements/Accidental';
 import { TICKS_PER_BEAT } from './MasciiSyntaxEventListener';
 
@@ -392,13 +393,15 @@ export class MusicXmlGenerator {
         x.open('part-list');
         parts.forEach((part, i) => {
             const pid = `P${i + 1}`;
-            const patchMeta = part.getMetaInfoChanges().find(m => m instanceof Patch) as Patch | undefined;
-            const patchNum  = patchMeta?.getPatch() ?? 1;
-            const chanNum   = (part.getChannel() < 0 ? i : part.getChannel()) + 1;
+            const patchMeta    = part.getMetaInfoChanges().find(m => m instanceof Patch) as Patch | undefined;
+            const patchNum     = patchMeta?.getPatch() ?? 1;
+            const chanNum      = (part.getChannel() < 0 ? i : part.getChannel()) + 1;
+            const partNameMeta = part.getMetaInfoChanges().find(m => m instanceof PartName) as PartName | undefined;
+            const partName     = partNameMeta?.getRawValue() ?? getGeneralMidiPatchName(patchNum);
             x.open(`score-part`, `id="${pid}"`);
-            x.leaf('part-name', `Part ${i + 1}`);
+            x.leaf('part-name', esc(partName));
             x.open('score-instrument', `id="${pid}-I1"`);
-            x.leaf('instrument-name', `Part ${i + 1}`);
+            x.leaf('instrument-name', esc(partName));
             x.close('score-instrument');
             x.open('midi-instrument', `id="${pid}-I1"`);
             x.leaf('midi-channel', chanNum);

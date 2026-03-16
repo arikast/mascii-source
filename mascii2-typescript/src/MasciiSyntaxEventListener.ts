@@ -16,7 +16,7 @@ import {
 } from './antlr-generated/MasciiParser';
 import { Part } from './musicelements/Part';
 import { TimeSlot } from './musicelements/TimeSlot';
-import { MetaInfo, MetaInfoElement, TimeSig, KeySig, Tempo, Title, Copyright, Composer, Lyricist, Patch, Lyric } from './musicelements/MetaInfo';
+import { MetaInfo, MetaInfoElement, TimeSig, KeySig, Tempo, Title, Copyright, Composer, Lyricist, Patch, PartName, Lyric } from './musicelements/MetaInfo';
 import { splitHeaderValues, asLyrics, mergeBIntoA, times } from './util/MasciiUtil';
 
 export const TICKS_PER_BEAT = 480;
@@ -164,6 +164,7 @@ export class MasciiSyntaxEventListener extends MasciiParserListener {
                 this.defaultMeta.lyricist = lyricist;
                 break;
             }
+            case 'patches':
             case 'patch': {
                 if (this.partCount() === 0) this.initParts(headerVals.length);
                 let vindex = 0;
@@ -193,11 +194,29 @@ export class MasciiSyntaxEventListener extends MasciiParserListener {
                 }
                 break;
             }
+            case 'clefs':
             case 'clef': {
                 if (this.partCount() === 0) this.initParts(headerVals.length);
                 for (let i = 0; i < headerVals.length && i < this.parts!.length; i++) {
                     const s = headerVals[i]!.trim();
                     if (s.length > 0) this.parts![i]!.setClef(s.toLowerCase());
+                }
+                break;
+            }
+            case 'part-names':            
+            case 'part-name': {
+                if (this.partCount() === 0) this.initParts(headerVals.length);
+                let vindex = 0;
+                for (const p of this.parts!) {
+                    const rv = headerVals[vindex]?.trim() ?? '';
+                    if (rv.length > 0) {
+                        const pn = new PartName();
+                        pn.setRawValue(rv);
+                        pn.setStartingAt(currentTime);
+                        p.metaInfoChanges.push(pn);
+                        this.defaultMeta.partName = pn;
+                    }
+                    vindex++;
                 }
                 break;
             }

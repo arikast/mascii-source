@@ -105,6 +105,8 @@ export class KeySig extends GlobalMeta {
     }
 }
 
+export class PartName extends TrackLevelMeta {}
+
 export class Patch extends TrackLevelMeta {
     patch = 0;
 
@@ -134,6 +136,7 @@ export class MetaInfo {
     clef = 'treble';
     transpose = 0;
     patch: Patch | undefined;
+    partName: PartName | undefined;
     timeSig: TimeSig | undefined;
     keySig: KeySig | undefined;
     tempo: Tempo | undefined;

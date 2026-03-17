@@ -354,7 +354,7 @@ export class MusicXmlGenerator {
         let timeSig = new TimeSig(); timeSig.setRawValue('4/4');
         let keySig: KeySig | null = null;
         let tempo: Tempo | null = null;
-        let title: string | undefined;
+        let title: string | undefined; title = " ";
         let copyright: string | undefined;
         let composer: string | undefined;
         let lyricist: string | undefined;

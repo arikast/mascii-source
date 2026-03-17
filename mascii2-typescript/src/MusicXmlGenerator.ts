@@ -424,7 +424,8 @@ export class MusicXmlGenerator {
             }
 
             x.open('part', `id="${pid}"`);
-            const clef = resolveClef(part.getClef());
+            const clefName = part.getClef() || (parts.length > 1 && i === parts.length - 1 ? 'bass' : 'treble');
+            const clef = resolveClef(clefName);
             const allNotes = part.getNoteStream();
             for (let m = 0; m < barCount; m++) {
                 const mStart = m * measureTicks;

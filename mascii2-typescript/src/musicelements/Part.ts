@@ -8,7 +8,7 @@ export class Part {
     barCount = 0;
     channel = -1;
     patch = 0;
-    clef = 'treble';
+    clef = '';
 
     // index of start of current measure block within noteStream
     currentMeasureBlockIndex = 0;

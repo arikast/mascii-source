@@ -203,8 +203,8 @@ export class MasciiSyntaxEventListener extends MasciiParserListener {
                 }
                 break;
             }
-            case 'part-names':            
-            case 'part-name': {
+            case 'parts':            
+            case 'part': {
                 if (this.partCount() === 0) this.initParts(headerVals.length);
                 let vindex = 0;
                 for (const p of this.parts!) {

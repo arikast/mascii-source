@@ -147,8 +147,13 @@ function computeSegmentsForMeasure(allNotes: Note[], measureStart: number, measu
 
 /**
  * Assign segments to non-overlapping voices using a greedy algorithm.
- * Segments are sorted by segStart; each is placed in the first voice
- * where the previous segment has already ended.
+ * Segments are sorted by segStart then segEnd; each is placed in the first
+ * voice where:
+ *   - the previous segment has already ended (sequential note), OR
+ *   - the previous segment has the same start and end (chord note).
+ * This ensures simultaneous notes with identical duration are grouped as
+ * chords in a single voice rather than split across multiple voices.
+ * Separate voices are only used when concurrent notes have different durations.
  */
 function assignVoices(segments: NoteSegment[]): VoiceSegments[] {
     const sorted = [...segments].sort((a, b) =>
@@ -158,7 +163,10 @@ function assignVoices(segments: NoteSegment[]): VoiceSegments[] {
     for (const seg of sorted) {
         let placed = false;
         for (const v of voices) {
-            if (v[v.length - 1]!.segEnd <= seg.segStart) {
+            const last = v[v.length - 1]!;
+            const isAfter = last.segEnd <= seg.segStart;
+            const isChord = last.segStart === seg.segStart && last.segEnd === seg.segEnd;
+            if (isAfter || isChord) {
                 v.push(seg);
                 placed = true;
                 break;

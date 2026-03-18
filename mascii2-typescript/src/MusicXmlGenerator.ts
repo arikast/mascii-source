@@ -156,9 +156,13 @@ function computeSegmentsForMeasure(allNotes: Note[], measureStart: number, measu
  * Separate voices are only used when concurrent notes have different durations.
  */
 function assignVoices(segments: NoteSegment[]): VoiceSegments[] {
-    const sorted = [...segments].sort((a, b) =>
-        a.segStart !== b.segStart ? a.segStart - b.segStart : a.segEnd - b.segEnd,
-    );
+    const sorted = [...segments].sort((a, b) => {
+        if (a.segStart !== b.segStart) return a.segStart - b.segStart;
+        // Same start time: process highest pitch first so that the highest note
+        // creates (or occupies) the lowest-numbered voice — matching the convention
+        // that the upper melodic line is voice 1.
+        return b.note.getMidiPitch() - a.note.getMidiPitch();
+    });
     const voices: VoiceSegments[] = [];
     for (const seg of sorted) {
         let placed = false;

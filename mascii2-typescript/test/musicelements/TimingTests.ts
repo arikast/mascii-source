@@ -1,9 +1,21 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { SourceParser } from '../../src/SourceParser';
+import { MusicXmlGenerator } from '../../src/MusicXmlGenerator';
 import { ParseResult } from '../../src/ParseResult';
 import { TimeSlot } from '../../src/musicelements/TimeSlot';
 import { TimeSig } from '../../src/musicelements/MetaInfo';
+
+/** Return a map of note step letter → voice number from a MusicXML string. */
+function noteVoices(xml: string): Map<string, number> {
+    const map = new Map<string, number>();
+    for (const block of xml.match(/<note>[\s\S]*?<\/note>/g) ?? []) {
+        const step = block.match(/<step>([A-G])<\/step>/)?.[1];
+        const voice = block.match(/<voice>(\d+)<\/voice>/)?.[1];
+        if (step && voice) map.set(step, parseInt(voice, 10));
+    }
+    return map;
+}
 
 function parse(source: string): ParseResult {
     const result = new SourceParser().generateFromString(source);
@@ -222,4 +234,42 @@ describe('TimingTests', () => {
         assert.notEqual(p0[0]!.getStart(), p0[3]!.getStart());
     });
     
+    test('concurrent polyphony different durations', () => {
+        const minuet = `{time:2/4} !c[E  g]`;
+        const parts = parse(minuet).getParts() ?? [];
+        const p0 = parts[0]!.getNoteStream();
+        assert.equal(p0[0]!.spelling.degree, 'c');
+        assert.equal(p0[1]!.spelling.degree, 'E');
+        assert.equal(p0[2]!.spelling.degree, 'g');
+        assert.equal(p0[0]!.getStart(), p0[1]!.getStart());
+        assert.notEqual(p0[0]!.getStart(), p0[2]!.getStart());
+        assert.notEqual(p0[0]!.getDuration(), p0[1]!.getDuration());
+        assert.notEqual(p0[0]!.getDuration(), p0[2]!.getDuration());
+        assert.equal(p0[1]!.getDuration(), p0[2]!.getDuration());
+    });
+
+    // c is a half note held across both E and g (sequential quarter notes).
+    // E and g don't overlap each other, so they can share one voice.
+    // c overlaps both, so it must be in a separate voice.
+    test('concurrent polyphony different durations gets separate voices in MusicXML', () => {
+        const xml = new MusicXmlGenerator().generate(parse('{time:2/4} !c[E  g]'));
+        const voices = noteVoices(xml);
+        assert.ok(voices.has('C'), 'C should appear in MusicXML');
+        assert.ok(voices.has('E'), 'E should appear in MusicXML');
+        assert.ok(voices.has('G'), 'G should appear in MusicXML');
+        assert.equal(voices.get('E'), voices.get('G'), 'E and G should share a voice (they are sequential)');
+        assert.notEqual(voices.get('C'), voices.get('E'), 'C should be in a separate voice (it overlaps both E and G)');
+    });
+
+    // Voice numbering should go highest-pitch → lowest at the moment voices are created.
+    // c (MIDI 72) is higher than E (MIDI 64) at t=0, so c gets voice 1 and E gets voice 2.
+    // g is sequential to E and shares its voice, so g is also voice 2.
+    test('concurrent voices numbered highest pitch first', () => {
+        const xml = new MusicXmlGenerator().generate(parse('{time:2/4} !c[E  g]'));
+        const voices = noteVoices(xml);
+        assert.equal(voices.get('C'), 1, 'C (highest at t=0) should be voice 1');
+        assert.equal(voices.get('E'), 2, 'E (lower at t=0) should be voice 2');
+        assert.equal(voices.get('G'), 2, 'G (sequential to E) should share voice 2');
+    });
+
 });

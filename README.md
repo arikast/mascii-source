@@ -14,16 +14,16 @@ Mascii is designed to be well suited for sharing musical snippets on forums and 
 
 Starting from version 2.1 onwards, this mascii engine has been ported to Typescript, which will receive all future development.  The legacy 2.0 version, written in Java, is preserved in the branch "legacy-java", where you'll also find instructions how to run it in that branch's version of this README.  (Some java code may remain in this branch too for a while, but will be removed soon.)
 
-The important directories here are:
+The important directories are:
 
-antlr/
-mascii2-typescript/
+- antlr/
+- mascii2-typescript/
 
-the other directory mascii2/ is the legacy java version, soon to be archived
+The other directory mascii2/ is the legacy java version, soon to be archived
 
 
  
-### build the project
+### Build the project
 Mascii relies on the Antlr 4 lex/parse system, which uses grammar files to express the core syntax of Mascii.  The antlr source grammar files are in the antr/ directory, called MasciiLexer.g4 and MasciiParser.g4.
 Antlr translates the grammar from these files into an equivalent set of Typescript files.
 
@@ -32,7 +32,7 @@ Antlr translates the grammar from these files into an equivalent set of Typescri
 3. build the project: `make regen`
 
 
-### convert a mascii file to musicxml
+### Convert a mascii file to musicxml
 After building the project, use the command line tools: 
 
 `mascii-typescript/mascii-2-musicxml.sh [yourfile.mascii]`

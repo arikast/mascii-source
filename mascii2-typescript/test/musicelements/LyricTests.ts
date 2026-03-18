@@ -52,14 +52,19 @@ describe('LyricTests', () => {
     });
 
     test('lyricMultipleVerses', () => {
-        const minuet = 'd a\n"you were" \n"my only" \n';
+        const minuet = `
+        d a
+        "you were"
+        "my only"
+        "sun shine"
+        `;
         const parts = parse(minuet).getParts() ?? [];
         assert.equal(1, parts.length);
         const p = parts[0]!;
         const metas = p.getMetaInfoChanges();
-        assert.equal(2, metas.length);
+        assert.equal(2, metas.length); //meta is vertical, so 2 notes = 2 metas, in this case 3 deep
         assert.ok(metas[1]!.getStartingAt() > metas[0]!.getStartingAt());
-        assert.equal('were\nonly', metas[1]!.getRawValue());
+        assert.equal('were\nonly\n\nshine', metas[1]!.getRawValue());
         assert.ok(metas[0]!.getStartingAt() >= 0);
     });
 
@@ -146,6 +151,19 @@ describe('LyricTests', () => {
         assert.ok(metas[0]!.getStartingAt() > 0);
         assert.equal(metas[0]!.getStartingAt(), p.getNoteStream()[0]!.getStart());
         assert.equal(metas[1]!.getStartingAt(), p.getNoteStream()[1]!.getStart());
+    });
+
+    test('lyrics oh susanna with untrimmed space', () => {
+        const minuet = `c e
+            " well I "
+            `;
+        const parts = parse(minuet).getParts() ?? [];
+        assert.equal(1, parts.length);
+        const p = parts[0]!;
+        const metas = p.getMetaInfoChanges();
+        assert.equal(2, metas.length);
+        assert.equal('well', metas[0]!.getRawValue());
+        assert.equal(metas[0]!.getStartingAt(), p.getNoteStream()[0]!.getStart());
     });
 
 });

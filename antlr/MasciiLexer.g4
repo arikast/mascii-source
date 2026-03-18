@@ -28,7 +28,7 @@ COMMENT:            F_COMMENT -> skip;
 NEWLINE:            SPACE? F_NEWLINE SPACE?;
 SPACE:              F_SPACE;
 OPEN_META:          '{' -> pushMode(METAINFO_MODE);
-OPEN_LYRICS:        DBL_QUOTE -> pushMode(LYRICS_MODE);
+OPEN_LYRICS:        STARTING_QUOTE -> pushMode(LYRICS_MODE);
 
 fragment
 F_STAFF_SEP:        '|';
@@ -44,6 +44,12 @@ F_TIE:              '_';
 
 fragment
 DBL_QUOTE:          '"';
+
+fragment
+STARTING_QUOTE:     DBL_QUOTE F_SPACE?;
+
+fragment
+ENDING_QUOTE:       F_SPACE? DBL_QUOTE;
 
 fragment
 F_NOT_NEWLINE:      ~[\r\n]+ ;
@@ -75,15 +81,15 @@ M_COMMENT:          F_COMMENT -> skip;
 M_NEWLINE:          SPACE? F_NEWLINE SPACE?;
 M_INLINE_SEP:       SPACE? F_SEMICOLON SPACE?;
 M_SPACE:            F_SPACE -> skip; 
-OPEN_QUOTE:         DBL_QUOTE -> skip, pushMode(QUOTE_MODE);
+OPEN_QUOTE:         STARTING_QUOTE -> skip, pushMode(QUOTE_MODE);
 
 
 mode LYRICS_MODE;
-CLOSE_LYRICS:           DBL_QUOTE -> popMode;
+CLOSE_LYRICS:           ENDING_QUOTE -> popMode;
 IMPLICIT_CLOSE_LYRICS:  L_NEWLINE -> popMode;
 LYRICS:                 QUOTED_TEXT ;
 L_NEWLINE:              F_SPACE? F_NEWLINE F_SPACE?;
 
 mode QUOTE_MODE;
-CLOSE_QUOTE:           DBL_QUOTE -> skip, popMode;
+CLOSE_QUOTE:           ENDING_QUOTE -> skip, popMode;
 QUOTED_TEXT:           ~[\r\n"]+ ;

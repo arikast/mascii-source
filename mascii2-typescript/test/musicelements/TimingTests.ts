@@ -203,5 +203,23 @@ describe('TimingTests', () => {
         assert.equal(p0[0]!.getDuration(), 3 * p0[2]!.getDuration());
         assert.equal(p0[1]!.getDuration(), 2 * p0[2]!.getDuration() );
     });
+
+    test('chord 1', () => {
+        const minuet = `{ 
+    time:       3/4
+} 
+
+[!Gbd]__     A       | b G b      
+
+`;
+        const parts = parse(minuet).getParts() ?? [];
+        const p0 = parts[0]!.getNoteStream();
+        assert.equal(p0[0]!.spelling.degree, 'G');
+        assert.equal(p0[1]!.spelling.degree, 'b');
+        assert.equal(p0[2]!.spelling.degree, 'd');
+        assert.equal(p0[0]!.getStart(), p0[1]!.getStart());
+        assert.equal(p0[0]!.getStart(), p0[2]!.getStart());
+        assert.notEqual(p0[0]!.getStart(), p0[3]!.getStart());
+    });
     
 });

@@ -17,11 +17,16 @@ export class MidiGenerator {
         const parts = result.getParts();
         if (!parts || parts.length === 0) return null;
 
-        const tracks = this.generate(result);
-        const writer = new MidiWriter.Writer(tracks, { ticksPerBeat: TICKS_PER_BEAT });
-        const data = writer.buildFile();
+        const data = this.buildFile(result);
         writeFileSync(filename, data);
         return filename;
+    }
+
+    buildFile(result: ParseResult): Uint8Array {
+        const parts = result.getParts();
+        if (!parts || parts.length === 0) return new Uint8Array();
+        const tracks = this.generate(result);
+        return new MidiWriter.Writer(tracks, { ticksPerBeat: TICKS_PER_BEAT }).buildFile();
     }
 
     generate(result: ParseResult): MidiTrack[] {
@@ -75,7 +80,7 @@ export class MidiGenerator {
             track.setTimeSignature(
                 me.timeNumerator,
                 me.timeDenominator,
-                TICKS_PER_BEAT,
+                24, // standard MIDI clocks per metronome click (must be a single byte; TICKS_PER_BEAT is too large)
                 8,
             );
         } else if (me instanceof KeySig) {
@@ -131,15 +136,18 @@ export class MidiGenerator {
 
         if (duration <= 0) return; // skip zero-duration notes
 
-        track.addEvent(
-            new MidiWriter.NoteEvent({
-                pitch: [midiPitch],
-                duration: `T${duration}`,
-                tick: startTick,
-                channel: midiChannel,
-                velocity: 100,
-            }),
-        );
+        const event = new MidiWriter.NoteEvent({
+            pitch: [midiPitch],
+            duration: `T${duration}`,
+            tick: startTick,
+            channel: midiChannel,
+            velocity: 100,
+        });
+        // midi-writer-js uses `tick || null` so tick=0 becomes null, causing
+        // simultaneous notes (chords at beat 0) to be placed sequentially.
+        // Override after construction so tick=0 goes through explicitTickEvents.
+        (event as any).tick = startTick;
+        track.addEvent(event);
     }
 }
 

@@ -106,7 +106,7 @@ export class MidiGenerator {
             track.addEvent(
                 new MidiWriter.ProgramChangeEvent({
                     instrument: patchNum,
-                    channel: part.getChannel() + 1, // midi-writer-js uses 1-based channels
+                    channel: part.getChannel(), // ProgramChangeEvent is 0-based (unlike NoteEvent which is 1-based)
                 }),
             );
         }

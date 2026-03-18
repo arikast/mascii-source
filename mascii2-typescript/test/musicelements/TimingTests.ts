@@ -272,6 +272,26 @@ describe('TimingTests', () => {
         assert.equal(voices.get('G'), 2, 'G (sequential to E) should share voice 2');
     });
 
+    // A note whose duration cannot be represented as a single notehead (e.g. half+sixteenth
+    // = 1080 ticks) must be written as two tied noteheads, not a single approximate one.
+    test('irregular tied duration splits into tied noteheads in MusicXML', () => {
+        // a_ ties into _a; the combined duration is half(960) + sixteenth(120) = 1080 ticks.
+        const xml = new MusicXmlGenerator().generate(parse('a_ [_a F C= B e D# a G]'));
+        const noteBlocks = xml.match(/<note>[\s\S]*?<\/note>/g) ?? [];
+        // Filter to non-rest A-pitch note blocks (skip the rest element entirely).
+        const aBlocks = noteBlocks.filter(
+            b => b.includes('<step>A</step>') && !b.includes('<rest/>'),
+        );
+        // The first A block is the tied-from half note; the second is the tied-to sixteenth.
+        assert.ok(aBlocks.length >= 2, `Expected at least 2 A note blocks, got ${aBlocks.length}`);
+        const firstA  = aBlocks[0]!;
+        const secondA = aBlocks[1]!;
+        assert.ok(firstA.includes('<type>half</type>'),    'First A should be type "half"');
+        assert.ok(firstA.includes('<tie type="start"/>'),  'First A should carry tie-start');
+        assert.ok(secondA.includes('<type>16th</type>'),   'Second A should be type "16th"');
+        assert.ok(secondA.includes('<tie type="stop"/>'),  'Second A should carry tie-stop');
+    });
+
     // When a voice starts with a rest, use the first actual note in that voice as the
     // representative pitch for numbering. Here e (MIDI 76, E5) > g (MIDI 67, G4), so
     // the rest+e voice gets voice 1 and g gets voice 2.

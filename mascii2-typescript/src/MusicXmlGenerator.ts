@@ -261,6 +261,18 @@ function tickDurDotted(tr: NoteTypeResult): number {
 }
 
 /**
+ * Decompose `ticks` into sub-durations, each representable as a single notehead.
+ * Returns one entry for directly-representable durations; multiple entries for
+ * irregular durations (e.g. half+sixteenth = 1080 ticks → [{960, half}, {120, 16th}]).
+ */
+function splitSubDurations(ticks: number): Array<{ ticks: number; tr: NoteTypeResult }> {
+    return splitIntoRests(ticks).map(tr => ({
+        ticks: tr.dots <= 0 ? tickDur(tr) : tickDurDotted(tr),
+        tr,
+    }));
+}
+
+/**
  * Walk the events list and add tupletTag 'start'/'stop' to groups of
  * consecutive events that share the same time-modification signature.
  * Groups are capped at `actualNotes` to produce well-formed tuplet brackets.
@@ -527,11 +539,25 @@ export class MusicXmlGenerator {
             for (const ev of voiceEvents) {
                 if (ev.kind === 'note') {
                     const [first, ...chordRest] = ev.segments;
-                    this.writeNote(x, first!.note.spelling, first!.note.getStart(), ev.ticks, ev.tr,
-                        false, lyricsByTick, voiceNum, first!.tieStop, first!.tieStart);
-                    for (const seg of chordRest) {
-                        this.writeNote(x, seg.note.spelling, seg.note.getStart(), ev.ticks, ev.tr,
-                            true, lyricsByTick, voiceNum, seg.tieStop, seg.tieStart);
+                    // Tuplets are always directly representable; for everything else,
+                    // split irregular durations (e.g. 1080 = half+16th) into tied noteheads.
+                    const subs = ev.tr.actualNotes != null
+                        ? [{ ticks: ev.ticks, tr: ev.tr }]
+                        : splitSubDurations(ev.ticks);
+                    const emptyLyrics: Map<number, string[]> = new Map();
+                    for (let si = 0; si < subs.length; si++) {
+                        const isFirst = si === 0;
+                        const isLast  = si === subs.length - 1;
+                        const { ticks: subTicks, tr: subTr } = subs[si]!;
+                        const tieStop  = !isFirst || first!.tieStop;
+                        const tieStart = !isLast  || first!.tieStart;
+                        this.writeNote(x, first!.note.spelling, first!.note.getStart(), subTicks, subTr,
+                            false, isFirst ? lyricsByTick : emptyLyrics, voiceNum, tieStop, tieStart);
+                        for (const seg of chordRest) {
+                            this.writeNote(x, seg.note.spelling, seg.note.getStart(), subTicks, subTr,
+                                true, emptyLyrics, voiceNum,
+                                !isFirst || seg.tieStop, !isLast || seg.tieStart);
+                        }
                     }
                 } else {
                     this.writeRest(x, ev.ticks, ev.tr, voiceNum);

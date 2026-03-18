@@ -178,6 +178,17 @@ function assignVoices(segments: NoteSegment[]): VoiceSegments[] {
         }
         if (!placed) voices.push([seg]);
     }
+    // Re-order voices so the voice whose first sounding (non-rest) note has the
+    // highest pitch gets voice 1 (index 0).  This handles voices that start with
+    // a rest: instead of using the rest's placeholder pitch we look ahead to the
+    // first actual note in that voice.
+    const firstSoundingPitch = (v: VoiceSegments): number => {
+        for (const seg of v) {
+            if (seg.note.spelling.degree !== '%') return seg.note.getMidiPitch();
+        }
+        return -1; // rest-only voice sorts last
+    };
+    voices.sort((a, b) => firstSoundingPitch(b) - firstSoundingPitch(a));
     return voices;
 }
 

@@ -272,4 +272,16 @@ describe('TimingTests', () => {
         assert.equal(voices.get('G'), 2, 'G (sequential to E) should share voice 2');
     });
 
+    // When a voice starts with a rest, use the first actual note in that voice as the
+    // representative pitch for numbering. Here e (MIDI 76, E5) > g (MIDI 67, G4), so
+    // the rest+e voice gets voice 1 and g gets voice 2.
+    test('voice starting with rest uses first sounding note for voice numbering', () => {
+        const xml = new MusicXmlGenerator().generate(parse('g[% e]'));
+        const voices = noteVoices(xml);
+        assert.ok(voices.has('E'), 'E should appear in MusicXML');
+        assert.ok(voices.has('G'), 'G should appear in MusicXML');
+        assert.equal(voices.get('E'), 1, 'E (higher pitch, MIDI 76) should be voice 1 despite rest prefix');
+        assert.equal(voices.get('G'), 2, 'G (lower pitch, MIDI 67) should be voice 2');
+    });
+
 });

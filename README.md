@@ -23,21 +23,17 @@ the other directory mascii2/ is the legacy java version, soon to be archived
 
 
  
-#### To regenerate the Mascii grammar 
+### build the project
 Mascii relies on the Antlr 4 lex/parse system, which uses grammar files to express the core syntax of Mascii.  The antlr source grammar files are in the antr/ directory, called MasciiLexer.g4 and MasciiParser.g4.
-
 Antlr translates the grammar from these files into an equivalent set of Typescript files.
-To trigger Antlr to regenerate the Typescript files and run tests on the generated code:
 
 1. make sure you have Anltr 4 installed in your system
-2. `make all` 
+2. make sure you have npm installed
+3. build the project: `make regen`
 
 
-### to convert a mascii file to musicxml
-
-1. make sure you have npm installed
-2. build the project: `make regen`
-3. use the command line tools: 
+### convert a mascii file to musicxml
+After building the project, use the command line tools: 
 
 `mascii-typescript/mascii-2-musicxml.sh [yourfile.mascii]`
 

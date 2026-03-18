@@ -71,6 +71,26 @@ function ticksToNoteType(ticks: number): NoteTypeResult | null {
         }
     }
 
+    // 2b. Approximate tuplet match: when TICKS_PER_BEAT is not divisible by the tuplet
+    //     ratio, mascii distributes the measure ticks as integers that differ from the
+    //     exact rational value by a small rounding error (≤3 ticks).  E.g. for 7:4,
+    //     the exact quarter septuplet is 480×4/7 ≈ 274.28, so mascii emits 274 or 276.
+    //     Pick the closest tuplet match within 3 ticks so these notes get proper
+    //     <time-modification> markup rather than falling through to the approximation.
+    let bestTupletDiff = 3; // tolerance in ticks
+    let bestTuplet: NoteTypeResult | null = null;
+    for (const [actual, normal] of TUPLETS) {
+        for (const { type, ticks: base } of STD) {
+            const exactTicks = (base * normal) / actual;
+            const diff = Math.abs(ticks - exactTicks);
+            if (diff < bestTupletDiff) {
+                bestTupletDiff = diff;
+                bestTuplet = { type, dots: 0, actualNotes: actual, normalNotes: normal, normalType: type };
+            }
+        }
+    }
+    if (bestTuplet) return bestTuplet;
+
     // 3. Nearest approximation (avoid crashing on unusual divisions)
     let best = STD[STD.length - 1]!;
     let bestDiff = Math.abs(ticks - best.ticks);

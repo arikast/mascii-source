@@ -272,6 +272,28 @@ describe('TimingTests', () => {
         assert.equal(voices.get('G'), 2, 'G (sequential to E) should share voice 2');
     });
 
+    // 7 equal notes in a 4/4 bar: mascii distributes 1920 ticks as [274×6, 276×1].
+    // 274 ≈ 480×4/7 (septuplet quarter), so the whole group should be a 7:4 septuplet.
+    test('7 equal notes produce septuplet in MusicXML', () => {
+        const xml = new MusicXmlGenerator().generate(parse('a a a b b b c'));
+        const noteBlocks = xml.match(/<note>[\s\S]*?<\/note>/g) ?? [];
+        const withSept = noteBlocks.filter(b => b.includes('<actual-notes>7</actual-notes>'));
+        assert.equal(withSept.length, 7, 'All 7 notes should have 7:4 time-modification');
+        assert.ok(withSept[0]!.includes('<tuplet type="start"'), 'First note should open the tuplet bracket');
+        assert.ok(withSept[6]!.includes('<tuplet type="stop"'),  'Last note should close the tuplet bracket');
+    });
+
+    // 9 equal notes in a 4/4 bar (1920 ticks): 1920/9 ≈ 213.33, so mascii gives
+    // [213×8, 216×1].  213 ≈ 240×8/9, so these should be a 9:8 nonuplet.
+    test('9 equal notes produce 9:8 nonuplet in MusicXML', () => {
+        const xml = new MusicXmlGenerator().generate(parse('a a a b b b c c c'));
+        const noteBlocks = xml.match(/<note>[\s\S]*?<\/note>/g) ?? [];
+        const withNonuplet = noteBlocks.filter(b => b.includes('<actual-notes>9</actual-notes>'));
+        assert.equal(withNonuplet.length, 9, 'All 9 notes should have 9:8 time-modification');
+        assert.ok(withNonuplet[0]!.includes('<tuplet type="start"'), 'First note should open the tuplet bracket');
+        assert.ok(withNonuplet[8]!.includes('<tuplet type="stop"'),  'Last note should close the tuplet bracket');
+    });
+
     // A note whose duration cannot be represented as a single notehead (e.g. half+sixteenth
     // = 1080 ticks) must be written as two tied noteheads, not a single approximate one.
     test('irregular tied duration splits into tied noteheads in MusicXML', () => {

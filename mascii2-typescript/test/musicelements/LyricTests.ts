@@ -4,7 +4,8 @@ import { SourceParser } from '../../src/SourceParser';
 import { ParseResult } from '../../src/ParseResult';
 import { Lyric } from '../../src/musicelements/MetaInfo';
 import { Note } from '../../src/musicelements/Note';
-import { asLyrics, parsePitch } from '../../src/util/MasciiUtil';
+import { asLyrics } from '../../src/util/MasciiUtil';
+import { parsePitch } from './PitchTestHelper';
 
 function parse(source: string): ParseResult {
     const result = new SourceParser().generateFromString(source);

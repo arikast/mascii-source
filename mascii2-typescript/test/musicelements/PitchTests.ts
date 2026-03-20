@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import { SourceParser } from '../../src/SourceParser';
 import { ParseResult } from '../../src/ParseResult';
 import { absPitch } from '../../src/musicelements/Note';
-import { parsePitch, diatonicInterval, crossesOctaveBoundary } from '../../src/util/MasciiUtil';
+import { parsePitch } from './PitchTestHelper';
+import { diatonicInterval, crossesOctaveBoundary } from '../../src/util/MasciiUtil';
 import { KeySignature } from '../../src/musicelements/KeySignature';
 import { PitchDirection } from '../../src/musicelements/PitchDirection';
 

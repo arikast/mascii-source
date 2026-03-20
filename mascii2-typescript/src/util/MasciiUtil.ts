@@ -1,24 +1,10 @@
 import { Accidental } from '../musicelements/Accidental';
-import { KeySignature, KeySignatureAdHoc } from '../musicelements/KeySignature';
+import { KeySignatureAdHoc } from '../musicelements/KeySignature';
 import { Note, NoteSpelling } from '../musicelements/Note';
 import { MetaInfo } from '../musicelements/MetaInfo';
 import { PitchDirection } from '../musicelements/PitchDirection';
 import { Lyric } from '../musicelements/MetaInfo';
-
-export const PATTERN_DEGREES = '[a-gA-G]';
-export const PATTERN_ACCIDENTALS = '[#@=]';
-export const NOTE_SYNTAX = /^(\d?)(!\*)((?:[a-gA-G]))([#@=]*)$/;
-// Rebuilt cleaner:
-const noteSyntaxRe = /^(\d*)(!)*(([a-gA-G])([#@=]*))$/;
-const noteSyntax = /^(\d*)(!)*(([a-gA-G])([#@=]*))$/;
-
-// Pattern indexes (0-based group): full, absOctave, amplifier, fullNote, degree, accidentals
-const IDX_ABS_PITCH_RANGE = 1;
-const IDX_RANGE_AMPLIFIERS = 2;
-const IDX_DEGREE = 4;
-const IDX_ACCIDENTALS = 5;
-
-const NOTE_RE = /^(\d*)(!*)(([a-gA-G])([#@=]*))$/;
+import { PitchContext } from '../antlr-generated/MasciiParser';
 
 export const REST = '%';
 
@@ -38,36 +24,19 @@ export function magnitude(shift: string | undefined | null): number {
     return shift.length;
 }
 
-export function parsePitch(pitch: string): NoteSpelling;
-export function parsePitch(pitch: string, key: KeySignatureAdHoc): NoteSpelling;
-export function parsePitch(pitch: string, relativeTo: NoteSpelling): NoteSpelling;
-export function parsePitch(pitch: string, key: KeySignatureAdHoc, relativeTo: NoteSpelling | null): NoteSpelling;
-export function parsePitch(
-    pitch: string,
-    keyOrRelative?: KeySignatureAdHoc | NoteSpelling,
-    relativeTo?: NoteSpelling | null,
-): NoteSpelling {
-    let key: KeySignatureAdHoc;
-    let rel: NoteSpelling | null;
-
-    if (keyOrRelative == null) {
-        key = KeySignature.C.alterationsMap();
-        rel = null;
-    } else if (keyOrRelative instanceof NoteSpelling) {
-        key = KeySignature.C.alterationsMap();
-        rel = keyOrRelative;
-    } else {
-        key = keyOrRelative;
-        rel = relativeTo ?? null;
+export function parsePitchContext(ctx: PitchContext, key: KeySignatureAdHoc, rel?: NoteSpelling | null): NoteSpelling {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const repeatEl = ctx.REPEAT_ELEMENT() as any;
+    if (repeatEl != null) {
+        return new NoteSpelling(repeatEl.getText() as string);
     }
-
-    const m = NOTE_RE.exec(pitch);
-    if (!m) return new NoteSpelling(pitch); // fallback
-
-    const absOctave = m[1] ?? '';
-    const amplifier = m[2] ?? '';
-    const degree = m[4]!;
-    const accidentals = m[5] ?? '';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const absOctave: string = (ctx.ABS_PITCH_RANGE() as any)?.getText() ?? '';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const amplifier: string = (ctx.AMPLIFIERS() as any)?.getText() ?? '';
+    const degree = ctx.REL_PITCH().getText();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const accidentals: string = (ctx.ACCIDENTAL() as any)?.getText() ?? '';
 
     const spelling = new NoteSpelling(degree);
 

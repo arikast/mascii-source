@@ -26,10 +26,11 @@ scoped_group:                       OPEN_SCOPED timed_elements CLOSE_SCOPED;
 unscoped_group:                     OPEN_UNSCOPED timed_elements CLOSE_UNSCOPED; 
 notes:                              (notes_end notes_start) | (notes_end) | (notes_start) ;        
 notes_start:                        note_start+ ;        
-note_start:                         PITCH note_tie? ;  
-note_tie:                           TIE ;     
+note_start:                         pitch note_tie? ;
+note_tie:                           TIE ;
 notes_end:                          note_end_all | note_end_one+ ;
-note_end_one:                       TIE PITCH ;        
+note_end_one:                       TIE pitch ;
+pitch:                              (ABS_PITCH_RANGE | AMPLIFIERS)? REL_PITCH ACCIDENTAL? | REPEAT_ELEMENT ;
 note_end_all:                       TIE NOTE_END_ALL;        
 newline:                            NEWLINE | IMPLICIT_CLOSE_LYRICS ;
 lyrics_row:                         OPEN_LYRICS LYRICS CLOSE_LYRICS?; //a single horizontal musical part consisting of 1 or more (staff) measures 

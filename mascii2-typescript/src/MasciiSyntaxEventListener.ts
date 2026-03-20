@@ -13,6 +13,7 @@ import {
     Staves_n_lyricsrowContext,
     Timed_elementContext,
     Timed_elementsContext,
+    PitchContext,
 } from './antlr-generated/MasciiParser';
 import { Part } from './musicelements/Part';
 import { TimeSlot } from './musicelements/TimeSlot';
@@ -359,16 +360,17 @@ export class MasciiSyntaxEventListener extends MasciiParserListener {
     }
 
     private _enterNote_end_one(ctx: Note_end_oneContext): void {
-        this.curPart().finishNoteHere(ctx.PITCH().getText());
+        this.curPart().finishNoteHere(ctx.pitch());
     }
 
     private _enterNote_start(ctx: Note_startContext): void {
         const noteTie = ctx.note_tie() as unknown;
-        const srcOffset = ctx.PITCH().symbol.start;
+        const pitch: PitchContext = ctx.pitch();
+        const srcOffset = pitch.start!.start;
         if (noteTie == null) {
-            this.curPart().startAndFinishNoteHere(ctx.PITCH().getText(), srcOffset);
+            this.curPart().startAndFinishNoteHere(pitch, srcOffset);
         } else {
-            this.curPart().startNoteHere(ctx.PITCH().getText(), srcOffset);
+            this.curPart().startNoteHere(pitch, srcOffset);
         }
     }
 }

@@ -114,8 +114,7 @@ export class NoteSpelling {
 
     // Late-bound to avoid circular dep with MasciiUtil
     parseRelative(note: string, currentKey: KeySignatureAdHoc): NoteSpelling {
-        // Defer import to avoid circular dep - caller should use MasciiUtil.parsePitch directly
-        throw new Error('Use MasciiUtil.parsePitch(note, key, this) instead');
+        throw new Error('Use MasciiUtil.parsePitchContext instead');
     }
 }
 

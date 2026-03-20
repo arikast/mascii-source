@@ -2,7 +2,8 @@ import { Note, NoteSpelling } from './Note';
 import { TimeSlot } from './TimeSlot';
 import { KeySignature, KeySignatureAdHoc } from './KeySignature';
 import { MetaInfoElement } from './MetaInfo';
-import { parsePitch } from '../util/MasciiUtil';
+import { parsePitchContext } from '../util/MasciiUtil';
+import { PitchContext } from '../antlr-generated/MasciiParser';
 
 export class Part {
     barCount = 0;
@@ -62,15 +63,15 @@ export class Part {
     getClef(): string { return this.clef; }
     setClef(clef: string): void { this.clef = clef; }
 
-    startAndFinishNoteHere(pitch: string, srcOffset?: number): void {
+    startAndFinishNoteHere(pitch: PitchContext, srcOffset?: number): void {
         const slot = this.peekTiming();
-        const note = Note.withDuration(slot.offset, slot.duration, this.resolvePitch(pitch), srcOffset);
+        const note = Note.withDuration(slot.offset, slot.duration, this.resolvePitchFromContext(pitch), srcOffset);
         this.addNote(note);
     }
 
-    startNoteHere(pitch: string, srcOffset?: number): void {
+    startNoteHere(pitch: PitchContext, srcOffset?: number): void {
         const slot = this.peekTiming();
-        const note = Note.startOnly(slot.offset, this.resolvePitch(pitch), srcOffset);
+        const note = Note.startOnly(slot.offset, this.resolvePitchFromContext(pitch), srcOffset);
         // if note already open at this pitch, it stays (we overwrite the reference)
         this.openNotes.set(note.getPitch(), note);
         this.addNote(note);
@@ -87,8 +88,8 @@ export class Part {
         this.pitchBase.push(sp);
     }
 
-    finishNoteHere(pitch: string): void {
-        const finish = this.resolvePitch(pitch);
+    finishNoteHere(pitch: PitchContext): void {
+        const finish = this.resolvePitchFromContext(pitch);
         const start = this.openNotes.get(finish.getPitch());
         if (start == null) {
             console.error(`note end ${finish} with pitch ${finish.getPitch()} had no matching start`);
@@ -106,12 +107,8 @@ export class Part {
         this.openNotes.clear();
     }
 
-    resolvePitch(pitch: string): NoteSpelling {
+    resolvePitchFromContext(ctx: PitchContext): NoteSpelling {
         const base = this.peekPitchBase();
-        if (base == null) {
-            return parsePitch(pitch, this.currentKey);
-        } else {
-            return parsePitch(pitch, this.currentKey, base);
-        }
+        return parsePitchContext(ctx, this.currentKey, base ?? null);
     }
 }

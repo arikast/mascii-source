@@ -29,7 +29,7 @@ Antlr translates the grammar from these files into an equivalent set of Typescri
 
 1. make sure you have Anltr 4 installed in your system
 2. make sure you have npm installed
-3. build the project: `make regen`
+3. build the project: `make`
 
 
 ### Convert a mascii file to musicxml

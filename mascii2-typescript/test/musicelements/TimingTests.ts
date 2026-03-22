@@ -133,9 +133,37 @@ describe('TimingTests', () => {
         assert.equal(p0[1]!.getStart(), p1[2]!.getStart());
     });
 
+    test('restsTiming (dot rest)', () => {
+        const minuet = '{tempo: 95}'
+            + 'G__ a \n d [. a] [b c] ';
+        const parts = parse(minuet).getParts() ?? [];
+        assert.equal(2, parts.length);
+        const p0 = parts[0]!.getNoteStream();
+        const p1 = parts[1]!.getNoteStream();
+        assert.equal(p0[0]!.getStart(), p1[0]!.getStart());
+        assert.equal(p0[1]!.getStart(), p1[2]!.getStart());
+    });
+
     test('explicitRests', () => {
         const minuet = ' % \n d a \n % \n\n'
             + 'a \n   %  \n b \n\n'
+            + 'd \n e   \n f';
+        const parts = parse(minuet).getParts() ?? [];
+        assert.equal(3, parts.length);
+        const p0 = parts[0]!.getNoteStream();
+        const p1 = parts[1]!.getNoteStream();
+        const p2 = parts[2]!.getNoteStream();
+
+        assert.equal(2, p0.length);
+        assert.equal(3, p1.length);
+        assert.equal(2, p2.length);
+        assert.equal(p0[1]!.getStart(), p1[2]!.getStart());
+        assert.equal(p0[1]!.getStart(), p2[1]!.getStart());
+    });
+
+    test('explicitRests (dot rest)', () => {
+        const minuet = ' . \n d a \n . \n\n'
+            + 'a \n   .  \n b \n\n'
             + 'd \n e   \n f';
         const parts = parse(minuet).getParts() ?? [];
         assert.equal(3, parts.length);
@@ -159,6 +187,18 @@ describe('TimingTests', () => {
     test('dottedTiming', () => {
         const minuet = '{tempo: 95}'
             + 'G. F# a \n d [% a] [b c] ';
+        const parts = parse(minuet).getParts() ?? [];
+        assert.equal(2, parts.length);
+        const p0 = parts[0]!.getNoteStream();
+        const p1 = parts[1]!.getNoteStream();
+        assert.equal(p0[0]!.getStart(), p1[0]!.getStart());
+        assert.equal(p0[1]!.getStart(), p1[1]!.getStart());
+        assert.equal(p0[1]!.getDuration(), p1[1]!.getDuration());
+    });
+
+    test('dottedTiming (dot rest)', () => {
+        const minuet = '{tempo: 95}'
+            + 'G. F# a \n d [. a] [b c] ';
         const parts = parse(minuet).getParts() ?? [];
         assert.equal(2, parts.length);
         const p0 = parts[0]!.getNoteStream();
@@ -319,6 +359,15 @@ describe('TimingTests', () => {
     // the rest+e voice gets voice 1 and g gets voice 2.
     test('voice starting with rest uses first sounding note for voice numbering', () => {
         const xml = new MusicXmlGenerator().generate(parse('g[% e]'));
+        const voices = noteVoices(xml);
+        assert.ok(voices.has('E'), 'E should appear in MusicXML');
+        assert.ok(voices.has('G'), 'G should appear in MusicXML');
+        assert.equal(voices.get('E'), 1, 'E (higher pitch, MIDI 76) should be voice 1 despite rest prefix');
+        assert.equal(voices.get('G'), 2, 'G (lower pitch, MIDI 67) should be voice 2');
+    });
+
+    test('voice starting with rest uses first sounding note for voice numbering (dot rest)', () => {
+        const xml = new MusicXmlGenerator().generate(parse('g[. e]'));
         const voices = noteVoices(xml);
         assert.ok(voices.has('E'), 'E should appear in MusicXML');
         assert.ok(voices.has('G'), 'G should appear in MusicXML');

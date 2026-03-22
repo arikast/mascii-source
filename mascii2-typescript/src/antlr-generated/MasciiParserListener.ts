@@ -21,6 +21,7 @@ import { StaffContext } from "./MasciiParser.js";
 import { Empty_staffContext } from "./MasciiParser.js";
 import { Timed_elementsContext } from "./MasciiParser.js";
 import { Timed_elementContext } from "./MasciiParser.js";
+import { RestContext } from "./MasciiParser.js";
 import { Duration_doubledContext } from "./MasciiParser.js";
 import { GroupContext } from "./MasciiParser.js";
 import { Scoped_groupContext } from "./MasciiParser.js";
@@ -222,6 +223,16 @@ export default class MasciiParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitTimed_element?: (ctx: Timed_elementContext) => void;
+	/**
+	 * Enter a parse tree produced by `MasciiParser.rest`.
+	 * @param ctx the parse tree
+	 */
+	enterRest?: (ctx: RestContext) => void;
+	/**
+	 * Exit a parse tree produced by `MasciiParser.rest`.
+	 * @param ctx the parse tree
+	 */
+	exitRest?: (ctx: RestContext) => void;
 	/**
 	 * Enter a parse tree produced by `MasciiParser.duration_doubled`.
 	 * @param ctx the parse tree

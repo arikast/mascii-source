@@ -118,8 +118,32 @@ describe('LyricTests', () => {
         assert.equal(metas[1]!.getStartingAt(), p.getNoteStream()[1]!.getStart());
     });
 
+    test('lyricMatchWithTuneRests (dot rest)', () => {
+        const minuet = ' .   .   .   [c  d]\n" well I "\n .';
+        const parts = parse(minuet).getParts() ?? [];
+        assert.equal(2, parts.length);
+        const p = parts[0]!;
+        const metas = p.getMetaInfoChanges();
+        assert.equal(2, metas.length);
+        assert.ok(metas[0]!.getStartingAt() > 0);
+        assert.equal(metas[0]!.getStartingAt(), p.getNoteStream()[0]!.getStart());
+        assert.equal(metas[1]!.getStartingAt(), p.getNoteStream()[1]!.getStart());
+    });
+
     test('lyricWithBarLines', () => {
         const minuet = ' %  c | d \n" well | I "\n %';
+        const parts = parse(minuet).getParts() ?? [];
+        assert.equal(2, parts.length);
+        const p = parts[0]!;
+        const metas = p.getMetaInfoChanges();
+        assert.equal(2, metas.length);
+        assert.ok(metas[0]!.getStartingAt() > 0);
+        assert.equal(metas[0]!.getStartingAt(), p.getNoteStream()[0]!.getStart());
+        assert.equal(metas[1]!.getStartingAt(), p.getNoteStream()[1]!.getStart());
+    });
+
+    test('lyricWithBarLines (dot rest)', () => {
+        const minuet = ' .  c | d \n" well | I "\n .';
         const parts = parse(minuet).getParts() ?? [];
         assert.equal(2, parts.length);
         const p = parts[0]!;
@@ -142,8 +166,32 @@ describe('LyricTests', () => {
         assert.equal(metas[1]!.getStartingAt(), p.getNoteStream()[1]!.getStart());
     });
 
+    test('optionalTrailingQuote (dot rest)', () => {
+        const minuet = ' .  c   | d \n" well | I \n .';
+        const parts = parse(minuet).getParts() ?? [];
+        assert.equal(2, parts.length);
+        const p = parts[0]!;
+        const metas = p.getMetaInfoChanges();
+        assert.equal(2, metas.length);
+        assert.ok(metas[0]!.getStartingAt() > 0);
+        assert.equal(metas[0]!.getStartingAt(), p.getNoteStream()[0]!.getStart());
+        assert.equal(metas[1]!.getStartingAt(), p.getNoteStream()[1]!.getStart());
+    });
+
     test('lyricsLast', () => {
         const minuet = ' %  c   | d \n" well | I \n \n\n ';
+        const parts = parse(minuet).getParts() ?? [];
+        assert.equal(1, parts.length);
+        const p = parts[0]!;
+        const metas = p.getMetaInfoChanges();
+        assert.equal(2, metas.length);
+        assert.ok(metas[0]!.getStartingAt() > 0);
+        assert.equal(metas[0]!.getStartingAt(), p.getNoteStream()[0]!.getStart());
+        assert.equal(metas[1]!.getStartingAt(), p.getNoteStream()[1]!.getStart());
+    });
+
+    test('lyricsLast (dot rest)', () => {
+        const minuet = ' .  c   | d \n" well | I \n \n\n ';
         const parts = parse(minuet).getParts() ?? [];
         assert.equal(1, parts.length);
         const p = parts[0]!;

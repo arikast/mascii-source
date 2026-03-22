@@ -19,7 +19,8 @@ stavesrow_first_empty:              empty_staff (STAFF_SEPARATOR (staff | empty_
 staff:                              timed_elements ; //ie a single measure of music
 empty_staff:                        SPACE? ;
 timed_elements:                     SPACE? timed_element (SPACE timed_element)* SPACE?; 
-timed_element:                      inverse_dot=MULTI_DOTTED? ((notes | group)+ | REST) duration_doubled? normal_dot=MULTI_DOTTED?; 
+timed_element:                      inverse_dot=(DOTTED|MULTI_DOTTED)? ((notes | group)+ | rest) duration_doubled? normal_dot=(DOTTED|MULTI_DOTTED)?;
+rest:                               REST | DOTTED ;
 duration_doubled:                   TIE TIE+ ;
 group:                              unscoped_group | scoped_group ;
 scoped_group:                       OPEN_SCOPED timed_elements CLOSE_SCOPED;

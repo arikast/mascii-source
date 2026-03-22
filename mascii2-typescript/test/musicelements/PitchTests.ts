@@ -73,6 +73,14 @@ describe('PitchTests', () => {
         assert.equal(treb[5]!.getPitch(), treb[0]!.getPitch());
     });
 
+    test('multimeasurePitch3 (dot rest)', () => {
+        const minuet = ' [!Gbd]__ a | b G b  \n  d [G a] [b c] | d [. G] [. G] ';
+        const parts = parse(minuet).getParts() ?? [];
+        const treb = parts[1]!.getNoteStream();
+
+        assert.equal(treb[5]!.getPitch(), treb[0]!.getPitch());
+    });
+
     test('multimeasurePitch4', () => {
         const minuet = 'd G c d ';
         const parts = parse(minuet).getParts() ?? [];
@@ -112,6 +120,14 @@ describe('PitchTests', () => {
 
     test('multimeasurePitch5', () => {
         const minuet = 'd [G c] \n\n d [% G] ';
+        const parts = parse(minuet).getParts() ?? [];
+        const treb = parts[0]!.getNoteStream();
+
+        assert.equal(treb[3]!.getPitch(), treb[0]!.getPitch());
+    });
+
+    test('multimeasurePitch5 (dot rest)', () => {
+        const minuet = 'd [G c] \n\n d [. G] ';
         const parts = parse(minuet).getParts() ?? [];
         const treb = parts[0]!.getNoteStream();
 

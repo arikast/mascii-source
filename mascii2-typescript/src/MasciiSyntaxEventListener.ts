@@ -331,8 +331,8 @@ export class MasciiSyntaxEventListener extends MasciiParserListener {
         const normalDot = ctx._normal_dot as unknown;
         const inverseDot = ctx._inverse_dot as unknown;
 
-        const dotToken = ctx.MULTI_DOTTED_list()[0];
-        const dotCount = dotToken ? dotToken.getText().length : 0;
+        const dotToken = (ctx._inverse_dot ?? ctx._normal_dot) as unknown as { text: string } | undefined;
+        const dotCount = dotToken ? dotToken.text.length : 0;
         if (dotCount > 0 && (normalDot != null || inverseDot != null)) {
             const mytime = this.curPart().popTiming();
             const nexttime = this.curPart().popTiming();

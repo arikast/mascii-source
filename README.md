@@ -1,4 +1,4 @@
-# Mascii 2.2 
+# Mascii 2.2.1 
 This is a reference implementation for an engine to power the _Musical Ascii_ ("Mascii") polyphonic text-based music notation system.
 
 While mascii is itself just a syntax, this engine demonstrates how to convert that syntax into a midi or musicxml file. 

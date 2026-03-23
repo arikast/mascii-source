@@ -49,21 +49,32 @@ export default class MasciiParser extends Parser {
 	public static readonly F_CLOSE_SCOPED = 30;
 	public static readonly F_OPEN_UNSCOPED = 31;
 	public static readonly F_CLOSE_UNSCOPED = 32;
-	public static readonly CLOSE_META = 33;
-	public static readonly HEADER_NAME_VAL_SEP = 34;
-	public static readonly HEADER_ENTITY = 35;
-	public static readonly HEADER_VAL_SEP = 36;
-	public static readonly M_COMMENT = 37;
-	public static readonly M_NEWLINE = 38;
-	public static readonly M_INLINE_SEP = 39;
-	public static readonly M_SPACE = 40;
-	public static readonly OPEN_QUOTE = 41;
-	public static readonly CLOSE_LYRICS = 42;
-	public static readonly IMPLICIT_CLOSE_LYRICS = 43;
-	public static readonly LYRICS = 44;
-	public static readonly L_NEWLINE = 45;
-	public static readonly CLOSE_QUOTE = 46;
-	public static readonly QUOTED_TEXT = 47;
+	public static readonly CHORD_TYPE_MINOR = 33;
+	public static readonly CHORD_TYPE_MAJOR = 34;
+	public static readonly CHORD_TYPE_AUG = 35;
+	public static readonly CHORD_TYPE_HDIM = 36;
+	public static readonly CHORD_TYPE_DIM = 37;
+	public static readonly CHORD_TYPE_DOM = 38;
+	public static readonly CHORD_TYPE_SUS = 39;
+	public static readonly CHORD_TYPE_ADD = 40;
+	public static readonly SLASH = 41;
+	public static readonly COLON = 42;
+	public static readonly CLOSE_META = 43;
+	public static readonly HEADER_NAME_VAL_SEP = 44;
+	public static readonly HEADER_ENTITY = 45;
+	public static readonly HEADER_VAL_SEP = 46;
+	public static readonly M_COMMENT = 47;
+	public static readonly M_NEWLINE = 48;
+	public static readonly M_INLINE_SEP = 49;
+	public static readonly M_SPACE = 50;
+	public static readonly OPEN_QUOTE = 51;
+	public static readonly CLOSE_LYRICS = 52;
+	public static readonly IMPLICIT_CLOSE_LYRICS = 53;
+	public static readonly LYRICS = 54;
+	public static readonly L_NEWLINE = 55;
+	public static readonly CLOSE_QUOTE = 56;
+	public static readonly QUOTED_TEXT = 57;
+	public static readonly NONZERO = 58;
 	public static override readonly EOF = Token.EOF;
 	public static readonly RULE_music = 0;
 	public static readonly RULE_metainfo = 1;
@@ -100,6 +111,21 @@ export default class MasciiParser extends Parser {
 	public static readonly RULE_note_end_all = 32;
 	public static readonly RULE_newline = 33;
 	public static readonly RULE_lyrics_row = 34;
+	public static readonly RULE_chord_symbol = 35;
+	public static readonly RULE_chord_root = 36;
+	public static readonly RULE_chord_type = 37;
+	public static readonly RULE_chord_type_major = 38;
+	public static readonly RULE_chord_type_minor = 39;
+	public static readonly RULE_chord_type_aug = 40;
+	public static readonly RULE_chord_type_hdim = 41;
+	public static readonly RULE_chord_type_dim = 42;
+	public static readonly RULE_chord_type_dom = 43;
+	public static readonly RULE_chord_type_sus = 44;
+	public static readonly RULE_chord_type_add = 45;
+	public static readonly RULE_alterations = 46;
+	public static readonly RULE_alteration_with_parens = 47;
+	public static readonly RULE_alteration = 48;
+	public static readonly RULE_slash_bass = 49;
 	public static readonly literalNames: (string | null)[] = [ null, null, 
                                                             null, null, 
                                                             null, null, 
@@ -116,7 +142,12 @@ export default class MasciiParser extends Parser {
                                                             null, "'0'", 
                                                             null, "'('", 
                                                             "')'", "'['", 
-                                                            "']'", "'}'" ];
+                                                            "']'", null, 
+                                                            null, null, 
+                                                            null, null, 
+                                                            null, null, 
+                                                            null, "'/'", 
+                                                            "':'", "'}'" ];
 	public static readonly symbolicNames: (string | null)[] = [ null, "OPEN_SCOPED", 
                                                              "CLOSE_SCOPED", 
                                                              "OPEN_UNSCOPED", 
@@ -143,6 +174,15 @@ export default class MasciiParser extends Parser {
                                                              "F_CLOSE_SCOPED", 
                                                              "F_OPEN_UNSCOPED", 
                                                              "F_CLOSE_UNSCOPED", 
+                                                             "CHORD_TYPE_MINOR", 
+                                                             "CHORD_TYPE_MAJOR", 
+                                                             "CHORD_TYPE_AUG", 
+                                                             "CHORD_TYPE_HDIM", 
+                                                             "CHORD_TYPE_DIM", 
+                                                             "CHORD_TYPE_DOM", 
+                                                             "CHORD_TYPE_SUS", 
+                                                             "CHORD_TYPE_ADD", 
+                                                             "SLASH", "COLON", 
                                                              "CLOSE_META", 
                                                              "HEADER_NAME_VAL_SEP", 
                                                              "HEADER_ENTITY", 
@@ -156,7 +196,8 @@ export default class MasciiParser extends Parser {
                                                              "IMPLICIT_CLOSE_LYRICS", 
                                                              "LYRICS", "L_NEWLINE", 
                                                              "CLOSE_QUOTE", 
-                                                             "QUOTED_TEXT" ];
+                                                             "QUOTED_TEXT", 
+                                                             "NONZERO" ];
 	// tslint:disable:no-trailing-whitespace
 	public static readonly ruleNames: string[] = [
 		"music", "metainfo", "headers", "header_delim", "header", "header_name", 
@@ -165,7 +206,11 @@ export default class MasciiParser extends Parser {
 		"empty_staff", "timed_elements", "timed_element", "rest", "duration_doubled", 
 		"group", "scoped_group", "unscoped_group", "notes", "notes_start", "note_start", 
 		"note_tie", "notes_end", "note_end_one", "pitch", "abs_pitch_range", "accidental", 
-		"note_end_all", "newline", "lyrics_row",
+		"note_end_all", "newline", "lyrics_row", "chord_symbol", "chord_root", 
+		"chord_type", "chord_type_major", "chord_type_minor", "chord_type_aug", 
+		"chord_type_hdim", "chord_type_dim", "chord_type_dom", "chord_type_sus", 
+		"chord_type_add", "alterations", "alteration_with_parens", "alteration", 
+		"slash_bass",
 	];
 	public get grammarFileName(): string { return "MasciiParser.g4"; }
 	public get literalNames(): (string | null)[] { return MasciiParser.literalNames; }
@@ -190,14 +235,14 @@ export default class MasciiParser extends Parser {
 			let _alt: number;
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 73;
+			this.state = 103;
 			this._errHandler.sync(this);
 			_alt = this._interp.adaptivePredict(this._input, 0, this._ctx);
 			while (_alt !== 2 && _alt !== ATN.INVALID_ALT_NUMBER) {
 				if (_alt === 1) {
 					{
 					{
-					this.state = 70;
+					this.state = 100;
 					_la = this._input.LA(1);
 					if(!(_la===23 || _la===24)) {
 					this._errHandler.recoverInline(this);
@@ -209,30 +254,30 @@ export default class MasciiParser extends Parser {
 					}
 					}
 				}
-				this.state = 75;
+				this.state = 105;
 				this._errHandler.sync(this);
 				_alt = this._interp.adaptivePredict(this._input, 0, this._ctx);
 			}
-			this.state = 76;
+			this.state = 106;
 			this.bars();
-			this.state = 81;
+			this.state = 111;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			while (((((_la - 23)) & ~0x1F) === 0 && ((1 << (_la - 23)) & 1048579) !== 0)) {
+			while (((((_la - 23)) & ~0x1F) === 0 && ((1 << (_la - 23)) & 1073741827) !== 0)) {
 				{
-				this.state = 79;
+				this.state = 109;
 				this._errHandler.sync(this);
 				switch (this._input.LA(1)) {
 				case 24:
 					{
-					this.state = 77;
+					this.state = 107;
 					this.match(MasciiParser.SPACE);
 					}
 					break;
 				case 23:
-				case 43:
+				case 53:
 					{
-					this.state = 78;
+					this.state = 108;
 					this.newline();
 					}
 					break;
@@ -240,11 +285,11 @@ export default class MasciiParser extends Parser {
 					throw new NoViableAltException(this);
 				}
 				}
-				this.state = 83;
+				this.state = 113;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 			}
-			this.state = 84;
+			this.state = 114;
 			this.match(MasciiParser.EOF);
 			}
 		}
@@ -271,13 +316,13 @@ export default class MasciiParser extends Parser {
 			let _alt: number;
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 89;
+			this.state = 119;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
 			while (_la===23 || _la===24) {
 				{
 				{
-				this.state = 86;
+				this.state = 116;
 				_la = this._input.LA(1);
 				if(!(_la===23 || _la===24)) {
 				this._errHandler.recoverInline(this);
@@ -288,52 +333,52 @@ export default class MasciiParser extends Parser {
 				}
 				}
 				}
-				this.state = 91;
+				this.state = 121;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 			}
-			this.state = 92;
+			this.state = 122;
 			this.match(MasciiParser.OPEN_META);
-			this.state = 96;
+			this.state = 126;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			while (_la===38) {
+			while (_la===48) {
 				{
 				{
-				this.state = 93;
+				this.state = 123;
 				this.match(MasciiParser.M_NEWLINE);
 				}
 				}
-				this.state = 98;
+				this.state = 128;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 			}
-			this.state = 99;
+			this.state = 129;
 			this.headers();
-			this.state = 103;
+			this.state = 133;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			while (_la===38) {
+			while (_la===48) {
 				{
 				{
-				this.state = 100;
+				this.state = 130;
 				this.match(MasciiParser.M_NEWLINE);
 				}
 				}
-				this.state = 105;
+				this.state = 135;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 			}
-			this.state = 106;
+			this.state = 136;
 			this.match(MasciiParser.CLOSE_META);
-			this.state = 110;
+			this.state = 140;
 			this._errHandler.sync(this);
 			_alt = this._interp.adaptivePredict(this._input, 6, this._ctx);
 			while (_alt !== 2 && _alt !== ATN.INVALID_ALT_NUMBER) {
 				if (_alt === 1) {
 					{
 					{
-					this.state = 107;
+					this.state = 137;
 					_la = this._input.LA(1);
 					if(!(_la===23 || _la===24)) {
 					this._errHandler.recoverInline(this);
@@ -345,7 +390,7 @@ export default class MasciiParser extends Parser {
 					}
 					}
 				}
-				this.state = 112;
+				this.state = 142;
 				this._errHandler.sync(this);
 				_alt = this._interp.adaptivePredict(this._input, 6, this._ctx);
 			}
@@ -374,44 +419,44 @@ export default class MasciiParser extends Parser {
 			let _alt: number;
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 113;
+			this.state = 143;
 			this.header();
-			this.state = 123;
+			this.state = 153;
 			this._errHandler.sync(this);
 			_alt = this._interp.adaptivePredict(this._input, 8, this._ctx);
 			while (_alt !== 2 && _alt !== ATN.INVALID_ALT_NUMBER) {
 				if (_alt === 1) {
 					{
 					{
-					this.state = 115;
+					this.state = 145;
 					this._errHandler.sync(this);
 					_la = this._input.LA(1);
 					do {
 						{
 						{
-						this.state = 114;
+						this.state = 144;
 						this.header_delim();
 						}
 						}
-						this.state = 117;
+						this.state = 147;
 						this._errHandler.sync(this);
 						_la = this._input.LA(1);
-					} while (_la===38 || _la===39);
-					this.state = 119;
+					} while (_la===48 || _la===49);
+					this.state = 149;
 					this.header();
 					}
 					}
 				}
-				this.state = 125;
+				this.state = 155;
 				this._errHandler.sync(this);
 				_alt = this._interp.adaptivePredict(this._input, 8, this._ctx);
 			}
-			this.state = 127;
+			this.state = 157;
 			this._errHandler.sync(this);
 			switch ( this._interp.adaptivePredict(this._input, 9, this._ctx) ) {
 			case 1:
 				{
-				this.state = 126;
+				this.state = 156;
 				this.header_delim();
 				}
 				break;
@@ -440,9 +485,9 @@ export default class MasciiParser extends Parser {
 		try {
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 129;
+			this.state = 159;
 			_la = this._input.LA(1);
-			if(!(_la===38 || _la===39)) {
+			if(!(_la===48 || _la===49)) {
 			this._errHandler.recoverInline(this);
 			}
 			else {
@@ -472,11 +517,11 @@ export default class MasciiParser extends Parser {
 		try {
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 131;
+			this.state = 161;
 			this.header_name();
-			this.state = 132;
+			this.state = 162;
 			this.match(MasciiParser.HEADER_NAME_VAL_SEP);
-			this.state = 133;
+			this.state = 163;
 			this.header_values();
 			}
 		}
@@ -501,7 +546,7 @@ export default class MasciiParser extends Parser {
 		try {
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 135;
+			this.state = 165;
 			this.match(MasciiParser.HEADER_ENTITY);
 			}
 		}
@@ -527,37 +572,37 @@ export default class MasciiParser extends Parser {
 		try {
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 138;
+			this.state = 168;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			if (_la===35 || _la===47) {
+			if (_la===45 || _la===57) {
 				{
-				this.state = 137;
+				this.state = 167;
 				this.header_value();
 				}
 			}
 
-			this.state = 146;
+			this.state = 176;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			while (_la===36) {
+			while (_la===46) {
 				{
 				{
-				this.state = 140;
+				this.state = 170;
 				this.match(MasciiParser.HEADER_VAL_SEP);
-				this.state = 142;
+				this.state = 172;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
-				if (_la===35 || _la===47) {
+				if (_la===45 || _la===57) {
 					{
-					this.state = 141;
+					this.state = 171;
 					this.header_value();
 					}
 				}
 
 				}
 				}
-				this.state = 148;
+				this.state = 178;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 			}
@@ -585,9 +630,9 @@ export default class MasciiParser extends Parser {
 		try {
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 149;
+			this.state = 179;
 			_la = this._input.LA(1);
-			if(!(_la===35 || _la===47)) {
+			if(!(_la===45 || _la===57)) {
 			this._errHandler.recoverInline(this);
 			}
 			else {
@@ -618,18 +663,18 @@ export default class MasciiParser extends Parser {
 			let _alt: number;
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 151;
+			this.state = 181;
 			this.concurrent_block();
-			this.state = 162;
+			this.state = 192;
 			this._errHandler.sync(this);
 			_alt = this._interp.adaptivePredict(this._input, 14, this._ctx);
 			while (_alt !== 2 && _alt !== ATN.INVALID_ALT_NUMBER) {
 				if (_alt === 1) {
 					{
 					{
-					this.state = 152;
+					this.state = 182;
 					this.newline();
-					this.state = 154;
+					this.state = 184;
 					this._errHandler.sync(this);
 					_alt = 1;
 					do {
@@ -637,7 +682,7 @@ export default class MasciiParser extends Parser {
 						case 1:
 							{
 							{
-							this.state = 153;
+							this.state = 183;
 							this.newline();
 							}
 							}
@@ -645,16 +690,16 @@ export default class MasciiParser extends Parser {
 						default:
 							throw new NoViableAltException(this);
 						}
-						this.state = 156;
+						this.state = 186;
 						this._errHandler.sync(this);
 						_alt = this._interp.adaptivePredict(this._input, 13, this._ctx);
 					} while (_alt !== 2 && _alt !== ATN.INVALID_ALT_NUMBER);
-					this.state = 158;
+					this.state = 188;
 					this.concurrent_block();
 					}
 					}
 				}
-				this.state = 164;
+				this.state = 194;
 				this._errHandler.sync(this);
 				_alt = this._interp.adaptivePredict(this._input, 14, this._ctx);
 			}
@@ -682,33 +727,33 @@ export default class MasciiParser extends Parser {
 			let _alt: number;
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 166;
+			this.state = 196;
 			this._errHandler.sync(this);
 			switch ( this._interp.adaptivePredict(this._input, 15, this._ctx) ) {
 			case 1:
 				{
-				this.state = 165;
+				this.state = 195;
 				this.metainfo();
 				}
 				break;
 			}
-			this.state = 168;
+			this.state = 198;
 			this.staves_n_lyricsrow();
-			this.state = 174;
+			this.state = 204;
 			this._errHandler.sync(this);
 			_alt = this._interp.adaptivePredict(this._input, 16, this._ctx);
 			while (_alt !== 2 && _alt !== ATN.INVALID_ALT_NUMBER) {
 				if (_alt === 1) {
 					{
 					{
-					this.state = 169;
+					this.state = 199;
 					this.newline();
-					this.state = 170;
+					this.state = 200;
 					this.staves_n_lyricsrow();
 					}
 					}
 				}
-				this.state = 176;
+				this.state = 206;
 				this._errHandler.sync(this);
 				_alt = this._interp.adaptivePredict(this._input, 16, this._ctx);
 			}
@@ -736,23 +781,23 @@ export default class MasciiParser extends Parser {
 			let _alt: number;
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 177;
+			this.state = 207;
 			this.stavesrow();
-			this.state = 183;
+			this.state = 213;
 			this._errHandler.sync(this);
 			_alt = this._interp.adaptivePredict(this._input, 17, this._ctx);
 			while (_alt !== 2 && _alt !== ATN.INVALID_ALT_NUMBER) {
 				if (_alt === 1) {
 					{
 					{
-					this.state = 178;
+					this.state = 208;
 					this.newline();
-					this.state = 179;
+					this.state = 209;
 					this.lyrics_row();
 					}
 					}
 				}
-				this.state = 185;
+				this.state = 215;
 				this._errHandler.sync(this);
 				_alt = this._interp.adaptivePredict(this._input, 17, this._ctx);
 			}
@@ -777,20 +822,20 @@ export default class MasciiParser extends Parser {
 		let localctx: StavesrowContext = new StavesrowContext(this, this._ctx, this.state);
 		this.enterRule(localctx, 22, MasciiParser.RULE_stavesrow);
 		try {
-			this.state = 188;
+			this.state = 218;
 			this._errHandler.sync(this);
 			switch ( this._interp.adaptivePredict(this._input, 18, this._ctx) ) {
 			case 1:
 				this.enterOuterAlt(localctx, 1);
 				{
-				this.state = 186;
+				this.state = 216;
 				this.stavesrow_first_notempty();
 				}
 				break;
 			case 2:
 				this.enterOuterAlt(localctx, 2);
 				{
-				this.state = 187;
+				this.state = 217;
 				this.stavesrow_first_empty();
 				}
 				break;
@@ -818,35 +863,35 @@ export default class MasciiParser extends Parser {
 		try {
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 190;
+			this.state = 220;
 			this.staff();
-			this.state = 198;
+			this.state = 228;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
 			while (_la===5) {
 				{
 				{
-				this.state = 191;
+				this.state = 221;
 				this.match(MasciiParser.STAFF_SEPARATOR);
-				this.state = 194;
+				this.state = 224;
 				this._errHandler.sync(this);
 				switch ( this._interp.adaptivePredict(this._input, 19, this._ctx) ) {
 				case 1:
 					{
-					this.state = 192;
+					this.state = 222;
 					this.staff();
 					}
 					break;
 				case 2:
 					{
-					this.state = 193;
+					this.state = 223;
 					this.empty_staff();
 					}
 					break;
 				}
 				}
 				}
-				this.state = 200;
+				this.state = 230;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 			}
@@ -874,35 +919,35 @@ export default class MasciiParser extends Parser {
 		try {
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 201;
+			this.state = 231;
 			this.empty_staff();
-			this.state = 207;
+			this.state = 237;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
 			do {
 				{
 				{
-				this.state = 202;
+				this.state = 232;
 				this.match(MasciiParser.STAFF_SEPARATOR);
-				this.state = 205;
+				this.state = 235;
 				this._errHandler.sync(this);
 				switch ( this._interp.adaptivePredict(this._input, 21, this._ctx) ) {
 				case 1:
 					{
-					this.state = 203;
+					this.state = 233;
 					this.staff();
 					}
 					break;
 				case 2:
 					{
-					this.state = 204;
+					this.state = 234;
 					this.empty_staff();
 					}
 					break;
 				}
 				}
 				}
-				this.state = 209;
+				this.state = 239;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 			} while (_la===5);
@@ -929,7 +974,7 @@ export default class MasciiParser extends Parser {
 		try {
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 211;
+			this.state = 241;
 			this.timed_elements();
 			}
 		}
@@ -954,12 +999,12 @@ export default class MasciiParser extends Parser {
 		try {
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 214;
+			this.state = 244;
 			this._errHandler.sync(this);
 			switch ( this._interp.adaptivePredict(this._input, 23, this._ctx) ) {
 			case 1:
 				{
-				this.state = 213;
+				this.state = 243;
 				this.match(MasciiParser.SPACE);
 				}
 				break;
@@ -989,42 +1034,42 @@ export default class MasciiParser extends Parser {
 			let _alt: number;
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 217;
+			this.state = 247;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
 			if (_la===24) {
 				{
-				this.state = 216;
+				this.state = 246;
 				this.match(MasciiParser.SPACE);
 				}
 			}
 
-			this.state = 219;
+			this.state = 249;
 			this.timed_element();
-			this.state = 224;
+			this.state = 254;
 			this._errHandler.sync(this);
 			_alt = this._interp.adaptivePredict(this._input, 25, this._ctx);
 			while (_alt !== 2 && _alt !== ATN.INVALID_ALT_NUMBER) {
 				if (_alt === 1) {
 					{
 					{
-					this.state = 220;
+					this.state = 250;
 					this.match(MasciiParser.SPACE);
-					this.state = 221;
+					this.state = 251;
 					this.timed_element();
 					}
 					}
 				}
-				this.state = 226;
+				this.state = 256;
 				this._errHandler.sync(this);
 				_alt = this._interp.adaptivePredict(this._input, 25, this._ctx);
 			}
-			this.state = 228;
+			this.state = 258;
 			this._errHandler.sync(this);
 			switch ( this._interp.adaptivePredict(this._input, 26, this._ctx) ) {
 			case 1:
 				{
-				this.state = 227;
+				this.state = 257;
 				this.match(MasciiParser.SPACE);
 				}
 				break;
@@ -1054,12 +1099,22 @@ export default class MasciiParser extends Parser {
 			let _alt: number;
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 231;
+			this.state = 261;
 			this._errHandler.sync(this);
 			switch ( this._interp.adaptivePredict(this._input, 27, this._ctx) ) {
 			case 1:
 				{
-				this.state = 230;
+				this.state = 260;
+				this.chord_symbol();
+				}
+				break;
+			}
+			this.state = 264;
+			this._errHandler.sync(this);
+			switch ( this._interp.adaptivePredict(this._input, 28, this._ctx) ) {
+			case 1:
+				{
+				this.state = 263;
 				localctx._inverse_dot = this._input.LT(1);
 				_la = this._input.LA(1);
 				if(!(_la===18 || _la===19)) {
@@ -1072,7 +1127,7 @@ export default class MasciiParser extends Parser {
 				}
 				break;
 			}
-			this.state = 240;
+			this.state = 273;
 			this._errHandler.sync(this);
 			switch (this._input.LA(1)) {
 			case 1:
@@ -1084,14 +1139,14 @@ export default class MasciiParser extends Parser {
 			case 27:
 			case 28:
 				{
-				this.state = 235;
+				this.state = 268;
 				this._errHandler.sync(this);
 				_alt = 1;
 				do {
 					switch (_alt) {
 					case 1:
 						{
-						this.state = 235;
+						this.state = 268;
 						this._errHandler.sync(this);
 						switch (this._input.LA(1)) {
 						case 6:
@@ -1101,14 +1156,14 @@ export default class MasciiParser extends Parser {
 						case 27:
 						case 28:
 							{
-							this.state = 233;
+							this.state = 266;
 							this.notes();
 							}
 							break;
 						case 1:
 						case 3:
 							{
-							this.state = 234;
+							this.state = 267;
 							this.group();
 							}
 							break;
@@ -1120,38 +1175,38 @@ export default class MasciiParser extends Parser {
 					default:
 						throw new NoViableAltException(this);
 					}
-					this.state = 237;
+					this.state = 270;
 					this._errHandler.sync(this);
-					_alt = this._interp.adaptivePredict(this._input, 29, this._ctx);
+					_alt = this._interp.adaptivePredict(this._input, 30, this._ctx);
 				} while (_alt !== 2 && _alt !== ATN.INVALID_ALT_NUMBER);
 				}
 				break;
 			case 12:
 			case 18:
 				{
-				this.state = 239;
+				this.state = 272;
 				this.rest();
 				}
 				break;
 			default:
 				throw new NoViableAltException(this);
 			}
-			this.state = 243;
+			this.state = 276;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
 			if (_la===20) {
 				{
-				this.state = 242;
+				this.state = 275;
 				this.duration_doubled();
 				}
 			}
 
-			this.state = 246;
+			this.state = 279;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
 			if (_la===18 || _la===19) {
 				{
-				this.state = 245;
+				this.state = 278;
 				localctx._normal_dot = this._input.LT(1);
 				_la = this._input.LA(1);
 				if(!(_la===18 || _la===19)) {
@@ -1188,7 +1243,7 @@ export default class MasciiParser extends Parser {
 		try {
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 248;
+			this.state = 281;
 			_la = this._input.LA(1);
 			if(!(_la===12 || _la===18)) {
 			this._errHandler.recoverInline(this);
@@ -1221,19 +1276,19 @@ export default class MasciiParser extends Parser {
 		try {
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 250;
+			this.state = 283;
 			this.match(MasciiParser.TIE);
-			this.state = 252;
+			this.state = 285;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
 			do {
 				{
 				{
-				this.state = 251;
+				this.state = 284;
 				this.match(MasciiParser.TIE);
 				}
 				}
-				this.state = 254;
+				this.state = 287;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 			} while (_la===20);
@@ -1258,20 +1313,20 @@ export default class MasciiParser extends Parser {
 		let localctx: GroupContext = new GroupContext(this, this._ctx, this.state);
 		this.enterRule(localctx, 40, MasciiParser.RULE_group);
 		try {
-			this.state = 258;
+			this.state = 291;
 			this._errHandler.sync(this);
 			switch (this._input.LA(1)) {
 			case 3:
 				this.enterOuterAlt(localctx, 1);
 				{
-				this.state = 256;
+				this.state = 289;
 				this.unscoped_group();
 				}
 				break;
 			case 1:
 				this.enterOuterAlt(localctx, 2);
 				{
-				this.state = 257;
+				this.state = 290;
 				this.scoped_group();
 				}
 				break;
@@ -1300,11 +1355,11 @@ export default class MasciiParser extends Parser {
 		try {
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 260;
+			this.state = 293;
 			this.match(MasciiParser.OPEN_SCOPED);
-			this.state = 261;
+			this.state = 294;
 			this.timed_elements();
-			this.state = 262;
+			this.state = 295;
 			this.match(MasciiParser.CLOSE_SCOPED);
 			}
 		}
@@ -1329,11 +1384,11 @@ export default class MasciiParser extends Parser {
 		try {
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 264;
+			this.state = 297;
 			this.match(MasciiParser.OPEN_UNSCOPED);
-			this.state = 265;
+			this.state = 298;
 			this.timed_elements();
-			this.state = 266;
+			this.state = 299;
 			this.match(MasciiParser.CLOSE_UNSCOPED);
 			}
 		}
@@ -1356,16 +1411,16 @@ export default class MasciiParser extends Parser {
 		let localctx: NotesContext = new NotesContext(this, this._ctx, this.state);
 		this.enterRule(localctx, 46, MasciiParser.RULE_notes);
 		try {
-			this.state = 273;
+			this.state = 306;
 			this._errHandler.sync(this);
-			switch ( this._interp.adaptivePredict(this._input, 35, this._ctx) ) {
+			switch ( this._interp.adaptivePredict(this._input, 36, this._ctx) ) {
 			case 1:
 				this.enterOuterAlt(localctx, 1);
 				{
 				{
-				this.state = 268;
+				this.state = 301;
 				this.notes_end();
-				this.state = 269;
+				this.state = 302;
 				this.notes_start();
 				}
 				}
@@ -1374,7 +1429,7 @@ export default class MasciiParser extends Parser {
 				this.enterOuterAlt(localctx, 2);
 				{
 				{
-				this.state = 271;
+				this.state = 304;
 				this.notes_end();
 				}
 				}
@@ -1383,7 +1438,7 @@ export default class MasciiParser extends Parser {
 				this.enterOuterAlt(localctx, 3);
 				{
 				{
-				this.state = 272;
+				this.state = 305;
 				this.notes_start();
 				}
 				}
@@ -1412,7 +1467,7 @@ export default class MasciiParser extends Parser {
 			let _alt: number;
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 276;
+			this.state = 309;
 			this._errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -1420,7 +1475,7 @@ export default class MasciiParser extends Parser {
 				case 1:
 					{
 					{
-					this.state = 275;
+					this.state = 308;
 					this.note_start();
 					}
 					}
@@ -1428,9 +1483,9 @@ export default class MasciiParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				this.state = 278;
+				this.state = 311;
 				this._errHandler.sync(this);
-				_alt = this._interp.adaptivePredict(this._input, 36, this._ctx);
+				_alt = this._interp.adaptivePredict(this._input, 37, this._ctx);
 			} while (_alt !== 2 && _alt !== ATN.INVALID_ALT_NUMBER);
 			}
 		}
@@ -1455,14 +1510,14 @@ export default class MasciiParser extends Parser {
 		try {
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 280;
+			this.state = 313;
 			this.pitch();
-			this.state = 282;
+			this.state = 315;
 			this._errHandler.sync(this);
-			switch ( this._interp.adaptivePredict(this._input, 37, this._ctx) ) {
+			switch ( this._interp.adaptivePredict(this._input, 38, this._ctx) ) {
 			case 1:
 				{
-				this.state = 281;
+				this.state = 314;
 				this.note_tie();
 				}
 				break;
@@ -1490,7 +1545,7 @@ export default class MasciiParser extends Parser {
 		try {
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 284;
+			this.state = 317;
 			this.match(MasciiParser.TIE);
 			}
 		}
@@ -1514,20 +1569,20 @@ export default class MasciiParser extends Parser {
 		this.enterRule(localctx, 54, MasciiParser.RULE_notes_end);
 		try {
 			let _alt: number;
-			this.state = 292;
+			this.state = 325;
 			this._errHandler.sync(this);
-			switch ( this._interp.adaptivePredict(this._input, 39, this._ctx) ) {
+			switch ( this._interp.adaptivePredict(this._input, 40, this._ctx) ) {
 			case 1:
 				this.enterOuterAlt(localctx, 1);
 				{
-				this.state = 286;
+				this.state = 319;
 				this.note_end_all();
 				}
 				break;
 			case 2:
 				this.enterOuterAlt(localctx, 2);
 				{
-				this.state = 288;
+				this.state = 321;
 				this._errHandler.sync(this);
 				_alt = 1;
 				do {
@@ -1535,7 +1590,7 @@ export default class MasciiParser extends Parser {
 					case 1:
 						{
 						{
-						this.state = 287;
+						this.state = 320;
 						this.note_end_one();
 						}
 						}
@@ -1543,9 +1598,9 @@ export default class MasciiParser extends Parser {
 					default:
 						throw new NoViableAltException(this);
 					}
-					this.state = 290;
+					this.state = 323;
 					this._errHandler.sync(this);
-					_alt = this._interp.adaptivePredict(this._input, 38, this._ctx);
+					_alt = this._interp.adaptivePredict(this._input, 39, this._ctx);
 				} while (_alt !== 2 && _alt !== ATN.INVALID_ALT_NUMBER);
 				}
 				break;
@@ -1572,9 +1627,9 @@ export default class MasciiParser extends Parser {
 		try {
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 294;
+			this.state = 327;
 			this.match(MasciiParser.TIE);
-			this.state = 295;
+			this.state = 328;
 			this.pitch();
 			}
 		}
@@ -1598,7 +1653,7 @@ export default class MasciiParser extends Parser {
 		this.enterRule(localctx, 58, MasciiParser.RULE_pitch);
 		let _la: number;
 		try {
-			this.state = 306;
+			this.state = 339;
 			this._errHandler.sync(this);
 			switch (this._input.LA(1)) {
 			case 6:
@@ -1607,19 +1662,19 @@ export default class MasciiParser extends Parser {
 			case 28:
 				this.enterOuterAlt(localctx, 1);
 				{
-				this.state = 299;
+				this.state = 332;
 				this._errHandler.sync(this);
 				switch (this._input.LA(1)) {
 				case 27:
 				case 28:
 					{
-					this.state = 297;
+					this.state = 330;
 					this.abs_pitch_range();
 					}
 					break;
 				case 6:
 					{
-					this.state = 298;
+					this.state = 331;
 					this.match(MasciiParser.AMPLIFIERS);
 					}
 					break;
@@ -1628,14 +1683,14 @@ export default class MasciiParser extends Parser {
 				default:
 					break;
 				}
-				this.state = 301;
+				this.state = 334;
 				this.match(MasciiParser.REL_PITCH);
-				this.state = 303;
+				this.state = 336;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 				if ((((_la) & ~0x1F) === 0 && ((1 << _la) & 253952) !== 0)) {
 					{
-					this.state = 302;
+					this.state = 335;
 					this.accidental();
 					}
 				}
@@ -1645,7 +1700,7 @@ export default class MasciiParser extends Parser {
 			case 11:
 				this.enterOuterAlt(localctx, 2);
 				{
-				this.state = 305;
+				this.state = 338;
 				this.match(MasciiParser.REPEAT_ELEMENT);
 				}
 				break;
@@ -1675,7 +1730,7 @@ export default class MasciiParser extends Parser {
 		try {
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 308;
+			this.state = 341;
 			_la = this._input.LA(1);
 			if(!(_la===27 || _la===28)) {
 			this._errHandler.recoverInline(this);
@@ -1705,59 +1760,59 @@ export default class MasciiParser extends Parser {
 		let localctx: AccidentalContext = new AccidentalContext(this, this._ctx, this.state);
 		this.enterRule(localctx, 62, MasciiParser.RULE_accidental);
 		try {
-			this.state = 319;
+			this.state = 352;
 			this._errHandler.sync(this);
-			switch ( this._interp.adaptivePredict(this._input, 43, this._ctx) ) {
+			switch ( this._interp.adaptivePredict(this._input, 44, this._ctx) ) {
 			case 1:
 				this.enterOuterAlt(localctx, 1);
 				{
-				this.state = 310;
+				this.state = 343;
 				this.match(MasciiParser.DBL_FLAT);
 				}
 				break;
 			case 2:
 				this.enterOuterAlt(localctx, 2);
 				{
-				this.state = 311;
+				this.state = 344;
 				this.match(MasciiParser.DBL_SHARP);
 				}
 				break;
 			case 3:
 				this.enterOuterAlt(localctx, 3);
 				{
-				this.state = 312;
+				this.state = 345;
 				this.match(MasciiParser.NATURAL);
-				this.state = 313;
+				this.state = 346;
 				this.match(MasciiParser.SHARP);
 				}
 				break;
 			case 4:
 				this.enterOuterAlt(localctx, 4);
 				{
-				this.state = 314;
+				this.state = 347;
 				this.match(MasciiParser.NATURAL);
-				this.state = 315;
+				this.state = 348;
 				this.match(MasciiParser.FLAT);
 				}
 				break;
 			case 5:
 				this.enterOuterAlt(localctx, 5);
 				{
-				this.state = 316;
+				this.state = 349;
 				this.match(MasciiParser.SHARP);
 				}
 				break;
 			case 6:
 				this.enterOuterAlt(localctx, 6);
 				{
-				this.state = 317;
+				this.state = 350;
 				this.match(MasciiParser.FLAT);
 				}
 				break;
 			case 7:
 				this.enterOuterAlt(localctx, 7);
 				{
-				this.state = 318;
+				this.state = 351;
 				this.match(MasciiParser.NATURAL);
 				}
 				break;
@@ -1784,9 +1839,9 @@ export default class MasciiParser extends Parser {
 		try {
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 321;
+			this.state = 354;
 			this.match(MasciiParser.TIE);
-			this.state = 322;
+			this.state = 355;
 			this.match(MasciiParser.NOTE_END_ALL);
 			}
 		}
@@ -1812,9 +1867,9 @@ export default class MasciiParser extends Parser {
 		try {
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 324;
+			this.state = 357;
 			_la = this._input.LA(1);
-			if(!(_la===23 || _la===43)) {
+			if(!(_la===23 || _la===53)) {
 			this._errHandler.recoverInline(this);
 			}
 			else {
@@ -1845,16 +1900,16 @@ export default class MasciiParser extends Parser {
 		try {
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 326;
+			this.state = 359;
 			this.match(MasciiParser.OPEN_LYRICS);
-			this.state = 327;
+			this.state = 360;
 			this.match(MasciiParser.LYRICS);
-			this.state = 329;
+			this.state = 362;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			if (_la===42) {
+			if (_la===52) {
 				{
-				this.state = 328;
+				this.state = 361;
 				this.match(MasciiParser.CLOSE_LYRICS);
 				}
 			}
@@ -1875,116 +1930,712 @@ export default class MasciiParser extends Parser {
 		}
 		return localctx;
 	}
+	// @RuleVersion(0)
+	public chord_symbol(): Chord_symbolContext {
+		let localctx: Chord_symbolContext = new Chord_symbolContext(this, this._ctx, this.state);
+		this.enterRule(localctx, 70, MasciiParser.RULE_chord_symbol);
+		let _la: number;
+		try {
+			this.enterOuterAlt(localctx, 1);
+			{
+			this.state = 364;
+			this.chord_root();
+			this.state = 366;
+			this._errHandler.sync(this);
+			_la = this._input.LA(1);
+			if (((((_la - 27)) & ~0x1F) === 0 && ((1 << (_la - 27)) & 16321) !== 0)) {
+				{
+				this.state = 365;
+				this.chord_type();
+				}
+			}
 
-	public static readonly _serializedATN: number[] = [4,1,47,332,2,0,7,0,2,
+			this.state = 369;
+			this._errHandler.sync(this);
+			switch ( this._interp.adaptivePredict(this._input, 47, this._ctx) ) {
+			case 1:
+				{
+				this.state = 368;
+				this.alterations();
+				}
+				break;
+			}
+			this.state = 372;
+			this._errHandler.sync(this);
+			_la = this._input.LA(1);
+			if (_la===41) {
+				{
+				this.state = 371;
+				this.slash_bass();
+				}
+			}
+
+			this.state = 374;
+			this.match(MasciiParser.COLON);
+			}
+		}
+		catch (re) {
+			if (re instanceof RecognitionException) {
+				localctx.exception = re;
+				this._errHandler.reportError(this, re);
+				this._errHandler.recover(this, re);
+			} else {
+				throw re;
+			}
+		}
+		finally {
+			this.exitRule();
+		}
+		return localctx;
+	}
+	// @RuleVersion(0)
+	public chord_root(): Chord_rootContext {
+		let localctx: Chord_rootContext = new Chord_rootContext(this, this._ctx, this.state);
+		this.enterRule(localctx, 72, MasciiParser.RULE_chord_root);
+		try {
+			this.enterOuterAlt(localctx, 1);
+			{
+			this.state = 376;
+			this.match(MasciiParser.REL_PITCH);
+			}
+		}
+		catch (re) {
+			if (re instanceof RecognitionException) {
+				localctx.exception = re;
+				this._errHandler.reportError(this, re);
+				this._errHandler.recover(this, re);
+			} else {
+				throw re;
+			}
+		}
+		finally {
+			this.exitRule();
+		}
+		return localctx;
+	}
+	// @RuleVersion(0)
+	public chord_type(): Chord_typeContext {
+		let localctx: Chord_typeContext = new Chord_typeContext(this, this._ctx, this.state);
+		this.enterRule(localctx, 74, MasciiParser.RULE_chord_type);
+		try {
+			this.state = 386;
+			this._errHandler.sync(this);
+			switch (this._input.LA(1)) {
+			case 34:
+				this.enterOuterAlt(localctx, 1);
+				{
+				this.state = 378;
+				this.chord_type_major();
+				}
+				break;
+			case 33:
+				this.enterOuterAlt(localctx, 2);
+				{
+				this.state = 379;
+				this.chord_type_minor();
+				}
+				break;
+			case 35:
+				this.enterOuterAlt(localctx, 3);
+				{
+				this.state = 380;
+				this.chord_type_aug();
+				}
+				break;
+			case 27:
+			case 36:
+				this.enterOuterAlt(localctx, 4);
+				{
+				this.state = 381;
+				this.chord_type_hdim();
+				}
+				break;
+			case 37:
+				this.enterOuterAlt(localctx, 5);
+				{
+				this.state = 382;
+				this.chord_type_dim();
+				}
+				break;
+			case 38:
+				this.enterOuterAlt(localctx, 6);
+				{
+				this.state = 383;
+				this.chord_type_dom();
+				}
+				break;
+			case 39:
+				this.enterOuterAlt(localctx, 7);
+				{
+				this.state = 384;
+				this.chord_type_sus();
+				}
+				break;
+			case 40:
+				this.enterOuterAlt(localctx, 8);
+				{
+				this.state = 385;
+				this.chord_type_add();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (re) {
+			if (re instanceof RecognitionException) {
+				localctx.exception = re;
+				this._errHandler.reportError(this, re);
+				this._errHandler.recover(this, re);
+			} else {
+				throw re;
+			}
+		}
+		finally {
+			this.exitRule();
+		}
+		return localctx;
+	}
+	// @RuleVersion(0)
+	public chord_type_major(): Chord_type_majorContext {
+		let localctx: Chord_type_majorContext = new Chord_type_majorContext(this, this._ctx, this.state);
+		this.enterRule(localctx, 76, MasciiParser.RULE_chord_type_major);
+		try {
+			this.enterOuterAlt(localctx, 1);
+			{
+			this.state = 388;
+			this.match(MasciiParser.CHORD_TYPE_MAJOR);
+			}
+		}
+		catch (re) {
+			if (re instanceof RecognitionException) {
+				localctx.exception = re;
+				this._errHandler.reportError(this, re);
+				this._errHandler.recover(this, re);
+			} else {
+				throw re;
+			}
+		}
+		finally {
+			this.exitRule();
+		}
+		return localctx;
+	}
+	// @RuleVersion(0)
+	public chord_type_minor(): Chord_type_minorContext {
+		let localctx: Chord_type_minorContext = new Chord_type_minorContext(this, this._ctx, this.state);
+		this.enterRule(localctx, 78, MasciiParser.RULE_chord_type_minor);
+		try {
+			this.enterOuterAlt(localctx, 1);
+			{
+			this.state = 390;
+			this.match(MasciiParser.CHORD_TYPE_MINOR);
+			}
+		}
+		catch (re) {
+			if (re instanceof RecognitionException) {
+				localctx.exception = re;
+				this._errHandler.reportError(this, re);
+				this._errHandler.recover(this, re);
+			} else {
+				throw re;
+			}
+		}
+		finally {
+			this.exitRule();
+		}
+		return localctx;
+	}
+	// @RuleVersion(0)
+	public chord_type_aug(): Chord_type_augContext {
+		let localctx: Chord_type_augContext = new Chord_type_augContext(this, this._ctx, this.state);
+		this.enterRule(localctx, 80, MasciiParser.RULE_chord_type_aug);
+		try {
+			this.enterOuterAlt(localctx, 1);
+			{
+			this.state = 392;
+			this.match(MasciiParser.CHORD_TYPE_AUG);
+			}
+		}
+		catch (re) {
+			if (re instanceof RecognitionException) {
+				localctx.exception = re;
+				this._errHandler.reportError(this, re);
+				this._errHandler.recover(this, re);
+			} else {
+				throw re;
+			}
+		}
+		finally {
+			this.exitRule();
+		}
+		return localctx;
+	}
+	// @RuleVersion(0)
+	public chord_type_hdim(): Chord_type_hdimContext {
+		let localctx: Chord_type_hdimContext = new Chord_type_hdimContext(this, this._ctx, this.state);
+		this.enterRule(localctx, 82, MasciiParser.RULE_chord_type_hdim);
+		let _la: number;
+		try {
+			this.enterOuterAlt(localctx, 1);
+			{
+			this.state = 394;
+			_la = this._input.LA(1);
+			if(!(_la===27 || _la===36)) {
+			this._errHandler.recoverInline(this);
+			}
+			else {
+				this._errHandler.reportMatch(this);
+			    this.consume();
+			}
+			}
+		}
+		catch (re) {
+			if (re instanceof RecognitionException) {
+				localctx.exception = re;
+				this._errHandler.reportError(this, re);
+				this._errHandler.recover(this, re);
+			} else {
+				throw re;
+			}
+		}
+		finally {
+			this.exitRule();
+		}
+		return localctx;
+	}
+	// @RuleVersion(0)
+	public chord_type_dim(): Chord_type_dimContext {
+		let localctx: Chord_type_dimContext = new Chord_type_dimContext(this, this._ctx, this.state);
+		this.enterRule(localctx, 84, MasciiParser.RULE_chord_type_dim);
+		try {
+			this.enterOuterAlt(localctx, 1);
+			{
+			this.state = 396;
+			this.match(MasciiParser.CHORD_TYPE_DIM);
+			}
+		}
+		catch (re) {
+			if (re instanceof RecognitionException) {
+				localctx.exception = re;
+				this._errHandler.reportError(this, re);
+				this._errHandler.recover(this, re);
+			} else {
+				throw re;
+			}
+		}
+		finally {
+			this.exitRule();
+		}
+		return localctx;
+	}
+	// @RuleVersion(0)
+	public chord_type_dom(): Chord_type_domContext {
+		let localctx: Chord_type_domContext = new Chord_type_domContext(this, this._ctx, this.state);
+		this.enterRule(localctx, 86, MasciiParser.RULE_chord_type_dom);
+		try {
+			this.enterOuterAlt(localctx, 1);
+			{
+			this.state = 398;
+			this.match(MasciiParser.CHORD_TYPE_DOM);
+			}
+		}
+		catch (re) {
+			if (re instanceof RecognitionException) {
+				localctx.exception = re;
+				this._errHandler.reportError(this, re);
+				this._errHandler.recover(this, re);
+			} else {
+				throw re;
+			}
+		}
+		finally {
+			this.exitRule();
+		}
+		return localctx;
+	}
+	// @RuleVersion(0)
+	public chord_type_sus(): Chord_type_susContext {
+		let localctx: Chord_type_susContext = new Chord_type_susContext(this, this._ctx, this.state);
+		this.enterRule(localctx, 88, MasciiParser.RULE_chord_type_sus);
+		try {
+			this.enterOuterAlt(localctx, 1);
+			{
+			this.state = 400;
+			this.match(MasciiParser.CHORD_TYPE_SUS);
+			}
+		}
+		catch (re) {
+			if (re instanceof RecognitionException) {
+				localctx.exception = re;
+				this._errHandler.reportError(this, re);
+				this._errHandler.recover(this, re);
+			} else {
+				throw re;
+			}
+		}
+		finally {
+			this.exitRule();
+		}
+		return localctx;
+	}
+	// @RuleVersion(0)
+	public chord_type_add(): Chord_type_addContext {
+		let localctx: Chord_type_addContext = new Chord_type_addContext(this, this._ctx, this.state);
+		this.enterRule(localctx, 90, MasciiParser.RULE_chord_type_add);
+		try {
+			this.enterOuterAlt(localctx, 1);
+			{
+			this.state = 402;
+			this.match(MasciiParser.CHORD_TYPE_ADD);
+			}
+		}
+		catch (re) {
+			if (re instanceof RecognitionException) {
+				localctx.exception = re;
+				this._errHandler.reportError(this, re);
+				this._errHandler.recover(this, re);
+			} else {
+				throw re;
+			}
+		}
+		finally {
+			this.exitRule();
+		}
+		return localctx;
+	}
+	// @RuleVersion(0)
+	public alterations(): AlterationsContext {
+		let localctx: AlterationsContext = new AlterationsContext(this, this._ctx, this.state);
+		this.enterRule(localctx, 92, MasciiParser.RULE_alterations);
+		let _la: number;
+		try {
+			this.enterOuterAlt(localctx, 1);
+			{
+			this.state = 408;
+			this._errHandler.sync(this);
+			_la = this._input.LA(1);
+			while ((((_la) & ~0x1F) === 0 && ((1 << _la) & 98306) !== 0) || _la===58) {
+				{
+				this.state = 406;
+				this._errHandler.sync(this);
+				switch (this._input.LA(1)) {
+				case 15:
+				case 16:
+				case 58:
+					{
+					this.state = 404;
+					this.alteration();
+					}
+					break;
+				case 1:
+					{
+					this.state = 405;
+					this.alteration_with_parens();
+					}
+					break;
+				default:
+					throw new NoViableAltException(this);
+				}
+				}
+				this.state = 410;
+				this._errHandler.sync(this);
+				_la = this._input.LA(1);
+			}
+			}
+		}
+		catch (re) {
+			if (re instanceof RecognitionException) {
+				localctx.exception = re;
+				this._errHandler.reportError(this, re);
+				this._errHandler.recover(this, re);
+			} else {
+				throw re;
+			}
+		}
+		finally {
+			this.exitRule();
+		}
+		return localctx;
+	}
+	// @RuleVersion(0)
+	public alteration_with_parens(): Alteration_with_parensContext {
+		let localctx: Alteration_with_parensContext = new Alteration_with_parensContext(this, this._ctx, this.state);
+		this.enterRule(localctx, 94, MasciiParser.RULE_alteration_with_parens);
+		let _la: number;
+		try {
+			this.enterOuterAlt(localctx, 1);
+			{
+			this.state = 411;
+			this.match(MasciiParser.OPEN_SCOPED);
+			this.state = 412;
+			this.alteration();
+			this.state = 419;
+			this._errHandler.sync(this);
+			_la = this._input.LA(1);
+			while ((((_la) & ~0x1F) === 0 && ((1 << _la) & 16875520) !== 0) || _la===58) {
+				{
+				{
+				this.state = 414;
+				this._errHandler.sync(this);
+				_la = this._input.LA(1);
+				if (_la===24) {
+					{
+					this.state = 413;
+					this.match(MasciiParser.SPACE);
+					}
+				}
+
+				this.state = 416;
+				this.alteration();
+				}
+				}
+				this.state = 421;
+				this._errHandler.sync(this);
+				_la = this._input.LA(1);
+			}
+			this.state = 422;
+			this.match(MasciiParser.CLOSE_SCOPED);
+			}
+		}
+		catch (re) {
+			if (re instanceof RecognitionException) {
+				localctx.exception = re;
+				this._errHandler.reportError(this, re);
+				this._errHandler.recover(this, re);
+			} else {
+				throw re;
+			}
+		}
+		finally {
+			this.exitRule();
+		}
+		return localctx;
+	}
+	// @RuleVersion(0)
+	public alteration(): AlterationContext {
+		let localctx: AlterationContext = new AlterationContext(this, this._ctx, this.state);
+		this.enterRule(localctx, 96, MasciiParser.RULE_alteration);
+		let _la: number;
+		try {
+			this.enterOuterAlt(localctx, 1);
+			{
+			this.state = 425;
+			this._errHandler.sync(this);
+			_la = this._input.LA(1);
+			if (_la===15 || _la===16) {
+				{
+				this.state = 424;
+				_la = this._input.LA(1);
+				if(!(_la===15 || _la===16)) {
+				this._errHandler.recoverInline(this);
+				}
+				else {
+					this._errHandler.reportMatch(this);
+				    this.consume();
+				}
+				}
+			}
+
+			this.state = 427;
+			this.match(MasciiParser.NONZERO);
+			this.state = 429;
+			this._errHandler.sync(this);
+			switch ( this._interp.adaptivePredict(this._input, 55, this._ctx) ) {
+			case 1:
+				{
+				this.state = 428;
+				this.match(MasciiParser.NONZERO);
+				}
+				break;
+			}
+			}
+		}
+		catch (re) {
+			if (re instanceof RecognitionException) {
+				localctx.exception = re;
+				this._errHandler.reportError(this, re);
+				this._errHandler.recover(this, re);
+			} else {
+				throw re;
+			}
+		}
+		finally {
+			this.exitRule();
+		}
+		return localctx;
+	}
+	// @RuleVersion(0)
+	public slash_bass(): Slash_bassContext {
+		let localctx: Slash_bassContext = new Slash_bassContext(this, this._ctx, this.state);
+		this.enterRule(localctx, 98, MasciiParser.RULE_slash_bass);
+		try {
+			this.enterOuterAlt(localctx, 1);
+			{
+			this.state = 431;
+			this.match(MasciiParser.SLASH);
+			this.state = 432;
+			this.match(MasciiParser.REL_PITCH);
+			}
+		}
+		catch (re) {
+			if (re instanceof RecognitionException) {
+				localctx.exception = re;
+				this._errHandler.reportError(this, re);
+				this._errHandler.recover(this, re);
+			} else {
+				throw re;
+			}
+		}
+		finally {
+			this.exitRule();
+		}
+		return localctx;
+	}
+
+	public static readonly _serializedATN: number[] = [4,1,58,435,2,0,7,0,2,
 	1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,7,7,2,8,7,8,2,9,7,9,2,
 	10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,14,7,14,2,15,7,15,2,16,7,16,2,17,
 	7,17,2,18,7,18,2,19,7,19,2,20,7,20,2,21,7,21,2,22,7,22,2,23,7,23,2,24,7,
 	24,2,25,7,25,2,26,7,26,2,27,7,27,2,28,7,28,2,29,7,29,2,30,7,30,2,31,7,31,
-	2,32,7,32,2,33,7,33,2,34,7,34,1,0,5,0,72,8,0,10,0,12,0,75,9,0,1,0,1,0,1,
-	0,5,0,80,8,0,10,0,12,0,83,9,0,1,0,1,0,1,1,5,1,88,8,1,10,1,12,1,91,9,1,1,
-	1,1,1,5,1,95,8,1,10,1,12,1,98,9,1,1,1,1,1,5,1,102,8,1,10,1,12,1,105,9,1,
-	1,1,1,1,5,1,109,8,1,10,1,12,1,112,9,1,1,2,1,2,4,2,116,8,2,11,2,12,2,117,
-	1,2,1,2,5,2,122,8,2,10,2,12,2,125,9,2,1,2,3,2,128,8,2,1,3,1,3,1,4,1,4,1,
-	4,1,4,1,5,1,5,1,6,3,6,139,8,6,1,6,1,6,3,6,143,8,6,5,6,145,8,6,10,6,12,6,
-	148,9,6,1,7,1,7,1,8,1,8,1,8,4,8,155,8,8,11,8,12,8,156,1,8,1,8,5,8,161,8,
-	8,10,8,12,8,164,9,8,1,9,3,9,167,8,9,1,9,1,9,1,9,1,9,5,9,173,8,9,10,9,12,
-	9,176,9,9,1,10,1,10,1,10,1,10,5,10,182,8,10,10,10,12,10,185,9,10,1,11,1,
-	11,3,11,189,8,11,1,12,1,12,1,12,1,12,3,12,195,8,12,5,12,197,8,12,10,12,
-	12,12,200,9,12,1,13,1,13,1,13,1,13,3,13,206,8,13,4,13,208,8,13,11,13,12,
-	13,209,1,14,1,14,1,15,3,15,215,8,15,1,16,3,16,218,8,16,1,16,1,16,1,16,5,
-	16,223,8,16,10,16,12,16,226,9,16,1,16,3,16,229,8,16,1,17,3,17,232,8,17,
-	1,17,1,17,4,17,236,8,17,11,17,12,17,237,1,17,3,17,241,8,17,1,17,3,17,244,
-	8,17,1,17,3,17,247,8,17,1,18,1,18,1,19,1,19,4,19,253,8,19,11,19,12,19,254,
-	1,20,1,20,3,20,259,8,20,1,21,1,21,1,21,1,21,1,22,1,22,1,22,1,22,1,23,1,
-	23,1,23,1,23,1,23,3,23,274,8,23,1,24,4,24,277,8,24,11,24,12,24,278,1,25,
-	1,25,3,25,283,8,25,1,26,1,26,1,27,1,27,4,27,289,8,27,11,27,12,27,290,3,
-	27,293,8,27,1,28,1,28,1,28,1,29,1,29,3,29,300,8,29,1,29,1,29,3,29,304,8,
-	29,1,29,3,29,307,8,29,1,30,1,30,1,31,1,31,1,31,1,31,1,31,1,31,1,31,1,31,
-	1,31,3,31,320,8,31,1,32,1,32,1,32,1,33,1,33,1,34,1,34,1,34,3,34,330,8,34,
-	1,34,0,0,35,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,
-	44,46,48,50,52,54,56,58,60,62,64,66,68,0,7,1,0,23,24,1,0,38,39,2,0,35,35,
-	47,47,1,0,18,19,2,0,12,12,18,18,1,0,27,28,2,0,23,23,43,43,348,0,73,1,0,
-	0,0,2,89,1,0,0,0,4,113,1,0,0,0,6,129,1,0,0,0,8,131,1,0,0,0,10,135,1,0,0,
-	0,12,138,1,0,0,0,14,149,1,0,0,0,16,151,1,0,0,0,18,166,1,0,0,0,20,177,1,
-	0,0,0,22,188,1,0,0,0,24,190,1,0,0,0,26,201,1,0,0,0,28,211,1,0,0,0,30,214,
-	1,0,0,0,32,217,1,0,0,0,34,231,1,0,0,0,36,248,1,0,0,0,38,250,1,0,0,0,40,
-	258,1,0,0,0,42,260,1,0,0,0,44,264,1,0,0,0,46,273,1,0,0,0,48,276,1,0,0,0,
-	50,280,1,0,0,0,52,284,1,0,0,0,54,292,1,0,0,0,56,294,1,0,0,0,58,306,1,0,
-	0,0,60,308,1,0,0,0,62,319,1,0,0,0,64,321,1,0,0,0,66,324,1,0,0,0,68,326,
-	1,0,0,0,70,72,7,0,0,0,71,70,1,0,0,0,72,75,1,0,0,0,73,71,1,0,0,0,73,74,1,
-	0,0,0,74,76,1,0,0,0,75,73,1,0,0,0,76,81,3,16,8,0,77,80,5,24,0,0,78,80,3,
-	66,33,0,79,77,1,0,0,0,79,78,1,0,0,0,80,83,1,0,0,0,81,79,1,0,0,0,81,82,1,
-	0,0,0,82,84,1,0,0,0,83,81,1,0,0,0,84,85,5,0,0,1,85,1,1,0,0,0,86,88,7,0,
-	0,0,87,86,1,0,0,0,88,91,1,0,0,0,89,87,1,0,0,0,89,90,1,0,0,0,90,92,1,0,0,
-	0,91,89,1,0,0,0,92,96,5,25,0,0,93,95,5,38,0,0,94,93,1,0,0,0,95,98,1,0,0,
-	0,96,94,1,0,0,0,96,97,1,0,0,0,97,99,1,0,0,0,98,96,1,0,0,0,99,103,3,4,2,
-	0,100,102,5,38,0,0,101,100,1,0,0,0,102,105,1,0,0,0,103,101,1,0,0,0,103,
-	104,1,0,0,0,104,106,1,0,0,0,105,103,1,0,0,0,106,110,5,33,0,0,107,109,7,
-	0,0,0,108,107,1,0,0,0,109,112,1,0,0,0,110,108,1,0,0,0,110,111,1,0,0,0,111,
-	3,1,0,0,0,112,110,1,0,0,0,113,123,3,8,4,0,114,116,3,6,3,0,115,114,1,0,0,
-	0,116,117,1,0,0,0,117,115,1,0,0,0,117,118,1,0,0,0,118,119,1,0,0,0,119,120,
-	3,8,4,0,120,122,1,0,0,0,121,115,1,0,0,0,122,125,1,0,0,0,123,121,1,0,0,0,
-	123,124,1,0,0,0,124,127,1,0,0,0,125,123,1,0,0,0,126,128,3,6,3,0,127,126,
-	1,0,0,0,127,128,1,0,0,0,128,5,1,0,0,0,129,130,7,1,0,0,130,7,1,0,0,0,131,
-	132,3,10,5,0,132,133,5,34,0,0,133,134,3,12,6,0,134,9,1,0,0,0,135,136,5,
-	35,0,0,136,11,1,0,0,0,137,139,3,14,7,0,138,137,1,0,0,0,138,139,1,0,0,0,
-	139,146,1,0,0,0,140,142,5,36,0,0,141,143,3,14,7,0,142,141,1,0,0,0,142,143,
-	1,0,0,0,143,145,1,0,0,0,144,140,1,0,0,0,145,148,1,0,0,0,146,144,1,0,0,0,
-	146,147,1,0,0,0,147,13,1,0,0,0,148,146,1,0,0,0,149,150,7,2,0,0,150,15,1,
-	0,0,0,151,162,3,18,9,0,152,154,3,66,33,0,153,155,3,66,33,0,154,153,1,0,
-	0,0,155,156,1,0,0,0,156,154,1,0,0,0,156,157,1,0,0,0,157,158,1,0,0,0,158,
-	159,3,18,9,0,159,161,1,0,0,0,160,152,1,0,0,0,161,164,1,0,0,0,162,160,1,
-	0,0,0,162,163,1,0,0,0,163,17,1,0,0,0,164,162,1,0,0,0,165,167,3,2,1,0,166,
-	165,1,0,0,0,166,167,1,0,0,0,167,168,1,0,0,0,168,174,3,20,10,0,169,170,3,
-	66,33,0,170,171,3,20,10,0,171,173,1,0,0,0,172,169,1,0,0,0,173,176,1,0,0,
-	0,174,172,1,0,0,0,174,175,1,0,0,0,175,19,1,0,0,0,176,174,1,0,0,0,177,183,
-	3,22,11,0,178,179,3,66,33,0,179,180,3,68,34,0,180,182,1,0,0,0,181,178,1,
-	0,0,0,182,185,1,0,0,0,183,181,1,0,0,0,183,184,1,0,0,0,184,21,1,0,0,0,185,
-	183,1,0,0,0,186,189,3,24,12,0,187,189,3,26,13,0,188,186,1,0,0,0,188,187,
-	1,0,0,0,189,23,1,0,0,0,190,198,3,28,14,0,191,194,5,5,0,0,192,195,3,28,14,
-	0,193,195,3,30,15,0,194,192,1,0,0,0,194,193,1,0,0,0,195,197,1,0,0,0,196,
-	191,1,0,0,0,197,200,1,0,0,0,198,196,1,0,0,0,198,199,1,0,0,0,199,25,1,0,
-	0,0,200,198,1,0,0,0,201,207,3,30,15,0,202,205,5,5,0,0,203,206,3,28,14,0,
-	204,206,3,30,15,0,205,203,1,0,0,0,205,204,1,0,0,0,206,208,1,0,0,0,207,202,
-	1,0,0,0,208,209,1,0,0,0,209,207,1,0,0,0,209,210,1,0,0,0,210,27,1,0,0,0,
-	211,212,3,32,16,0,212,29,1,0,0,0,213,215,5,24,0,0,214,213,1,0,0,0,214,215,
-	1,0,0,0,215,31,1,0,0,0,216,218,5,24,0,0,217,216,1,0,0,0,217,218,1,0,0,0,
-	218,219,1,0,0,0,219,224,3,34,17,0,220,221,5,24,0,0,221,223,3,34,17,0,222,
-	220,1,0,0,0,223,226,1,0,0,0,224,222,1,0,0,0,224,225,1,0,0,0,225,228,1,0,
-	0,0,226,224,1,0,0,0,227,229,5,24,0,0,228,227,1,0,0,0,228,229,1,0,0,0,229,
-	33,1,0,0,0,230,232,7,3,0,0,231,230,1,0,0,0,231,232,1,0,0,0,232,240,1,0,
-	0,0,233,236,3,46,23,0,234,236,3,40,20,0,235,233,1,0,0,0,235,234,1,0,0,0,
-	236,237,1,0,0,0,237,235,1,0,0,0,237,238,1,0,0,0,238,241,1,0,0,0,239,241,
-	3,36,18,0,240,235,1,0,0,0,240,239,1,0,0,0,241,243,1,0,0,0,242,244,3,38,
-	19,0,243,242,1,0,0,0,243,244,1,0,0,0,244,246,1,0,0,0,245,247,7,3,0,0,246,
-	245,1,0,0,0,246,247,1,0,0,0,247,35,1,0,0,0,248,249,7,4,0,0,249,37,1,0,0,
-	0,250,252,5,20,0,0,251,253,5,20,0,0,252,251,1,0,0,0,253,254,1,0,0,0,254,
-	252,1,0,0,0,254,255,1,0,0,0,255,39,1,0,0,0,256,259,3,44,22,0,257,259,3,
-	42,21,0,258,256,1,0,0,0,258,257,1,0,0,0,259,41,1,0,0,0,260,261,5,1,0,0,
-	261,262,3,32,16,0,262,263,5,2,0,0,263,43,1,0,0,0,264,265,5,3,0,0,265,266,
-	3,32,16,0,266,267,5,4,0,0,267,45,1,0,0,0,268,269,3,54,27,0,269,270,3,48,
-	24,0,270,274,1,0,0,0,271,274,3,54,27,0,272,274,3,48,24,0,273,268,1,0,0,
-	0,273,271,1,0,0,0,273,272,1,0,0,0,274,47,1,0,0,0,275,277,3,50,25,0,276,
-	275,1,0,0,0,277,278,1,0,0,0,278,276,1,0,0,0,278,279,1,0,0,0,279,49,1,0,
-	0,0,280,282,3,58,29,0,281,283,3,52,26,0,282,281,1,0,0,0,282,283,1,0,0,0,
-	283,51,1,0,0,0,284,285,5,20,0,0,285,53,1,0,0,0,286,293,3,64,32,0,287,289,
-	3,56,28,0,288,287,1,0,0,0,289,290,1,0,0,0,290,288,1,0,0,0,290,291,1,0,0,
-	0,291,293,1,0,0,0,292,286,1,0,0,0,292,288,1,0,0,0,293,55,1,0,0,0,294,295,
-	5,20,0,0,295,296,3,58,29,0,296,57,1,0,0,0,297,300,3,60,30,0,298,300,5,6,
-	0,0,299,297,1,0,0,0,299,298,1,0,0,0,299,300,1,0,0,0,300,301,1,0,0,0,301,
-	303,5,8,0,0,302,304,3,62,31,0,303,302,1,0,0,0,303,304,1,0,0,0,304,307,1,
-	0,0,0,305,307,5,11,0,0,306,299,1,0,0,0,306,305,1,0,0,0,307,59,1,0,0,0,308,
-	309,7,5,0,0,309,61,1,0,0,0,310,320,5,14,0,0,311,320,5,13,0,0,312,313,5,
-	17,0,0,313,320,5,15,0,0,314,315,5,17,0,0,315,320,5,16,0,0,316,320,5,15,
-	0,0,317,320,5,16,0,0,318,320,5,17,0,0,319,310,1,0,0,0,319,311,1,0,0,0,319,
-	312,1,0,0,0,319,314,1,0,0,0,319,316,1,0,0,0,319,317,1,0,0,0,319,318,1,0,
-	0,0,320,63,1,0,0,0,321,322,5,20,0,0,322,323,5,21,0,0,323,65,1,0,0,0,324,
-	325,7,6,0,0,325,67,1,0,0,0,326,327,5,26,0,0,327,329,5,44,0,0,328,330,5,
-	42,0,0,329,328,1,0,0,0,329,330,1,0,0,0,330,69,1,0,0,0,45,73,79,81,89,96,
-	103,110,117,123,127,138,142,146,156,162,166,174,183,188,194,198,205,209,
-	214,217,224,228,231,235,237,240,243,246,254,258,273,278,282,290,292,299,
-	303,306,319,329];
+	2,32,7,32,2,33,7,33,2,34,7,34,2,35,7,35,2,36,7,36,2,37,7,37,2,38,7,38,2,
+	39,7,39,2,40,7,40,2,41,7,41,2,42,7,42,2,43,7,43,2,44,7,44,2,45,7,45,2,46,
+	7,46,2,47,7,47,2,48,7,48,2,49,7,49,1,0,5,0,102,8,0,10,0,12,0,105,9,0,1,
+	0,1,0,1,0,5,0,110,8,0,10,0,12,0,113,9,0,1,0,1,0,1,1,5,1,118,8,1,10,1,12,
+	1,121,9,1,1,1,1,1,5,1,125,8,1,10,1,12,1,128,9,1,1,1,1,1,5,1,132,8,1,10,
+	1,12,1,135,9,1,1,1,1,1,5,1,139,8,1,10,1,12,1,142,9,1,1,2,1,2,4,2,146,8,
+	2,11,2,12,2,147,1,2,1,2,5,2,152,8,2,10,2,12,2,155,9,2,1,2,3,2,158,8,2,1,
+	3,1,3,1,4,1,4,1,4,1,4,1,5,1,5,1,6,3,6,169,8,6,1,6,1,6,3,6,173,8,6,5,6,175,
+	8,6,10,6,12,6,178,9,6,1,7,1,7,1,8,1,8,1,8,4,8,185,8,8,11,8,12,8,186,1,8,
+	1,8,5,8,191,8,8,10,8,12,8,194,9,8,1,9,3,9,197,8,9,1,9,1,9,1,9,1,9,5,9,203,
+	8,9,10,9,12,9,206,9,9,1,10,1,10,1,10,1,10,5,10,212,8,10,10,10,12,10,215,
+	9,10,1,11,1,11,3,11,219,8,11,1,12,1,12,1,12,1,12,3,12,225,8,12,5,12,227,
+	8,12,10,12,12,12,230,9,12,1,13,1,13,1,13,1,13,3,13,236,8,13,4,13,238,8,
+	13,11,13,12,13,239,1,14,1,14,1,15,3,15,245,8,15,1,16,3,16,248,8,16,1,16,
+	1,16,1,16,5,16,253,8,16,10,16,12,16,256,9,16,1,16,3,16,259,8,16,1,17,3,
+	17,262,8,17,1,17,3,17,265,8,17,1,17,1,17,4,17,269,8,17,11,17,12,17,270,
+	1,17,3,17,274,8,17,1,17,3,17,277,8,17,1,17,3,17,280,8,17,1,18,1,18,1,19,
+	1,19,4,19,286,8,19,11,19,12,19,287,1,20,1,20,3,20,292,8,20,1,21,1,21,1,
+	21,1,21,1,22,1,22,1,22,1,22,1,23,1,23,1,23,1,23,1,23,3,23,307,8,23,1,24,
+	4,24,310,8,24,11,24,12,24,311,1,25,1,25,3,25,316,8,25,1,26,1,26,1,27,1,
+	27,4,27,322,8,27,11,27,12,27,323,3,27,326,8,27,1,28,1,28,1,28,1,29,1,29,
+	3,29,333,8,29,1,29,1,29,3,29,337,8,29,1,29,3,29,340,8,29,1,30,1,30,1,31,
+	1,31,1,31,1,31,1,31,1,31,1,31,1,31,1,31,3,31,353,8,31,1,32,1,32,1,32,1,
+	33,1,33,1,34,1,34,1,34,3,34,363,8,34,1,35,1,35,3,35,367,8,35,1,35,3,35,
+	370,8,35,1,35,3,35,373,8,35,1,35,1,35,1,36,1,36,1,37,1,37,1,37,1,37,1,37,
+	1,37,1,37,1,37,3,37,387,8,37,1,38,1,38,1,39,1,39,1,40,1,40,1,41,1,41,1,
+	42,1,42,1,43,1,43,1,44,1,44,1,45,1,45,1,46,1,46,5,46,407,8,46,10,46,12,
+	46,410,9,46,1,47,1,47,1,47,3,47,415,8,47,1,47,5,47,418,8,47,10,47,12,47,
+	421,9,47,1,47,1,47,1,48,3,48,426,8,48,1,48,1,48,3,48,430,8,48,1,49,1,49,
+	1,49,1,49,0,0,50,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,
+	40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,
+	88,90,92,94,96,98,0,9,1,0,23,24,1,0,48,49,2,0,45,45,57,57,1,0,18,19,2,0,
+	12,12,18,18,1,0,27,28,2,0,23,23,53,53,2,0,27,27,36,36,1,0,15,16,453,0,103,
+	1,0,0,0,2,119,1,0,0,0,4,143,1,0,0,0,6,159,1,0,0,0,8,161,1,0,0,0,10,165,
+	1,0,0,0,12,168,1,0,0,0,14,179,1,0,0,0,16,181,1,0,0,0,18,196,1,0,0,0,20,
+	207,1,0,0,0,22,218,1,0,0,0,24,220,1,0,0,0,26,231,1,0,0,0,28,241,1,0,0,0,
+	30,244,1,0,0,0,32,247,1,0,0,0,34,261,1,0,0,0,36,281,1,0,0,0,38,283,1,0,
+	0,0,40,291,1,0,0,0,42,293,1,0,0,0,44,297,1,0,0,0,46,306,1,0,0,0,48,309,
+	1,0,0,0,50,313,1,0,0,0,52,317,1,0,0,0,54,325,1,0,0,0,56,327,1,0,0,0,58,
+	339,1,0,0,0,60,341,1,0,0,0,62,352,1,0,0,0,64,354,1,0,0,0,66,357,1,0,0,0,
+	68,359,1,0,0,0,70,364,1,0,0,0,72,376,1,0,0,0,74,386,1,0,0,0,76,388,1,0,
+	0,0,78,390,1,0,0,0,80,392,1,0,0,0,82,394,1,0,0,0,84,396,1,0,0,0,86,398,
+	1,0,0,0,88,400,1,0,0,0,90,402,1,0,0,0,92,408,1,0,0,0,94,411,1,0,0,0,96,
+	425,1,0,0,0,98,431,1,0,0,0,100,102,7,0,0,0,101,100,1,0,0,0,102,105,1,0,
+	0,0,103,101,1,0,0,0,103,104,1,0,0,0,104,106,1,0,0,0,105,103,1,0,0,0,106,
+	111,3,16,8,0,107,110,5,24,0,0,108,110,3,66,33,0,109,107,1,0,0,0,109,108,
+	1,0,0,0,110,113,1,0,0,0,111,109,1,0,0,0,111,112,1,0,0,0,112,114,1,0,0,0,
+	113,111,1,0,0,0,114,115,5,0,0,1,115,1,1,0,0,0,116,118,7,0,0,0,117,116,1,
+	0,0,0,118,121,1,0,0,0,119,117,1,0,0,0,119,120,1,0,0,0,120,122,1,0,0,0,121,
+	119,1,0,0,0,122,126,5,25,0,0,123,125,5,48,0,0,124,123,1,0,0,0,125,128,1,
+	0,0,0,126,124,1,0,0,0,126,127,1,0,0,0,127,129,1,0,0,0,128,126,1,0,0,0,129,
+	133,3,4,2,0,130,132,5,48,0,0,131,130,1,0,0,0,132,135,1,0,0,0,133,131,1,
+	0,0,0,133,134,1,0,0,0,134,136,1,0,0,0,135,133,1,0,0,0,136,140,5,43,0,0,
+	137,139,7,0,0,0,138,137,1,0,0,0,139,142,1,0,0,0,140,138,1,0,0,0,140,141,
+	1,0,0,0,141,3,1,0,0,0,142,140,1,0,0,0,143,153,3,8,4,0,144,146,3,6,3,0,145,
+	144,1,0,0,0,146,147,1,0,0,0,147,145,1,0,0,0,147,148,1,0,0,0,148,149,1,0,
+	0,0,149,150,3,8,4,0,150,152,1,0,0,0,151,145,1,0,0,0,152,155,1,0,0,0,153,
+	151,1,0,0,0,153,154,1,0,0,0,154,157,1,0,0,0,155,153,1,0,0,0,156,158,3,6,
+	3,0,157,156,1,0,0,0,157,158,1,0,0,0,158,5,1,0,0,0,159,160,7,1,0,0,160,7,
+	1,0,0,0,161,162,3,10,5,0,162,163,5,44,0,0,163,164,3,12,6,0,164,9,1,0,0,
+	0,165,166,5,45,0,0,166,11,1,0,0,0,167,169,3,14,7,0,168,167,1,0,0,0,168,
+	169,1,0,0,0,169,176,1,0,0,0,170,172,5,46,0,0,171,173,3,14,7,0,172,171,1,
+	0,0,0,172,173,1,0,0,0,173,175,1,0,0,0,174,170,1,0,0,0,175,178,1,0,0,0,176,
+	174,1,0,0,0,176,177,1,0,0,0,177,13,1,0,0,0,178,176,1,0,0,0,179,180,7,2,
+	0,0,180,15,1,0,0,0,181,192,3,18,9,0,182,184,3,66,33,0,183,185,3,66,33,0,
+	184,183,1,0,0,0,185,186,1,0,0,0,186,184,1,0,0,0,186,187,1,0,0,0,187,188,
+	1,0,0,0,188,189,3,18,9,0,189,191,1,0,0,0,190,182,1,0,0,0,191,194,1,0,0,
+	0,192,190,1,0,0,0,192,193,1,0,0,0,193,17,1,0,0,0,194,192,1,0,0,0,195,197,
+	3,2,1,0,196,195,1,0,0,0,196,197,1,0,0,0,197,198,1,0,0,0,198,204,3,20,10,
+	0,199,200,3,66,33,0,200,201,3,20,10,0,201,203,1,0,0,0,202,199,1,0,0,0,203,
+	206,1,0,0,0,204,202,1,0,0,0,204,205,1,0,0,0,205,19,1,0,0,0,206,204,1,0,
+	0,0,207,213,3,22,11,0,208,209,3,66,33,0,209,210,3,68,34,0,210,212,1,0,0,
+	0,211,208,1,0,0,0,212,215,1,0,0,0,213,211,1,0,0,0,213,214,1,0,0,0,214,21,
+	1,0,0,0,215,213,1,0,0,0,216,219,3,24,12,0,217,219,3,26,13,0,218,216,1,0,
+	0,0,218,217,1,0,0,0,219,23,1,0,0,0,220,228,3,28,14,0,221,224,5,5,0,0,222,
+	225,3,28,14,0,223,225,3,30,15,0,224,222,1,0,0,0,224,223,1,0,0,0,225,227,
+	1,0,0,0,226,221,1,0,0,0,227,230,1,0,0,0,228,226,1,0,0,0,228,229,1,0,0,0,
+	229,25,1,0,0,0,230,228,1,0,0,0,231,237,3,30,15,0,232,235,5,5,0,0,233,236,
+	3,28,14,0,234,236,3,30,15,0,235,233,1,0,0,0,235,234,1,0,0,0,236,238,1,0,
+	0,0,237,232,1,0,0,0,238,239,1,0,0,0,239,237,1,0,0,0,239,240,1,0,0,0,240,
+	27,1,0,0,0,241,242,3,32,16,0,242,29,1,0,0,0,243,245,5,24,0,0,244,243,1,
+	0,0,0,244,245,1,0,0,0,245,31,1,0,0,0,246,248,5,24,0,0,247,246,1,0,0,0,247,
+	248,1,0,0,0,248,249,1,0,0,0,249,254,3,34,17,0,250,251,5,24,0,0,251,253,
+	3,34,17,0,252,250,1,0,0,0,253,256,1,0,0,0,254,252,1,0,0,0,254,255,1,0,0,
+	0,255,258,1,0,0,0,256,254,1,0,0,0,257,259,5,24,0,0,258,257,1,0,0,0,258,
+	259,1,0,0,0,259,33,1,0,0,0,260,262,3,70,35,0,261,260,1,0,0,0,261,262,1,
+	0,0,0,262,264,1,0,0,0,263,265,7,3,0,0,264,263,1,0,0,0,264,265,1,0,0,0,265,
+	273,1,0,0,0,266,269,3,46,23,0,267,269,3,40,20,0,268,266,1,0,0,0,268,267,
+	1,0,0,0,269,270,1,0,0,0,270,268,1,0,0,0,270,271,1,0,0,0,271,274,1,0,0,0,
+	272,274,3,36,18,0,273,268,1,0,0,0,273,272,1,0,0,0,274,276,1,0,0,0,275,277,
+	3,38,19,0,276,275,1,0,0,0,276,277,1,0,0,0,277,279,1,0,0,0,278,280,7,3,0,
+	0,279,278,1,0,0,0,279,280,1,0,0,0,280,35,1,0,0,0,281,282,7,4,0,0,282,37,
+	1,0,0,0,283,285,5,20,0,0,284,286,5,20,0,0,285,284,1,0,0,0,286,287,1,0,0,
+	0,287,285,1,0,0,0,287,288,1,0,0,0,288,39,1,0,0,0,289,292,3,44,22,0,290,
+	292,3,42,21,0,291,289,1,0,0,0,291,290,1,0,0,0,292,41,1,0,0,0,293,294,5,
+	1,0,0,294,295,3,32,16,0,295,296,5,2,0,0,296,43,1,0,0,0,297,298,5,3,0,0,
+	298,299,3,32,16,0,299,300,5,4,0,0,300,45,1,0,0,0,301,302,3,54,27,0,302,
+	303,3,48,24,0,303,307,1,0,0,0,304,307,3,54,27,0,305,307,3,48,24,0,306,301,
+	1,0,0,0,306,304,1,0,0,0,306,305,1,0,0,0,307,47,1,0,0,0,308,310,3,50,25,
+	0,309,308,1,0,0,0,310,311,1,0,0,0,311,309,1,0,0,0,311,312,1,0,0,0,312,49,
+	1,0,0,0,313,315,3,58,29,0,314,316,3,52,26,0,315,314,1,0,0,0,315,316,1,0,
+	0,0,316,51,1,0,0,0,317,318,5,20,0,0,318,53,1,0,0,0,319,326,3,64,32,0,320,
+	322,3,56,28,0,321,320,1,0,0,0,322,323,1,0,0,0,323,321,1,0,0,0,323,324,1,
+	0,0,0,324,326,1,0,0,0,325,319,1,0,0,0,325,321,1,0,0,0,326,55,1,0,0,0,327,
+	328,5,20,0,0,328,329,3,58,29,0,329,57,1,0,0,0,330,333,3,60,30,0,331,333,
+	5,6,0,0,332,330,1,0,0,0,332,331,1,0,0,0,332,333,1,0,0,0,333,334,1,0,0,0,
+	334,336,5,8,0,0,335,337,3,62,31,0,336,335,1,0,0,0,336,337,1,0,0,0,337,340,
+	1,0,0,0,338,340,5,11,0,0,339,332,1,0,0,0,339,338,1,0,0,0,340,59,1,0,0,0,
+	341,342,7,5,0,0,342,61,1,0,0,0,343,353,5,14,0,0,344,353,5,13,0,0,345,346,
+	5,17,0,0,346,353,5,15,0,0,347,348,5,17,0,0,348,353,5,16,0,0,349,353,5,15,
+	0,0,350,353,5,16,0,0,351,353,5,17,0,0,352,343,1,0,0,0,352,344,1,0,0,0,352,
+	345,1,0,0,0,352,347,1,0,0,0,352,349,1,0,0,0,352,350,1,0,0,0,352,351,1,0,
+	0,0,353,63,1,0,0,0,354,355,5,20,0,0,355,356,5,21,0,0,356,65,1,0,0,0,357,
+	358,7,6,0,0,358,67,1,0,0,0,359,360,5,26,0,0,360,362,5,54,0,0,361,363,5,
+	52,0,0,362,361,1,0,0,0,362,363,1,0,0,0,363,69,1,0,0,0,364,366,3,72,36,0,
+	365,367,3,74,37,0,366,365,1,0,0,0,366,367,1,0,0,0,367,369,1,0,0,0,368,370,
+	3,92,46,0,369,368,1,0,0,0,369,370,1,0,0,0,370,372,1,0,0,0,371,373,3,98,
+	49,0,372,371,1,0,0,0,372,373,1,0,0,0,373,374,1,0,0,0,374,375,5,42,0,0,375,
+	71,1,0,0,0,376,377,5,8,0,0,377,73,1,0,0,0,378,387,3,76,38,0,379,387,3,78,
+	39,0,380,387,3,80,40,0,381,387,3,82,41,0,382,387,3,84,42,0,383,387,3,86,
+	43,0,384,387,3,88,44,0,385,387,3,90,45,0,386,378,1,0,0,0,386,379,1,0,0,
+	0,386,380,1,0,0,0,386,381,1,0,0,0,386,382,1,0,0,0,386,383,1,0,0,0,386,384,
+	1,0,0,0,386,385,1,0,0,0,387,75,1,0,0,0,388,389,5,34,0,0,389,77,1,0,0,0,
+	390,391,5,33,0,0,391,79,1,0,0,0,392,393,5,35,0,0,393,81,1,0,0,0,394,395,
+	7,7,0,0,395,83,1,0,0,0,396,397,5,37,0,0,397,85,1,0,0,0,398,399,5,38,0,0,
+	399,87,1,0,0,0,400,401,5,39,0,0,401,89,1,0,0,0,402,403,5,40,0,0,403,91,
+	1,0,0,0,404,407,3,96,48,0,405,407,3,94,47,0,406,404,1,0,0,0,406,405,1,0,
+	0,0,407,410,1,0,0,0,408,406,1,0,0,0,408,409,1,0,0,0,409,93,1,0,0,0,410,
+	408,1,0,0,0,411,412,5,1,0,0,412,419,3,96,48,0,413,415,5,24,0,0,414,413,
+	1,0,0,0,414,415,1,0,0,0,415,416,1,0,0,0,416,418,3,96,48,0,417,414,1,0,0,
+	0,418,421,1,0,0,0,419,417,1,0,0,0,419,420,1,0,0,0,420,422,1,0,0,0,421,419,
+	1,0,0,0,422,423,5,2,0,0,423,95,1,0,0,0,424,426,7,8,0,0,425,424,1,0,0,0,
+	425,426,1,0,0,0,426,427,1,0,0,0,427,429,5,58,0,0,428,430,5,58,0,0,429,428,
+	1,0,0,0,429,430,1,0,0,0,430,97,1,0,0,0,431,432,5,41,0,0,432,433,5,8,0,0,
+	433,99,1,0,0,0,56,103,109,111,119,126,133,140,147,153,157,168,172,176,186,
+	192,196,204,213,218,224,228,235,239,244,247,254,258,261,264,268,270,273,
+	276,279,287,291,306,311,315,323,325,332,336,339,352,362,366,369,372,386,
+	406,408,414,419,425,429];
 
 	private static __ATN: ATN;
 	public static get _ATN(): ATN {
@@ -2568,6 +3219,9 @@ export class Timed_elementContext extends ParserRuleContext {
 	public rest(): RestContext {
 		return this.getTypedRuleContext(RestContext, 0) as RestContext;
 	}
+	public chord_symbol(): Chord_symbolContext {
+		return this.getTypedRuleContext(Chord_symbolContext, 0) as Chord_symbolContext;
+	}
 	public duration_doubled(): Duration_doubledContext {
 		return this.getTypedRuleContext(Duration_doubledContext, 0) as Duration_doubledContext;
 	}
@@ -3092,6 +3746,438 @@ export class Lyrics_rowContext extends ParserRuleContext {
 	public exitRule(listener: MasciiParserListener): void {
 	    if(listener.exitLyrics_row) {
 	 		listener.exitLyrics_row(this);
+		}
+	}
+}
+
+
+export class Chord_symbolContext extends ParserRuleContext {
+	constructor(parser?: MasciiParser, parent?: ParserRuleContext, invokingState?: number) {
+		super(parent, invokingState);
+    	this.parser = parser;
+	}
+	public chord_root(): Chord_rootContext {
+		return this.getTypedRuleContext(Chord_rootContext, 0) as Chord_rootContext;
+	}
+	public COLON(): TerminalNode {
+		return this.getToken(MasciiParser.COLON, 0);
+	}
+	public chord_type(): Chord_typeContext {
+		return this.getTypedRuleContext(Chord_typeContext, 0) as Chord_typeContext;
+	}
+	public alterations(): AlterationsContext {
+		return this.getTypedRuleContext(AlterationsContext, 0) as AlterationsContext;
+	}
+	public slash_bass(): Slash_bassContext {
+		return this.getTypedRuleContext(Slash_bassContext, 0) as Slash_bassContext;
+	}
+    public get ruleIndex(): number {
+    	return MasciiParser.RULE_chord_symbol;
+	}
+	public enterRule(listener: MasciiParserListener): void {
+	    if(listener.enterChord_symbol) {
+	 		listener.enterChord_symbol(this);
+		}
+	}
+	public exitRule(listener: MasciiParserListener): void {
+	    if(listener.exitChord_symbol) {
+	 		listener.exitChord_symbol(this);
+		}
+	}
+}
+
+
+export class Chord_rootContext extends ParserRuleContext {
+	constructor(parser?: MasciiParser, parent?: ParserRuleContext, invokingState?: number) {
+		super(parent, invokingState);
+    	this.parser = parser;
+	}
+	public REL_PITCH(): TerminalNode {
+		return this.getToken(MasciiParser.REL_PITCH, 0);
+	}
+    public get ruleIndex(): number {
+    	return MasciiParser.RULE_chord_root;
+	}
+	public enterRule(listener: MasciiParserListener): void {
+	    if(listener.enterChord_root) {
+	 		listener.enterChord_root(this);
+		}
+	}
+	public exitRule(listener: MasciiParserListener): void {
+	    if(listener.exitChord_root) {
+	 		listener.exitChord_root(this);
+		}
+	}
+}
+
+
+export class Chord_typeContext extends ParserRuleContext {
+	constructor(parser?: MasciiParser, parent?: ParserRuleContext, invokingState?: number) {
+		super(parent, invokingState);
+    	this.parser = parser;
+	}
+	public chord_type_major(): Chord_type_majorContext {
+		return this.getTypedRuleContext(Chord_type_majorContext, 0) as Chord_type_majorContext;
+	}
+	public chord_type_minor(): Chord_type_minorContext {
+		return this.getTypedRuleContext(Chord_type_minorContext, 0) as Chord_type_minorContext;
+	}
+	public chord_type_aug(): Chord_type_augContext {
+		return this.getTypedRuleContext(Chord_type_augContext, 0) as Chord_type_augContext;
+	}
+	public chord_type_hdim(): Chord_type_hdimContext {
+		return this.getTypedRuleContext(Chord_type_hdimContext, 0) as Chord_type_hdimContext;
+	}
+	public chord_type_dim(): Chord_type_dimContext {
+		return this.getTypedRuleContext(Chord_type_dimContext, 0) as Chord_type_dimContext;
+	}
+	public chord_type_dom(): Chord_type_domContext {
+		return this.getTypedRuleContext(Chord_type_domContext, 0) as Chord_type_domContext;
+	}
+	public chord_type_sus(): Chord_type_susContext {
+		return this.getTypedRuleContext(Chord_type_susContext, 0) as Chord_type_susContext;
+	}
+	public chord_type_add(): Chord_type_addContext {
+		return this.getTypedRuleContext(Chord_type_addContext, 0) as Chord_type_addContext;
+	}
+    public get ruleIndex(): number {
+    	return MasciiParser.RULE_chord_type;
+	}
+	public enterRule(listener: MasciiParserListener): void {
+	    if(listener.enterChord_type) {
+	 		listener.enterChord_type(this);
+		}
+	}
+	public exitRule(listener: MasciiParserListener): void {
+	    if(listener.exitChord_type) {
+	 		listener.exitChord_type(this);
+		}
+	}
+}
+
+
+export class Chord_type_majorContext extends ParserRuleContext {
+	constructor(parser?: MasciiParser, parent?: ParserRuleContext, invokingState?: number) {
+		super(parent, invokingState);
+    	this.parser = parser;
+	}
+	public CHORD_TYPE_MAJOR(): TerminalNode {
+		return this.getToken(MasciiParser.CHORD_TYPE_MAJOR, 0);
+	}
+    public get ruleIndex(): number {
+    	return MasciiParser.RULE_chord_type_major;
+	}
+	public enterRule(listener: MasciiParserListener): void {
+	    if(listener.enterChord_type_major) {
+	 		listener.enterChord_type_major(this);
+		}
+	}
+	public exitRule(listener: MasciiParserListener): void {
+	    if(listener.exitChord_type_major) {
+	 		listener.exitChord_type_major(this);
+		}
+	}
+}
+
+
+export class Chord_type_minorContext extends ParserRuleContext {
+	constructor(parser?: MasciiParser, parent?: ParserRuleContext, invokingState?: number) {
+		super(parent, invokingState);
+    	this.parser = parser;
+	}
+	public CHORD_TYPE_MINOR(): TerminalNode {
+		return this.getToken(MasciiParser.CHORD_TYPE_MINOR, 0);
+	}
+    public get ruleIndex(): number {
+    	return MasciiParser.RULE_chord_type_minor;
+	}
+	public enterRule(listener: MasciiParserListener): void {
+	    if(listener.enterChord_type_minor) {
+	 		listener.enterChord_type_minor(this);
+		}
+	}
+	public exitRule(listener: MasciiParserListener): void {
+	    if(listener.exitChord_type_minor) {
+	 		listener.exitChord_type_minor(this);
+		}
+	}
+}
+
+
+export class Chord_type_augContext extends ParserRuleContext {
+	constructor(parser?: MasciiParser, parent?: ParserRuleContext, invokingState?: number) {
+		super(parent, invokingState);
+    	this.parser = parser;
+	}
+	public CHORD_TYPE_AUG(): TerminalNode {
+		return this.getToken(MasciiParser.CHORD_TYPE_AUG, 0);
+	}
+    public get ruleIndex(): number {
+    	return MasciiParser.RULE_chord_type_aug;
+	}
+	public enterRule(listener: MasciiParserListener): void {
+	    if(listener.enterChord_type_aug) {
+	 		listener.enterChord_type_aug(this);
+		}
+	}
+	public exitRule(listener: MasciiParserListener): void {
+	    if(listener.exitChord_type_aug) {
+	 		listener.exitChord_type_aug(this);
+		}
+	}
+}
+
+
+export class Chord_type_hdimContext extends ParserRuleContext {
+	constructor(parser?: MasciiParser, parent?: ParserRuleContext, invokingState?: number) {
+		super(parent, invokingState);
+    	this.parser = parser;
+	}
+	public CHORD_TYPE_HDIM(): TerminalNode {
+		return this.getToken(MasciiParser.CHORD_TYPE_HDIM, 0);
+	}
+	public ZERO(): TerminalNode {
+		return this.getToken(MasciiParser.ZERO, 0);
+	}
+    public get ruleIndex(): number {
+    	return MasciiParser.RULE_chord_type_hdim;
+	}
+	public enterRule(listener: MasciiParserListener): void {
+	    if(listener.enterChord_type_hdim) {
+	 		listener.enterChord_type_hdim(this);
+		}
+	}
+	public exitRule(listener: MasciiParserListener): void {
+	    if(listener.exitChord_type_hdim) {
+	 		listener.exitChord_type_hdim(this);
+		}
+	}
+}
+
+
+export class Chord_type_dimContext extends ParserRuleContext {
+	constructor(parser?: MasciiParser, parent?: ParserRuleContext, invokingState?: number) {
+		super(parent, invokingState);
+    	this.parser = parser;
+	}
+	public CHORD_TYPE_DIM(): TerminalNode {
+		return this.getToken(MasciiParser.CHORD_TYPE_DIM, 0);
+	}
+    public get ruleIndex(): number {
+    	return MasciiParser.RULE_chord_type_dim;
+	}
+	public enterRule(listener: MasciiParserListener): void {
+	    if(listener.enterChord_type_dim) {
+	 		listener.enterChord_type_dim(this);
+		}
+	}
+	public exitRule(listener: MasciiParserListener): void {
+	    if(listener.exitChord_type_dim) {
+	 		listener.exitChord_type_dim(this);
+		}
+	}
+}
+
+
+export class Chord_type_domContext extends ParserRuleContext {
+	constructor(parser?: MasciiParser, parent?: ParserRuleContext, invokingState?: number) {
+		super(parent, invokingState);
+    	this.parser = parser;
+	}
+	public CHORD_TYPE_DOM(): TerminalNode {
+		return this.getToken(MasciiParser.CHORD_TYPE_DOM, 0);
+	}
+    public get ruleIndex(): number {
+    	return MasciiParser.RULE_chord_type_dom;
+	}
+	public enterRule(listener: MasciiParserListener): void {
+	    if(listener.enterChord_type_dom) {
+	 		listener.enterChord_type_dom(this);
+		}
+	}
+	public exitRule(listener: MasciiParserListener): void {
+	    if(listener.exitChord_type_dom) {
+	 		listener.exitChord_type_dom(this);
+		}
+	}
+}
+
+
+export class Chord_type_susContext extends ParserRuleContext {
+	constructor(parser?: MasciiParser, parent?: ParserRuleContext, invokingState?: number) {
+		super(parent, invokingState);
+    	this.parser = parser;
+	}
+	public CHORD_TYPE_SUS(): TerminalNode {
+		return this.getToken(MasciiParser.CHORD_TYPE_SUS, 0);
+	}
+    public get ruleIndex(): number {
+    	return MasciiParser.RULE_chord_type_sus;
+	}
+	public enterRule(listener: MasciiParserListener): void {
+	    if(listener.enterChord_type_sus) {
+	 		listener.enterChord_type_sus(this);
+		}
+	}
+	public exitRule(listener: MasciiParserListener): void {
+	    if(listener.exitChord_type_sus) {
+	 		listener.exitChord_type_sus(this);
+		}
+	}
+}
+
+
+export class Chord_type_addContext extends ParserRuleContext {
+	constructor(parser?: MasciiParser, parent?: ParserRuleContext, invokingState?: number) {
+		super(parent, invokingState);
+    	this.parser = parser;
+	}
+	public CHORD_TYPE_ADD(): TerminalNode {
+		return this.getToken(MasciiParser.CHORD_TYPE_ADD, 0);
+	}
+    public get ruleIndex(): number {
+    	return MasciiParser.RULE_chord_type_add;
+	}
+	public enterRule(listener: MasciiParserListener): void {
+	    if(listener.enterChord_type_add) {
+	 		listener.enterChord_type_add(this);
+		}
+	}
+	public exitRule(listener: MasciiParserListener): void {
+	    if(listener.exitChord_type_add) {
+	 		listener.exitChord_type_add(this);
+		}
+	}
+}
+
+
+export class AlterationsContext extends ParserRuleContext {
+	constructor(parser?: MasciiParser, parent?: ParserRuleContext, invokingState?: number) {
+		super(parent, invokingState);
+    	this.parser = parser;
+	}
+	public alteration_list(): AlterationContext[] {
+		return this.getTypedRuleContexts(AlterationContext) as AlterationContext[];
+	}
+	public alteration(i: number): AlterationContext {
+		return this.getTypedRuleContext(AlterationContext, i) as AlterationContext;
+	}
+	public alteration_with_parens_list(): Alteration_with_parensContext[] {
+		return this.getTypedRuleContexts(Alteration_with_parensContext) as Alteration_with_parensContext[];
+	}
+	public alteration_with_parens(i: number): Alteration_with_parensContext {
+		return this.getTypedRuleContext(Alteration_with_parensContext, i) as Alteration_with_parensContext;
+	}
+    public get ruleIndex(): number {
+    	return MasciiParser.RULE_alterations;
+	}
+	public enterRule(listener: MasciiParserListener): void {
+	    if(listener.enterAlterations) {
+	 		listener.enterAlterations(this);
+		}
+	}
+	public exitRule(listener: MasciiParserListener): void {
+	    if(listener.exitAlterations) {
+	 		listener.exitAlterations(this);
+		}
+	}
+}
+
+
+export class Alteration_with_parensContext extends ParserRuleContext {
+	constructor(parser?: MasciiParser, parent?: ParserRuleContext, invokingState?: number) {
+		super(parent, invokingState);
+    	this.parser = parser;
+	}
+	public OPEN_SCOPED(): TerminalNode {
+		return this.getToken(MasciiParser.OPEN_SCOPED, 0);
+	}
+	public alteration_list(): AlterationContext[] {
+		return this.getTypedRuleContexts(AlterationContext) as AlterationContext[];
+	}
+	public alteration(i: number): AlterationContext {
+		return this.getTypedRuleContext(AlterationContext, i) as AlterationContext;
+	}
+	public CLOSE_SCOPED(): TerminalNode {
+		return this.getToken(MasciiParser.CLOSE_SCOPED, 0);
+	}
+	public SPACE_list(): TerminalNode[] {
+	    	return this.getTokens(MasciiParser.SPACE);
+	}
+	public SPACE(i: number): TerminalNode {
+		return this.getToken(MasciiParser.SPACE, i);
+	}
+    public get ruleIndex(): number {
+    	return MasciiParser.RULE_alteration_with_parens;
+	}
+	public enterRule(listener: MasciiParserListener): void {
+	    if(listener.enterAlteration_with_parens) {
+	 		listener.enterAlteration_with_parens(this);
+		}
+	}
+	public exitRule(listener: MasciiParserListener): void {
+	    if(listener.exitAlteration_with_parens) {
+	 		listener.exitAlteration_with_parens(this);
+		}
+	}
+}
+
+
+export class AlterationContext extends ParserRuleContext {
+	constructor(parser?: MasciiParser, parent?: ParserRuleContext, invokingState?: number) {
+		super(parent, invokingState);
+    	this.parser = parser;
+	}
+	public NONZERO_list(): TerminalNode[] {
+	    	return this.getTokens(MasciiParser.NONZERO);
+	}
+	public NONZERO(i: number): TerminalNode {
+		return this.getToken(MasciiParser.NONZERO, i);
+	}
+	public SHARP(): TerminalNode {
+		return this.getToken(MasciiParser.SHARP, 0);
+	}
+	public FLAT(): TerminalNode {
+		return this.getToken(MasciiParser.FLAT, 0);
+	}
+    public get ruleIndex(): number {
+    	return MasciiParser.RULE_alteration;
+	}
+	public enterRule(listener: MasciiParserListener): void {
+	    if(listener.enterAlteration) {
+	 		listener.enterAlteration(this);
+		}
+	}
+	public exitRule(listener: MasciiParserListener): void {
+	    if(listener.exitAlteration) {
+	 		listener.exitAlteration(this);
+		}
+	}
+}
+
+
+export class Slash_bassContext extends ParserRuleContext {
+	constructor(parser?: MasciiParser, parent?: ParserRuleContext, invokingState?: number) {
+		super(parent, invokingState);
+    	this.parser = parser;
+	}
+	public SLASH(): TerminalNode {
+		return this.getToken(MasciiParser.SLASH, 0);
+	}
+	public REL_PITCH(): TerminalNode {
+		return this.getToken(MasciiParser.REL_PITCH, 0);
+	}
+    public get ruleIndex(): number {
+    	return MasciiParser.RULE_slash_bass;
+	}
+	public enterRule(listener: MasciiParserListener): void {
+	    if(listener.enterSlash_bass) {
+	 		listener.enterSlash_bass(this);
+		}
+	}
+	public exitRule(listener: MasciiParserListener): void {
+	    if(listener.exitSlash_bass) {
+	 		listener.exitSlash_bass(this);
 		}
 	}
 }

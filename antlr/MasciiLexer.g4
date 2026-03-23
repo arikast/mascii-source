@@ -9,7 +9,7 @@ ACCIDENTAL:         DBL_FLAT | DBL_SHARP | (NATURAL? SHARP) |  (NATURAL? FLAT) |
 STAFF_SEPARATOR:    F_STAFF_SEP ;
 AMPLIFIERS:         AMPLIFIER+;
 AMPLIFIER:          '!' ; //amplifies magnitude of octave shift
-ABS_PITCH_RANGE:    [0-9]; //for scientific pitch, eg 4C
+ABS_PITCH_RANGE:    ZERO | NON_ZERO; //for scientific pitch, eg 4C
 REL_PITCH:          REL_PITCH_DOWN | REL_PITCH_UP;
 REL_PITCH_UP:       [a-g] ;
 REL_PITCH_DOWN:     [A-G] ;
@@ -30,6 +30,9 @@ NEWLINE:            SPACE? F_NEWLINE SPACE?;
 SPACE:              F_SPACE;
 OPEN_META:          '{' -> pushMode(METAINFO_MODE);
 OPEN_LYRICS:        STARTING_QUOTE -> pushMode(LYRICS_MODE);
+
+ZERO:               '0';
+NON_ZERO:           [1-9];
 
 fragment
 F_STAFF_SEP:        '|';

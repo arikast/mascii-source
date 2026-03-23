@@ -30,13 +30,11 @@ export function parsePitchContext(ctx: PitchContext, key: KeySignatureAdHoc, rel
     if (repeatEl != null) {
         return new NoteSpelling(repeatEl.getText() as string);
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const absOctave: string = (ctx.ABS_PITCH_RANGE() as any)?.getText() ?? '';
+    const absOctave: string = (ctx.abs_pitch_range() as unknown as { getText(): string } | null)?.getText() ?? '';
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const amplifier: string = (ctx.AMPLIFIERS() as any)?.getText() ?? '';
     const degree = ctx.REL_PITCH().getText();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const accidentals: string = (ctx.ACCIDENTAL() as any)?.getText() ?? '';
+    const accidentals: string = (ctx.accidental() as unknown as { getText(): string } | null)?.getText() ?? '';
 
     const spelling = new NoteSpelling(degree);
 

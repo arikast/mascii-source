@@ -33,6 +33,8 @@ import { Note_tieContext } from "./MasciiParser.js";
 import { Notes_endContext } from "./MasciiParser.js";
 import { Note_end_oneContext } from "./MasciiParser.js";
 import { PitchContext } from "./MasciiParser.js";
+import { Abs_pitch_rangeContext } from "./MasciiParser.js";
+import { AccidentalContext } from "./MasciiParser.js";
 import { Note_end_allContext } from "./MasciiParser.js";
 import { NewlineContext } from "./MasciiParser.js";
 import { Lyrics_rowContext } from "./MasciiParser.js";
@@ -343,6 +345,26 @@ export default class MasciiParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitPitch?: (ctx: PitchContext) => void;
+	/**
+	 * Enter a parse tree produced by `MasciiParser.abs_pitch_range`.
+	 * @param ctx the parse tree
+	 */
+	enterAbs_pitch_range?: (ctx: Abs_pitch_rangeContext) => void;
+	/**
+	 * Exit a parse tree produced by `MasciiParser.abs_pitch_range`.
+	 * @param ctx the parse tree
+	 */
+	exitAbs_pitch_range?: (ctx: Abs_pitch_rangeContext) => void;
+	/**
+	 * Enter a parse tree produced by `MasciiParser.accidental`.
+	 * @param ctx the parse tree
+	 */
+	enterAccidental?: (ctx: AccidentalContext) => void;
+	/**
+	 * Exit a parse tree produced by `MasciiParser.accidental`.
+	 * @param ctx the parse tree
+	 */
+	exitAccidental?: (ctx: AccidentalContext) => void;
 	/**
 	 * Enter a parse tree produced by `MasciiParser.note_end_all`.
 	 * @param ctx the parse tree

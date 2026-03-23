@@ -31,7 +31,9 @@ note_start:                         pitch note_tie? ;
 note_tie:                           TIE ;
 notes_end:                          note_end_all | note_end_one+ ;
 note_end_one:                       TIE pitch ;
-pitch:                              (ABS_PITCH_RANGE | AMPLIFIERS)? REL_PITCH ACCIDENTAL? | REPEAT_ELEMENT ;
+pitch:                              (abs_pitch_range | AMPLIFIERS)? REL_PITCH accidental? | REPEAT_ELEMENT ;
+abs_pitch_range:                    ZERO | NON_ZERO ;
+accidental:                         DBL_FLAT | DBL_SHARP | NATURAL SHARP | NATURAL FLAT | SHARP | FLAT | NATURAL ;
 note_end_all:                       TIE NOTE_END_ALL;        
 newline:                            NEWLINE | IMPLICIT_CLOSE_LYRICS ;
 lyrics_row:                         OPEN_LYRICS LYRICS CLOSE_LYRICS?; //a single horizontal musical part consisting of 1 or more (staff) measures 

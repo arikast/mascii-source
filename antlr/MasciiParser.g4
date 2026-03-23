@@ -39,7 +39,7 @@ newline:                            NEWLINE | IMPLICIT_CLOSE_LYRICS ;
 lyrics_row:                         OPEN_LYRICS LYRICS CLOSE_LYRICS?; //a single horizontal musical part consisting of 1 or more (staff) measures 
 
 chord_symbol:                       chord_root chord_type? alterations? slash_bass? COLON;
-chord_root:                         REL_PITCH;
+chord_root:                         REL_PITCH chord_accidental?;
 chord_type:                         chord_type_major | chord_type_minor | chord_type_aug 
                                     | chord_type_hdim | chord_type_dim | chord_type_dom 
                                     | chord_type_sus | chord_type_add;
@@ -53,5 +53,6 @@ chord_type_sus:                     CHORD_TYPE_SUS;
 chord_type_add:                     CHORD_TYPE_ADD;
 alterations:                        (alteration | alteration_with_parens)+;
 alteration_with_parens:             OPEN_SCOPED alteration (SPACE? alteration)* CLOSE_SCOPED;
-alteration:                         (SHARP | FLAT)? NON_ZERO NON_ZERO?;
+alteration:                         chord_accidental? NON_ZERO NON_ZERO?;
+chord_accidental:                   SHARP | FLAT;
 slash_bass:                         SLASH REL_PITCH;

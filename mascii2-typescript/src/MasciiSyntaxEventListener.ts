@@ -379,7 +379,12 @@ export class MasciiSyntaxEventListener extends MasciiParserListener {
 
     private _enterChord_symbol(ctx: Chord_symbolContext): void {
         const slot = this.curPart().peekTiming();
-        const root = ctx.chord_root().REL_PITCH().getText();
+        const chordRootCtx = ctx.chord_root();
+        const root = chordRootCtx.REL_PITCH().getText();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const rootAccCtx = (chordRootCtx as any).chord_accidental() as any;
+        const rootAccidental: '#' | '@' | null =
+            rootAccCtx == null ? null : rootAccCtx.SHARP() != null ? '#' : '@';
         const chordTypeCtx = ctx.chord_type() as unknown as { getText(): string } | null;
         const chordType = chordTypeCtx?.getText() ?? null;
 
@@ -390,10 +395,10 @@ export class MasciiSyntaxEventListener extends MasciiParserListener {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const collectAlterations = (list: any[]) => {
                 for (const alt of list) {
-                    const sharpNode = alt.SHARP() as unknown;
-                    const flatNode = alt.FLAT() as unknown;
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const chordAcc = alt.chord_accidental() as any;
                     const accidental: '#' | '@' | null =
-                        sharpNode != null ? '#' : flatNode != null ? '@' : null;
+                        chordAcc == null ? null : chordAcc.SHARP() != null ? '#' : '@';
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const digits = (alt.NON_ZERO_list() as any[]).map((n: any) => n.getText() as string);
                     const degree = parseInt(digits.join(''), 10);
@@ -410,7 +415,7 @@ export class MasciiSyntaxEventListener extends MasciiParserListener {
         const slashBass = slashBassCtx?.REL_PITCH().getText() ?? null;
 
         const srcOffset = ctx.start!.start;
-        const cs = new ChordSymbol(root, chordType, alterations, slashBass, slot.offset, slot.offset + slot.duration, srcOffset);
+        const cs = new ChordSymbol(root, rootAccidental, chordType, alterations, slashBass, slot.offset, slot.offset + slot.duration, srcOffset);
         this.curPart().addChordSymbol(cs);
     }
 }

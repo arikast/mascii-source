@@ -122,5 +122,37 @@ describe('ChordSymbolTests', () => {
         assert.equal(chords[0]!.alterations[1]!.accidental, '@');
         assert.equal(chords[0]!.alterations[1]!.degree, 13);
     });
+    test('chord symbol with grouped alterations no space', () => {
+        const minuet = 'G(#9@13): g  d  e  f';
+        const parts = parse(minuet).getParts() ?? [];
+        const chords = parts[0]!.getChordSymbolStream();
+        assert.equal(chords.length, 1);
+        assert.equal(chords[0]!.alterations.length, 2);
+        assert.equal(chords[0]!.alterations[0]!.accidental, '#');
+        assert.equal(chords[0]!.alterations[0]!.degree, 9);
+        assert.equal(chords[0]!.alterations[1]!.accidental, '@');
+        assert.equal(chords[0]!.alterations[1]!.degree, 13);
+    });
+
+    test('chord symbol accidental left associativity', () => {
+        const minuet = 'G#:';
+        const parts = parse(minuet).getParts() ?? [];
+        const chords = parts[0]!.getChordSymbolStream();
+        assert.equal(chords.length, 1);
+        assert.equal(chords[0]!.root, 'G');
+    });
+
+    test('chord symbol accidental left associativity', () => {
+        const minuet = 'G#9@13:';
+        const parts = parse(minuet).getParts() ?? [];
+        const chords = parts[0]!.getChordSymbolStream();
+        assert.equal(chords.length, 1);
+        assert.equal(chords[0]!.root, 'G');
+        assert.equal(chords[0]!.alterations.length, 2);
+        assert.equal(chords[0]!.alterations[0]!.accidental, '#');
+        assert.equal(chords[0]!.alterations[0]!.degree, 9);
+        assert.equal(chords[0]!.alterations[1]!.accidental, '@');
+        assert.equal(chords[0]!.alterations[1]!.degree, 13);
+    });
 
 });

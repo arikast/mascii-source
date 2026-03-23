@@ -5,6 +5,7 @@ export interface ChordAlteration {
 
 export class ChordSymbol {
     root: string;
+    rootAccidental: '#' | '@' | null;
     chordType: string | null;
     alterations: ChordAlteration[];
     slashBass: string | null;
@@ -14,6 +15,7 @@ export class ChordSymbol {
 
     constructor(
         root: string,
+        rootAccidental: '#' | '@' | null,
         chordType: string | null,
         alterations: ChordAlteration[],
         slashBass: string | null,
@@ -22,6 +24,7 @@ export class ChordSymbol {
         srcOffset?: number,
     ) {
         this.root = root;
+        this.rootAccidental = rootAccidental;
         this.chordType = chordType;
         this.alterations = alterations;
         this.slashBass = slashBass;

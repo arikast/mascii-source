@@ -52,6 +52,7 @@ import { Chord_type_addContext } from "./MasciiParser.js";
 import { AlterationsContext } from "./MasciiParser.js";
 import { Alteration_with_parensContext } from "./MasciiParser.js";
 import { AlterationContext } from "./MasciiParser.js";
+import { Chord_accidentalContext } from "./MasciiParser.js";
 import { Slash_bassContext } from "./MasciiParser.js";
 
 
@@ -550,6 +551,16 @@ export default class MasciiParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitAlteration?: (ctx: AlterationContext) => void;
+	/**
+	 * Enter a parse tree produced by `MasciiParser.chord_accidental`.
+	 * @param ctx the parse tree
+	 */
+	enterChord_accidental?: (ctx: Chord_accidentalContext) => void;
+	/**
+	 * Exit a parse tree produced by `MasciiParser.chord_accidental`.
+	 * @param ctx the parse tree
+	 */
+	exitChord_accidental?: (ctx: Chord_accidentalContext) => void;
 	/**
 	 * Enter a parse tree produced by `MasciiParser.slash_bass`.
 	 * @param ctx the parse tree

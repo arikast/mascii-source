@@ -51,7 +51,7 @@ chord_type_dim:                     CHORD_TYPE_DIM;
 chord_type_dom:                     CHORD_TYPE_DOM;
 chord_type_sus:                     CHORD_TYPE_SUS;
 chord_type_add:                     CHORD_TYPE_ADD;
-alterations:                        (alteration | alteration_with_parens)*;
+alterations:                        (alteration | alteration_with_parens)+;
 alteration_with_parens:             OPEN_SCOPED alteration (SPACE? alteration)* CLOSE_SCOPED;
 alteration:                         (SHARP | FLAT)? NON_ZERO NON_ZERO?;
 slash_bass:                         SLASH REL_PITCH;

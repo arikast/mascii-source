@@ -41,14 +41,14 @@ import { Lyrics_rowContext } from "./MasciiParser.js";
 import { Chord_symbolContext } from "./MasciiParser.js";
 import { Chord_rootContext } from "./MasciiParser.js";
 import { Chord_typeContext } from "./MasciiParser.js";
-import { Chord_type_majorContext } from "./MasciiParser.js";
-import { Chord_type_minorContext } from "./MasciiParser.js";
+import { Chord_type_addContext } from "./MasciiParser.js";
 import { Chord_type_augContext } from "./MasciiParser.js";
-import { Chord_type_hdimContext } from "./MasciiParser.js";
 import { Chord_type_dimContext } from "./MasciiParser.js";
 import { Chord_type_domContext } from "./MasciiParser.js";
+import { Chord_type_hdimContext } from "./MasciiParser.js";
+import { Chord_type_majorContext } from "./MasciiParser.js";
+import { Chord_type_minorContext } from "./MasciiParser.js";
 import { Chord_type_susContext } from "./MasciiParser.js";
-import { Chord_type_addContext } from "./MasciiParser.js";
 import { AlterationsContext } from "./MasciiParser.js";
 import { Alteration_with_parensContext } from "./MasciiParser.js";
 import { AlterationContext } from "./MasciiParser.js";
@@ -442,25 +442,15 @@ export default class MasciiParserListener extends ParseTreeListener {
 	 */
 	exitChord_type?: (ctx: Chord_typeContext) => void;
 	/**
-	 * Enter a parse tree produced by `MasciiParser.chord_type_major`.
+	 * Enter a parse tree produced by `MasciiParser.chord_type_add`.
 	 * @param ctx the parse tree
 	 */
-	enterChord_type_major?: (ctx: Chord_type_majorContext) => void;
+	enterChord_type_add?: (ctx: Chord_type_addContext) => void;
 	/**
-	 * Exit a parse tree produced by `MasciiParser.chord_type_major`.
+	 * Exit a parse tree produced by `MasciiParser.chord_type_add`.
 	 * @param ctx the parse tree
 	 */
-	exitChord_type_major?: (ctx: Chord_type_majorContext) => void;
-	/**
-	 * Enter a parse tree produced by `MasciiParser.chord_type_minor`.
-	 * @param ctx the parse tree
-	 */
-	enterChord_type_minor?: (ctx: Chord_type_minorContext) => void;
-	/**
-	 * Exit a parse tree produced by `MasciiParser.chord_type_minor`.
-	 * @param ctx the parse tree
-	 */
-	exitChord_type_minor?: (ctx: Chord_type_minorContext) => void;
+	exitChord_type_add?: (ctx: Chord_type_addContext) => void;
 	/**
 	 * Enter a parse tree produced by `MasciiParser.chord_type_aug`.
 	 * @param ctx the parse tree
@@ -471,16 +461,6 @@ export default class MasciiParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitChord_type_aug?: (ctx: Chord_type_augContext) => void;
-	/**
-	 * Enter a parse tree produced by `MasciiParser.chord_type_hdim`.
-	 * @param ctx the parse tree
-	 */
-	enterChord_type_hdim?: (ctx: Chord_type_hdimContext) => void;
-	/**
-	 * Exit a parse tree produced by `MasciiParser.chord_type_hdim`.
-	 * @param ctx the parse tree
-	 */
-	exitChord_type_hdim?: (ctx: Chord_type_hdimContext) => void;
 	/**
 	 * Enter a parse tree produced by `MasciiParser.chord_type_dim`.
 	 * @param ctx the parse tree
@@ -502,6 +482,36 @@ export default class MasciiParserListener extends ParseTreeListener {
 	 */
 	exitChord_type_dom?: (ctx: Chord_type_domContext) => void;
 	/**
+	 * Enter a parse tree produced by `MasciiParser.chord_type_hdim`.
+	 * @param ctx the parse tree
+	 */
+	enterChord_type_hdim?: (ctx: Chord_type_hdimContext) => void;
+	/**
+	 * Exit a parse tree produced by `MasciiParser.chord_type_hdim`.
+	 * @param ctx the parse tree
+	 */
+	exitChord_type_hdim?: (ctx: Chord_type_hdimContext) => void;
+	/**
+	 * Enter a parse tree produced by `MasciiParser.chord_type_major`.
+	 * @param ctx the parse tree
+	 */
+	enterChord_type_major?: (ctx: Chord_type_majorContext) => void;
+	/**
+	 * Exit a parse tree produced by `MasciiParser.chord_type_major`.
+	 * @param ctx the parse tree
+	 */
+	exitChord_type_major?: (ctx: Chord_type_majorContext) => void;
+	/**
+	 * Enter a parse tree produced by `MasciiParser.chord_type_minor`.
+	 * @param ctx the parse tree
+	 */
+	enterChord_type_minor?: (ctx: Chord_type_minorContext) => void;
+	/**
+	 * Exit a parse tree produced by `MasciiParser.chord_type_minor`.
+	 * @param ctx the parse tree
+	 */
+	exitChord_type_minor?: (ctx: Chord_type_minorContext) => void;
+	/**
 	 * Enter a parse tree produced by `MasciiParser.chord_type_sus`.
 	 * @param ctx the parse tree
 	 */
@@ -511,16 +521,6 @@ export default class MasciiParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitChord_type_sus?: (ctx: Chord_type_susContext) => void;
-	/**
-	 * Enter a parse tree produced by `MasciiParser.chord_type_add`.
-	 * @param ctx the parse tree
-	 */
-	enterChord_type_add?: (ctx: Chord_type_addContext) => void;
-	/**
-	 * Exit a parse tree produced by `MasciiParser.chord_type_add`.
-	 * @param ctx the parse tree
-	 */
-	exitChord_type_add?: (ctx: Chord_type_addContext) => void;
 	/**
 	 * Enter a parse tree produced by `MasciiParser.alterations`.
 	 * @param ctx the parse tree

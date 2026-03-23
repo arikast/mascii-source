@@ -113,14 +113,14 @@ export default class MasciiParser extends Parser {
 	public static readonly RULE_chord_symbol = 35;
 	public static readonly RULE_chord_root = 36;
 	public static readonly RULE_chord_type = 37;
-	public static readonly RULE_chord_type_major = 38;
-	public static readonly RULE_chord_type_minor = 39;
-	public static readonly RULE_chord_type_aug = 40;
-	public static readonly RULE_chord_type_hdim = 41;
-	public static readonly RULE_chord_type_dim = 42;
-	public static readonly RULE_chord_type_dom = 43;
-	public static readonly RULE_chord_type_sus = 44;
-	public static readonly RULE_chord_type_add = 45;
+	public static readonly RULE_chord_type_add = 38;
+	public static readonly RULE_chord_type_aug = 39;
+	public static readonly RULE_chord_type_dim = 40;
+	public static readonly RULE_chord_type_dom = 41;
+	public static readonly RULE_chord_type_hdim = 42;
+	public static readonly RULE_chord_type_major = 43;
+	public static readonly RULE_chord_type_minor = 44;
+	public static readonly RULE_chord_type_sus = 45;
 	public static readonly RULE_alterations = 46;
 	public static readonly RULE_alteration_with_parens = 47;
 	public static readonly RULE_alteration = 48;
@@ -206,10 +206,10 @@ export default class MasciiParser extends Parser {
 		"group", "scoped_group", "unscoped_group", "notes", "notes_start", "note_start", 
 		"note_tie", "notes_end", "note_end_one", "pitch", "abs_pitch_range", "accidental", 
 		"note_end_all", "newline", "lyrics_row", "chord_symbol", "chord_root", 
-		"chord_type", "chord_type_major", "chord_type_minor", "chord_type_aug", 
-		"chord_type_hdim", "chord_type_dim", "chord_type_dom", "chord_type_sus", 
-		"chord_type_add", "alterations", "alteration_with_parens", "alteration", 
-		"chord_accidental", "slash_bass",
+		"chord_type", "chord_type_add", "chord_type_aug", "chord_type_dim", "chord_type_dom", 
+		"chord_type_hdim", "chord_type_major", "chord_type_minor", "chord_type_sus", 
+		"alterations", "alteration_with_parens", "alteration", "chord_accidental", 
+		"slash_bass",
 	];
 	public get grammarFileName(): string { return "MasciiParser.g4"; }
 	public get literalNames(): (string | null)[] { return MasciiParser.literalNames; }
@@ -2121,39 +2121,14 @@ export default class MasciiParser extends Parser {
 		return localctx;
 	}
 	// @RuleVersion(0)
-	public chord_type_major(): Chord_type_majorContext {
-		let localctx: Chord_type_majorContext = new Chord_type_majorContext(this, this._ctx, this.state);
-		this.enterRule(localctx, 76, MasciiParser.RULE_chord_type_major);
+	public chord_type_add(): Chord_type_addContext {
+		let localctx: Chord_type_addContext = new Chord_type_addContext(this, this._ctx, this.state);
+		this.enterRule(localctx, 76, MasciiParser.RULE_chord_type_add);
 		try {
 			this.enterOuterAlt(localctx, 1);
 			{
 			this.state = 395;
-			this.match(MasciiParser.CHORD_TYPE_MAJOR);
-			}
-		}
-		catch (re) {
-			if (re instanceof RecognitionException) {
-				localctx.exception = re;
-				this._errHandler.reportError(this, re);
-				this._errHandler.recover(this, re);
-			} else {
-				throw re;
-			}
-		}
-		finally {
-			this.exitRule();
-		}
-		return localctx;
-	}
-	// @RuleVersion(0)
-	public chord_type_minor(): Chord_type_minorContext {
-		let localctx: Chord_type_minorContext = new Chord_type_minorContext(this, this._ctx, this.state);
-		this.enterRule(localctx, 78, MasciiParser.RULE_chord_type_minor);
-		try {
-			this.enterOuterAlt(localctx, 1);
-			{
-			this.state = 397;
-			this.match(MasciiParser.CHORD_TYPE_MINOR);
+			this.match(MasciiParser.CHORD_TYPE_ADD);
 			}
 		}
 		catch (re) {
@@ -2173,12 +2148,62 @@ export default class MasciiParser extends Parser {
 	// @RuleVersion(0)
 	public chord_type_aug(): Chord_type_augContext {
 		let localctx: Chord_type_augContext = new Chord_type_augContext(this, this._ctx, this.state);
-		this.enterRule(localctx, 80, MasciiParser.RULE_chord_type_aug);
+		this.enterRule(localctx, 78, MasciiParser.RULE_chord_type_aug);
+		try {
+			this.enterOuterAlt(localctx, 1);
+			{
+			this.state = 397;
+			this.match(MasciiParser.CHORD_TYPE_AUG);
+			}
+		}
+		catch (re) {
+			if (re instanceof RecognitionException) {
+				localctx.exception = re;
+				this._errHandler.reportError(this, re);
+				this._errHandler.recover(this, re);
+			} else {
+				throw re;
+			}
+		}
+		finally {
+			this.exitRule();
+		}
+		return localctx;
+	}
+	// @RuleVersion(0)
+	public chord_type_dim(): Chord_type_dimContext {
+		let localctx: Chord_type_dimContext = new Chord_type_dimContext(this, this._ctx, this.state);
+		this.enterRule(localctx, 80, MasciiParser.RULE_chord_type_dim);
 		try {
 			this.enterOuterAlt(localctx, 1);
 			{
 			this.state = 399;
-			this.match(MasciiParser.CHORD_TYPE_AUG);
+			this.match(MasciiParser.CHORD_TYPE_DIM);
+			}
+		}
+		catch (re) {
+			if (re instanceof RecognitionException) {
+				localctx.exception = re;
+				this._errHandler.reportError(this, re);
+				this._errHandler.recover(this, re);
+			} else {
+				throw re;
+			}
+		}
+		finally {
+			this.exitRule();
+		}
+		return localctx;
+	}
+	// @RuleVersion(0)
+	public chord_type_dom(): Chord_type_domContext {
+		let localctx: Chord_type_domContext = new Chord_type_domContext(this, this._ctx, this.state);
+		this.enterRule(localctx, 82, MasciiParser.RULE_chord_type_dom);
+		try {
+			this.enterOuterAlt(localctx, 1);
+			{
+			this.state = 401;
+			this.match(MasciiParser.CHORD_TYPE_DOM);
 			}
 		}
 		catch (re) {
@@ -2198,12 +2223,12 @@ export default class MasciiParser extends Parser {
 	// @RuleVersion(0)
 	public chord_type_hdim(): Chord_type_hdimContext {
 		let localctx: Chord_type_hdimContext = new Chord_type_hdimContext(this, this._ctx, this.state);
-		this.enterRule(localctx, 82, MasciiParser.RULE_chord_type_hdim);
+		this.enterRule(localctx, 84, MasciiParser.RULE_chord_type_hdim);
 		let _la: number;
 		try {
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 401;
+			this.state = 403;
 			_la = this._input.LA(1);
 			if(!(_la===27 || _la===36)) {
 			this._errHandler.recoverInline(this);
@@ -2229,14 +2254,14 @@ export default class MasciiParser extends Parser {
 		return localctx;
 	}
 	// @RuleVersion(0)
-	public chord_type_dim(): Chord_type_dimContext {
-		let localctx: Chord_type_dimContext = new Chord_type_dimContext(this, this._ctx, this.state);
-		this.enterRule(localctx, 84, MasciiParser.RULE_chord_type_dim);
+	public chord_type_major(): Chord_type_majorContext {
+		let localctx: Chord_type_majorContext = new Chord_type_majorContext(this, this._ctx, this.state);
+		this.enterRule(localctx, 86, MasciiParser.RULE_chord_type_major);
 		try {
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 403;
-			this.match(MasciiParser.CHORD_TYPE_DIM);
+			this.state = 405;
+			this.match(MasciiParser.CHORD_TYPE_MAJOR);
 			}
 		}
 		catch (re) {
@@ -2254,14 +2279,14 @@ export default class MasciiParser extends Parser {
 		return localctx;
 	}
 	// @RuleVersion(0)
-	public chord_type_dom(): Chord_type_domContext {
-		let localctx: Chord_type_domContext = new Chord_type_domContext(this, this._ctx, this.state);
-		this.enterRule(localctx, 86, MasciiParser.RULE_chord_type_dom);
+	public chord_type_minor(): Chord_type_minorContext {
+		let localctx: Chord_type_minorContext = new Chord_type_minorContext(this, this._ctx, this.state);
+		this.enterRule(localctx, 88, MasciiParser.RULE_chord_type_minor);
 		try {
 			this.enterOuterAlt(localctx, 1);
 			{
-			this.state = 405;
-			this.match(MasciiParser.CHORD_TYPE_DOM);
+			this.state = 407;
+			this.match(MasciiParser.CHORD_TYPE_MINOR);
 			}
 		}
 		catch (re) {
@@ -2281,37 +2306,12 @@ export default class MasciiParser extends Parser {
 	// @RuleVersion(0)
 	public chord_type_sus(): Chord_type_susContext {
 		let localctx: Chord_type_susContext = new Chord_type_susContext(this, this._ctx, this.state);
-		this.enterRule(localctx, 88, MasciiParser.RULE_chord_type_sus);
-		try {
-			this.enterOuterAlt(localctx, 1);
-			{
-			this.state = 407;
-			this.match(MasciiParser.CHORD_TYPE_SUS);
-			}
-		}
-		catch (re) {
-			if (re instanceof RecognitionException) {
-				localctx.exception = re;
-				this._errHandler.reportError(this, re);
-				this._errHandler.recover(this, re);
-			} else {
-				throw re;
-			}
-		}
-		finally {
-			this.exitRule();
-		}
-		return localctx;
-	}
-	// @RuleVersion(0)
-	public chord_type_add(): Chord_type_addContext {
-		let localctx: Chord_type_addContext = new Chord_type_addContext(this, this._ctx, this.state);
-		this.enterRule(localctx, 90, MasciiParser.RULE_chord_type_add);
+		this.enterRule(localctx, 90, MasciiParser.RULE_chord_type_sus);
 		try {
 			this.enterOuterAlt(localctx, 1);
 			{
 			this.state = 409;
-			this.match(MasciiParser.CHORD_TYPE_ADD);
+			this.match(MasciiParser.CHORD_TYPE_SUS);
 			}
 		}
 		catch (re) {
@@ -2669,19 +2669,19 @@ export default class MasciiParser extends Parser {
 	373,1,0,0,0,374,375,1,0,0,0,375,377,1,0,0,0,376,378,3,100,50,0,377,376,
 	1,0,0,0,377,378,1,0,0,0,378,379,1,0,0,0,379,380,5,42,0,0,380,71,1,0,0,0,
 	381,383,5,8,0,0,382,384,3,98,49,0,383,382,1,0,0,0,383,384,1,0,0,0,384,73,
-	1,0,0,0,385,394,3,76,38,0,386,394,3,78,39,0,387,394,3,80,40,0,388,394,3,
-	82,41,0,389,394,3,84,42,0,390,394,3,86,43,0,391,394,3,88,44,0,392,394,3,
-	90,45,0,393,385,1,0,0,0,393,386,1,0,0,0,393,387,1,0,0,0,393,388,1,0,0,0,
+	1,0,0,0,385,394,3,86,43,0,386,394,3,88,44,0,387,394,3,78,39,0,388,394,3,
+	84,42,0,389,394,3,80,40,0,390,394,3,82,41,0,391,394,3,90,45,0,392,394,3,
+	76,38,0,393,385,1,0,0,0,393,386,1,0,0,0,393,387,1,0,0,0,393,388,1,0,0,0,
 	393,389,1,0,0,0,393,390,1,0,0,0,393,391,1,0,0,0,393,392,1,0,0,0,394,75,
-	1,0,0,0,395,396,5,34,0,0,396,77,1,0,0,0,397,398,5,33,0,0,398,79,1,0,0,0,
-	399,400,5,35,0,0,400,81,1,0,0,0,401,402,7,7,0,0,402,83,1,0,0,0,403,404,
-	5,37,0,0,404,85,1,0,0,0,405,406,5,38,0,0,406,87,1,0,0,0,407,408,5,39,0,
-	0,408,89,1,0,0,0,409,410,5,40,0,0,410,91,1,0,0,0,411,414,3,96,48,0,412,
-	414,3,94,47,0,413,411,1,0,0,0,413,412,1,0,0,0,414,415,1,0,0,0,415,413,1,
-	0,0,0,415,416,1,0,0,0,416,93,1,0,0,0,417,418,5,1,0,0,418,425,3,96,48,0,
-	419,421,5,24,0,0,420,419,1,0,0,0,420,421,1,0,0,0,421,422,1,0,0,0,422,424,
-	3,96,48,0,423,420,1,0,0,0,424,427,1,0,0,0,425,423,1,0,0,0,425,426,1,0,0,
-	0,426,428,1,0,0,0,427,425,1,0,0,0,428,429,5,2,0,0,429,95,1,0,0,0,430,432,
+	1,0,0,0,395,396,5,40,0,0,396,77,1,0,0,0,397,398,5,35,0,0,398,79,1,0,0,0,
+	399,400,5,37,0,0,400,81,1,0,0,0,401,402,5,38,0,0,402,83,1,0,0,0,403,404,
+	7,7,0,0,404,85,1,0,0,0,405,406,5,34,0,0,406,87,1,0,0,0,407,408,5,33,0,0,
+	408,89,1,0,0,0,409,410,5,39,0,0,410,91,1,0,0,0,411,414,3,96,48,0,412,414,
+	3,94,47,0,413,411,1,0,0,0,413,412,1,0,0,0,414,415,1,0,0,0,415,413,1,0,0,
+	0,415,416,1,0,0,0,416,93,1,0,0,0,417,418,5,1,0,0,418,425,3,96,48,0,419,
+	421,5,24,0,0,420,419,1,0,0,0,420,421,1,0,0,0,421,422,1,0,0,0,422,424,3,
+	96,48,0,423,420,1,0,0,0,424,427,1,0,0,0,425,423,1,0,0,0,425,426,1,0,0,0,
+	426,428,1,0,0,0,427,425,1,0,0,0,428,429,5,2,0,0,429,95,1,0,0,0,430,432,
 	3,98,49,0,431,430,1,0,0,0,431,432,1,0,0,0,432,433,1,0,0,0,433,435,5,28,
 	0,0,434,436,5,28,0,0,435,434,1,0,0,0,435,436,1,0,0,0,436,97,1,0,0,0,437,
 	438,7,8,0,0,438,99,1,0,0,0,439,440,5,41,0,0,440,441,5,8,0,0,441,101,1,0,
@@ -3912,49 +3912,25 @@ export class Chord_typeContext extends ParserRuleContext {
 }
 
 
-export class Chord_type_majorContext extends ParserRuleContext {
+export class Chord_type_addContext extends ParserRuleContext {
 	constructor(parser?: MasciiParser, parent?: ParserRuleContext, invokingState?: number) {
 		super(parent, invokingState);
     	this.parser = parser;
 	}
-	public CHORD_TYPE_MAJOR(): TerminalNode {
-		return this.getToken(MasciiParser.CHORD_TYPE_MAJOR, 0);
+	public CHORD_TYPE_ADD(): TerminalNode {
+		return this.getToken(MasciiParser.CHORD_TYPE_ADD, 0);
 	}
     public get ruleIndex(): number {
-    	return MasciiParser.RULE_chord_type_major;
+    	return MasciiParser.RULE_chord_type_add;
 	}
 	public enterRule(listener: MasciiParserListener): void {
-	    if(listener.enterChord_type_major) {
-	 		listener.enterChord_type_major(this);
+	    if(listener.enterChord_type_add) {
+	 		listener.enterChord_type_add(this);
 		}
 	}
 	public exitRule(listener: MasciiParserListener): void {
-	    if(listener.exitChord_type_major) {
-	 		listener.exitChord_type_major(this);
-		}
-	}
-}
-
-
-export class Chord_type_minorContext extends ParserRuleContext {
-	constructor(parser?: MasciiParser, parent?: ParserRuleContext, invokingState?: number) {
-		super(parent, invokingState);
-    	this.parser = parser;
-	}
-	public CHORD_TYPE_MINOR(): TerminalNode {
-		return this.getToken(MasciiParser.CHORD_TYPE_MINOR, 0);
-	}
-    public get ruleIndex(): number {
-    	return MasciiParser.RULE_chord_type_minor;
-	}
-	public enterRule(listener: MasciiParserListener): void {
-	    if(listener.enterChord_type_minor) {
-	 		listener.enterChord_type_minor(this);
-		}
-	}
-	public exitRule(listener: MasciiParserListener): void {
-	    if(listener.exitChord_type_minor) {
-	 		listener.exitChord_type_minor(this);
+	    if(listener.exitChord_type_add) {
+	 		listener.exitChord_type_add(this);
 		}
 	}
 }
@@ -3979,33 +3955,6 @@ export class Chord_type_augContext extends ParserRuleContext {
 	public exitRule(listener: MasciiParserListener): void {
 	    if(listener.exitChord_type_aug) {
 	 		listener.exitChord_type_aug(this);
-		}
-	}
-}
-
-
-export class Chord_type_hdimContext extends ParserRuleContext {
-	constructor(parser?: MasciiParser, parent?: ParserRuleContext, invokingState?: number) {
-		super(parent, invokingState);
-    	this.parser = parser;
-	}
-	public CHORD_TYPE_HDIM(): TerminalNode {
-		return this.getToken(MasciiParser.CHORD_TYPE_HDIM, 0);
-	}
-	public ZERO(): TerminalNode {
-		return this.getToken(MasciiParser.ZERO, 0);
-	}
-    public get ruleIndex(): number {
-    	return MasciiParser.RULE_chord_type_hdim;
-	}
-	public enterRule(listener: MasciiParserListener): void {
-	    if(listener.enterChord_type_hdim) {
-	 		listener.enterChord_type_hdim(this);
-		}
-	}
-	public exitRule(listener: MasciiParserListener): void {
-	    if(listener.exitChord_type_hdim) {
-	 		listener.exitChord_type_hdim(this);
 		}
 	}
 }
@@ -4059,6 +4008,81 @@ export class Chord_type_domContext extends ParserRuleContext {
 }
 
 
+export class Chord_type_hdimContext extends ParserRuleContext {
+	constructor(parser?: MasciiParser, parent?: ParserRuleContext, invokingState?: number) {
+		super(parent, invokingState);
+    	this.parser = parser;
+	}
+	public CHORD_TYPE_HDIM(): TerminalNode {
+		return this.getToken(MasciiParser.CHORD_TYPE_HDIM, 0);
+	}
+	public ZERO(): TerminalNode {
+		return this.getToken(MasciiParser.ZERO, 0);
+	}
+    public get ruleIndex(): number {
+    	return MasciiParser.RULE_chord_type_hdim;
+	}
+	public enterRule(listener: MasciiParserListener): void {
+	    if(listener.enterChord_type_hdim) {
+	 		listener.enterChord_type_hdim(this);
+		}
+	}
+	public exitRule(listener: MasciiParserListener): void {
+	    if(listener.exitChord_type_hdim) {
+	 		listener.exitChord_type_hdim(this);
+		}
+	}
+}
+
+
+export class Chord_type_majorContext extends ParserRuleContext {
+	constructor(parser?: MasciiParser, parent?: ParserRuleContext, invokingState?: number) {
+		super(parent, invokingState);
+    	this.parser = parser;
+	}
+	public CHORD_TYPE_MAJOR(): TerminalNode {
+		return this.getToken(MasciiParser.CHORD_TYPE_MAJOR, 0);
+	}
+    public get ruleIndex(): number {
+    	return MasciiParser.RULE_chord_type_major;
+	}
+	public enterRule(listener: MasciiParserListener): void {
+	    if(listener.enterChord_type_major) {
+	 		listener.enterChord_type_major(this);
+		}
+	}
+	public exitRule(listener: MasciiParserListener): void {
+	    if(listener.exitChord_type_major) {
+	 		listener.exitChord_type_major(this);
+		}
+	}
+}
+
+
+export class Chord_type_minorContext extends ParserRuleContext {
+	constructor(parser?: MasciiParser, parent?: ParserRuleContext, invokingState?: number) {
+		super(parent, invokingState);
+    	this.parser = parser;
+	}
+	public CHORD_TYPE_MINOR(): TerminalNode {
+		return this.getToken(MasciiParser.CHORD_TYPE_MINOR, 0);
+	}
+    public get ruleIndex(): number {
+    	return MasciiParser.RULE_chord_type_minor;
+	}
+	public enterRule(listener: MasciiParserListener): void {
+	    if(listener.enterChord_type_minor) {
+	 		listener.enterChord_type_minor(this);
+		}
+	}
+	public exitRule(listener: MasciiParserListener): void {
+	    if(listener.exitChord_type_minor) {
+	 		listener.exitChord_type_minor(this);
+		}
+	}
+}
+
+
 export class Chord_type_susContext extends ParserRuleContext {
 	constructor(parser?: MasciiParser, parent?: ParserRuleContext, invokingState?: number) {
 		super(parent, invokingState);
@@ -4078,30 +4102,6 @@ export class Chord_type_susContext extends ParserRuleContext {
 	public exitRule(listener: MasciiParserListener): void {
 	    if(listener.exitChord_type_sus) {
 	 		listener.exitChord_type_sus(this);
-		}
-	}
-}
-
-
-export class Chord_type_addContext extends ParserRuleContext {
-	constructor(parser?: MasciiParser, parent?: ParserRuleContext, invokingState?: number) {
-		super(parent, invokingState);
-    	this.parser = parser;
-	}
-	public CHORD_TYPE_ADD(): TerminalNode {
-		return this.getToken(MasciiParser.CHORD_TYPE_ADD, 0);
-	}
-    public get ruleIndex(): number {
-    	return MasciiParser.RULE_chord_type_add;
-	}
-	public enterRule(listener: MasciiParserListener): void {
-	    if(listener.enterChord_type_add) {
-	 		listener.enterChord_type_add(this);
-		}
-	}
-	public exitRule(listener: MasciiParserListener): void {
-	    if(listener.exitChord_type_add) {
-	 		listener.exitChord_type_add(this);
 		}
 	}
 }

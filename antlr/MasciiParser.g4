@@ -19,7 +19,7 @@ stavesrow_first_empty:              empty_staff (STAFF_SEPARATOR (staff | empty_
 staff:                              timed_elements ; //ie a single measure of music
 empty_staff:                        SPACE? ;
 timed_elements:                     SPACE? timed_element (SPACE timed_element)* SPACE?; 
-timed_element:                      inverse_dot=(DOTTED|MULTI_DOTTED)? ((notes | group)+ | rest) duration_doubled? normal_dot=(DOTTED|MULTI_DOTTED)?;
+timed_element:                      chord_symbol? inverse_dot=(DOTTED|MULTI_DOTTED)? ((notes | group)+ | rest) duration_doubled? normal_dot=(DOTTED|MULTI_DOTTED)?;
 rest:                               REST | DOTTED ;
 duration_doubled:                   TIE TIE+ ;
 group:                              unscoped_group | scoped_group ;
@@ -38,3 +38,20 @@ note_end_all:                       TIE NOTE_END_ALL;
 newline:                            NEWLINE | IMPLICIT_CLOSE_LYRICS ;
 lyrics_row:                         OPEN_LYRICS LYRICS CLOSE_LYRICS?; //a single horizontal musical part consisting of 1 or more (staff) measures 
 
+chord_symbol:                       chord_root chord_type? alterations? slash_bass? COLON;
+chord_root:                         REL_PITCH;
+chord_type:                         chord_type_major | chord_type_minor | chord_type_aug 
+                                    | chord_type_hdim | chord_type_dim | chord_type_dom 
+                                    | chord_type_sus | chord_type_add;
+chord_type_major:                   CHORD_TYPE_MAJOR;
+chord_type_minor:                   CHORD_TYPE_MINOR;
+chord_type_aug:                     CHORD_TYPE_AUG;
+chord_type_hdim:                    CHORD_TYPE_HDIM | ZERO;
+chord_type_dim:                     CHORD_TYPE_DIM;
+chord_type_dom:                     CHORD_TYPE_DOM;
+chord_type_sus:                     CHORD_TYPE_SUS;
+chord_type_add:                     CHORD_TYPE_ADD;
+alterations:                        (alteration | alteration_with_parens)*;
+alteration_with_parens:             OPEN_SCOPED alteration (SPACE? alteration)* CLOSE_SCOPED;
+alteration:                         (SHARP | FLAT)? NONZERO NONZERO?;
+slash_bass:                         SLASH REL_PITCH;

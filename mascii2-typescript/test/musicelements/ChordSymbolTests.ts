@@ -47,17 +47,20 @@ describe('ChordSymbolTests', () => {
         assert.equal(chords[0]!.alterations[0]!.accidental, null);
     });
 
-    test('chord symbol with sharp alteration', () => {
-        const minuet = 'G#9: g  d  e  f';
+    test('chord symbol left associativity', () => {
+        const minuet = 'G#9:';
         const parts = parse(minuet).getParts() ?? [];
         const chords = parts[0]!.getChordSymbolStream();
         assert.equal(chords.length, 1);
-        assert.equal(chords[0]!.alterations[0]!.accidental, '#');
+        assert.equal(chords[0]!.root, 'G');
+        assert.equal(chords[0]!.rootAccidental, '#');
+
+        assert.equal(chords[0]!.alterations[0]!.accidental, null);
         assert.equal(chords[0]!.alterations[0]!.degree, 9);
     });
 
-    test('chord symbol with flat alteration', () => {
-        const minuet = 'G@9: g  d  e  f';
+    test('chord symbol forced right associativity', () => {
+        const minuet = 'G(@9):';
         const parts = parse(minuet).getParts() ?? [];
         const chords = parts[0]!.getChordSymbolStream();
         assert.equal(chords.length, 1);
@@ -143,16 +146,18 @@ describe('ChordSymbolTests', () => {
     });
 
     test('chord symbol accidental left associativity', () => {
-        const minuet = 'G#9@13:';
+        const minuet = 'G@9@13:';
         const parts = parse(minuet).getParts() ?? [];
         const chords = parts[0]!.getChordSymbolStream();
         assert.equal(chords.length, 1);
         assert.equal(chords[0]!.root, 'G');
+        assert.equal(chords[0]!.rootAccidental, '@');
         assert.equal(chords[0]!.alterations.length, 2);
-        assert.equal(chords[0]!.alterations[0]!.accidental, '#');
+        assert.equal(chords[0]!.alterations[0]!.accidental, null);
         assert.equal(chords[0]!.alterations[0]!.degree, 9);
         assert.equal(chords[0]!.alterations[1]!.accidental, '@');
         assert.equal(chords[0]!.alterations[1]!.degree, 13);
     });
+
 
 });

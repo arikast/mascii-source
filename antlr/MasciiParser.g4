@@ -43,14 +43,14 @@ chord_root:                         REL_PITCH chord_accidental?;
 chord_type:                         chord_type_major | chord_type_minor | chord_type_aug 
                                     | chord_type_hdim | chord_type_dim | chord_type_dom 
                                     | chord_type_sus | chord_type_add;
-chord_type_major:                   CHORD_TYPE_MAJOR;
-chord_type_minor:                   CHORD_TYPE_MINOR;
+chord_type_add:                     CHORD_TYPE_ADD;
 chord_type_aug:                     CHORD_TYPE_AUG;
-chord_type_hdim:                    CHORD_TYPE_HDIM | ZERO;
 chord_type_dim:                     CHORD_TYPE_DIM;
 chord_type_dom:                     CHORD_TYPE_DOM;
+chord_type_hdim:                    CHORD_TYPE_HDIM | ZERO;
+chord_type_major:                   CHORD_TYPE_MAJOR;
+chord_type_minor:                   CHORD_TYPE_MINOR;
 chord_type_sus:                     CHORD_TYPE_SUS;
-chord_type_add:                     CHORD_TYPE_ADD;
 alterations:                        (alteration | alteration_with_parens)+;
 alteration_with_parens:             OPEN_SCOPED alteration (SPACE? alteration)* CLOSE_SCOPED;
 alteration:                         chord_accidental? NON_ZERO NON_ZERO?;

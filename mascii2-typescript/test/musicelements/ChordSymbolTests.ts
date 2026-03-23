@@ -100,7 +100,7 @@ describe('ChordSymbolTests', () => {
     });
 
     test('chord symbol timing matches timed element', () => {
-        const minuet = 'G: g  Am: a  D7: d  e';
+        const minuet = 'G:a  Am:g  D7:f  e';
         const parts = parse(minuet).getParts() ?? [];
         const chords = parts[0]!.getChordSymbolStream();
         const notes = parts[0]!.getNoteStream();

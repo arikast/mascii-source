@@ -2,9 +2,8 @@ import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { SourceParser } from '../../src/SourceParser';
 import { ParseResult } from '../../src/ParseResult';
-import { Accidental } from '../../src/musicelements/Accidental';
-import { KeySignature } from '../../src/musicelements/KeySignature';
-import { relativeMajorDegree } from '../../src/util/MasciiUtil';
+import { ChordSymbol } from '../../src/musicelements/ChordSymbol';
+import { TICKS_PER_BEAT } from '../../src/MasciiSyntaxEventListener';
 
 function parse(source: string): ParseResult {
     const result = new SourceParser().generateFromString(source);
@@ -14,24 +13,114 @@ function parse(source: string): ParseResult {
     return result;
 }
 
-// describe('ChordSymbolTests', () => {
+describe('ChordSymbolTests', () => {
 
-//     test('chord symbol parsing', () => {
-//         const minuet = 'G-/ Am7/ D7/ | Gm7/ C7/ Fmaj7/ Bm7@5/ | Em7/ A7/ Dm7/ G7/';
-//         const parts = parse(minuet).getParts() ?? [];
-//         const treb = parts[0]!.getNoteStream();
+    test('simple chord symbol root only', () => {
+        const minuet = 'G: g  d  e  f';
+        const parts = parse(minuet).getParts() ?? [];
+        const chords = parts[0]!.getChordSymbolStream();
+        assert.equal(chords.length, 1);
+        assert.equal(chords[0]!.root, 'G');
+        assert.equal(chords[0]!.chordType, null);
+        assert.equal(chords[0]!.alterations.length, 0);
+        assert.equal(chords[0]!.slashBass, null);
+    });
 
-//         assert.equal(0, treb[3]!.getPitch() - treb[0]!.getPitch());
-//         assert.equal(1, treb[4]!.getPitch() - treb[1]!.getPitch());
-//     });
+    test('chord symbol with minor type', () => {
+        const minuet = 'Gm: g  d  e  f';
+        const parts = parse(minuet).getParts() ?? [];
+        const chords = parts[0]!.getChordSymbolStream();
+        assert.equal(chords.length, 1);
+        assert.equal(chords[0]!.root, 'G');
+        assert.equal(chords[0]!.chordType, 'm');
+    });
 
+    test('chord symbol with alteration', () => {
+        const minuet = 'G7: g  d  e  f';
+        const parts = parse(minuet).getParts() ?? [];
+        const chords = parts[0]!.getChordSymbolStream();
+        assert.equal(chords.length, 1);
+        assert.equal(chords[0]!.root, 'G');
+        assert.equal(chords[0]!.chordType, null);
+        assert.equal(chords[0]!.alterations.length, 1);
+        assert.equal(chords[0]!.alterations[0]!.degree, 7);
+        assert.equal(chords[0]!.alterations[0]!.accidental, null);
+    });
 
-//     test('chord symbol parsing with ambiguous alterations', () => {
-//         const minuet = 'G@9/ G#9/';
-//         const parts = parse(minuet).getParts() ?? [];
-//         const treb = parts[0]!.getNoteStream();
+    test('chord symbol with sharp alteration', () => {
+        const minuet = 'G#9: g  d  e  f';
+        const parts = parse(minuet).getParts() ?? [];
+        const chords = parts[0]!.getChordSymbolStream();
+        assert.equal(chords.length, 1);
+        assert.equal(chords[0]!.alterations[0]!.accidental, '#');
+        assert.equal(chords[0]!.alterations[0]!.degree, 9);
+    });
 
-//         assert.equal(0, treb[0]!.getPitch() - treb[0]!.getPitch());
-//     });
+    test('chord symbol with flat alteration', () => {
+        const minuet = 'G@9: g  d  e  f';
+        const parts = parse(minuet).getParts() ?? [];
+        const chords = parts[0]!.getChordSymbolStream();
+        assert.equal(chords.length, 1);
+        assert.equal(chords[0]!.alterations[0]!.accidental, '@');
+        assert.equal(chords[0]!.alterations[0]!.degree, 9);
+    });
 
-// });
+    test('chord symbol with slash bass', () => {
+        const minuet = 'G/b: g  d  e  f';
+        const parts = parse(minuet).getParts() ?? [];
+        const chords = parts[0]!.getChordSymbolStream();
+        assert.equal(chords.length, 1);
+        assert.equal(chords[0]!.root, 'G');
+        assert.equal(chords[0]!.slashBass, 'b');
+    });
+
+    test('chord symbol with type and multiple alterations', () => {
+        const minuet = 'Gm7@5: g  d  e  f';
+        const parts = parse(minuet).getParts() ?? [];
+        const chords = parts[0]!.getChordSymbolStream();
+        assert.equal(chords.length, 1);
+        assert.equal(chords[0]!.chordType, 'm');
+        assert.equal(chords[0]!.alterations.length, 2);
+        assert.equal(chords[0]!.alterations[0]!.degree, 7);
+        assert.equal(chords[0]!.alterations[0]!.accidental, null);
+        assert.equal(chords[0]!.alterations[1]!.degree, 5);
+        assert.equal(chords[0]!.alterations[1]!.accidental, '@');
+    });
+
+    test('multiple chord symbols across measure', () => {
+        const minuet = 'G: g  Am: a  D7: d  e';
+        const parts = parse(minuet).getParts() ?? [];
+        const chords = parts[0]!.getChordSymbolStream();
+        assert.equal(chords.length, 3);
+        assert.equal(chords[0]!.root, 'G');
+        assert.equal(chords[1]!.root, 'A');
+        assert.equal(chords[1]!.chordType, 'm');
+        assert.equal(chords[2]!.root, 'D');
+        assert.equal(chords[2]!.alterations[0]!.degree, 7);
+    });
+
+    test('chord symbol timing matches timed element', () => {
+        const minuet = 'G: g  Am: a  D7: d  e';
+        const parts = parse(minuet).getParts() ?? [];
+        const chords = parts[0]!.getChordSymbolStream();
+        const notes = parts[0]!.getNoteStream();
+        // Each timed element occupies one beat (TICKS_PER_BEAT = 480)
+        assert.equal(chords[0]!.start, notes[0]!.getStart());
+        assert.equal(chords[0]!.end, notes[0]!.getEnd());
+        assert.equal(chords[1]!.start, notes[1]!.getStart());
+        assert.equal(chords[2]!.start, notes[2]!.getStart());
+    });
+
+    test('chord symbol with grouped alterations', () => {
+        const minuet = 'G(#9 @13): g  d  e  f';
+        const parts = parse(minuet).getParts() ?? [];
+        const chords = parts[0]!.getChordSymbolStream();
+        assert.equal(chords.length, 1);
+        assert.equal(chords[0]!.alterations.length, 2);
+        assert.equal(chords[0]!.alterations[0]!.accidental, '#');
+        assert.equal(chords[0]!.alterations[0]!.degree, 9);
+        assert.equal(chords[0]!.alterations[1]!.accidental, '@');
+        assert.equal(chords[0]!.alterations[1]!.degree, 13);
+    });
+
+});

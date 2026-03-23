@@ -1,6 +1,7 @@
 import MasciiParserListener from './antlr-generated/MasciiParserListener';
 import {
     BarsContext,
+    Chord_symbolContext,
     Concurrent_blockContext,
     Empty_staffContext,
     HeaderContext,
@@ -16,6 +17,7 @@ import {
     PitchContext,
 } from './antlr-generated/MasciiParser';
 import { Part } from './musicelements/Part';
+import { ChordSymbol, ChordAlteration } from './musicelements/ChordSymbol';
 import { TimeSlot } from './musicelements/TimeSlot';
 import { MetaInfo, MetaInfoElement, TimeSig, KeySig, Tempo, Title, Copyright, Composer, Lyricist, Patch, PartName, Lyric } from './musicelements/MetaInfo';
 import { splitHeaderValues, asLyrics, mergeBIntoA, times } from './util/MasciiUtil';
@@ -71,6 +73,7 @@ export class MasciiSyntaxEventListener extends MasciiParserListener {
         this.enterNote_end_all = this._enterNote_end_all.bind(this);
         this.enterNote_end_one = this._enterNote_end_one.bind(this);
         this.enterNote_start = this._enterNote_start.bind(this);
+        this.enterChord_symbol = this._enterChord_symbol.bind(this);
     }
 
     getGlobalMetaInfoChanges(): MetaInfoElement<unknown>[] {
@@ -372,6 +375,43 @@ export class MasciiSyntaxEventListener extends MasciiParserListener {
         } else {
             this.curPart().startNoteHere(pitch, srcOffset);
         }
+    }
+
+    private _enterChord_symbol(ctx: Chord_symbolContext): void {
+        const slot = this.curPart().peekTiming();
+        const root = ctx.chord_root().REL_PITCH().getText();
+        const chordTypeCtx = ctx.chord_type() as unknown as { getText(): string } | null;
+        const chordType = chordTypeCtx?.getText() ?? null;
+
+        const alterations: ChordAlteration[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const alterationsCtx = ctx.alterations() as any;
+        if (alterationsCtx != null) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const collectAlterations = (list: any[]) => {
+                for (const alt of list) {
+                    const sharpNode = alt.SHARP() as unknown;
+                    const flatNode = alt.FLAT() as unknown;
+                    const accidental: '#' | '@' | null =
+                        sharpNode != null ? '#' : flatNode != null ? '@' : null;
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const digits = (alt.NON_ZERO_list() as any[]).map((n: any) => n.getText() as string);
+                    const degree = parseInt(digits.join(''), 10);
+                    alterations.push({ accidental, degree });
+                }
+            };
+            collectAlterations(alterationsCtx.alteration_list());
+            for (const awp of alterationsCtx.alteration_with_parens_list()) {
+                collectAlterations(awp.alteration_list());
+            }
+        }
+
+        const slashBassCtx = ctx.slash_bass() as unknown as { REL_PITCH(): { getText(): string } } | null;
+        const slashBass = slashBassCtx?.REL_PITCH().getText() ?? null;
+
+        const srcOffset = ctx.start!.start;
+        const cs = new ChordSymbol(root, chordType, alterations, slashBass, slot.offset, slot.offset + slot.duration, srcOffset);
+        this.curPart().addChordSymbol(cs);
     }
 }
 

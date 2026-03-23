@@ -2,6 +2,7 @@ import { Note, NoteSpelling } from './Note';
 import { TimeSlot } from './TimeSlot';
 import { KeySignature, KeySignatureAdHoc } from './KeySignature';
 import { MetaInfoElement } from './MetaInfo';
+import { ChordSymbol } from './ChordSymbol';
 import { parsePitchContext } from '../util/MasciiUtil';
 import { PitchContext } from '../antlr-generated/MasciiParser';
 
@@ -17,6 +18,7 @@ export class Part {
     currentKey: KeySignatureAdHoc = KeySignature.C.alterationsMap();
 
     noteStream: Note[] = [];
+    chordSymbolStream: ChordSymbol[] = [];
     metaInfoChanges: MetaInfoElement<unknown>[] = [];
 
     timingStack: TimeSlot[] = [];
@@ -55,6 +57,8 @@ export class Part {
     }
 
     getNoteStream(): Note[] { return this.noteStream; }
+    getChordSymbolStream(): ChordSymbol[] { return this.chordSymbolStream; }
+    addChordSymbol(cs: ChordSymbol): void { this.chordSymbolStream.push(cs); }
     getMetaInfoChanges(): MetaInfoElement<unknown>[] { return this.metaInfoChanges; }
     getBarCount(): number { return this.barCount; }
     setBarCount(n: number): void { this.barCount = n; }

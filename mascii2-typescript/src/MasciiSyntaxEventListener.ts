@@ -17,7 +17,7 @@ import {
     PitchContext,
 } from './antlr-generated/MasciiParser';
 import { Part } from './musicelements/Part';
-import { ChordSymbol, ChordAlteration } from './musicelements/ChordSymbol';
+import { ChordSymbol, ChordAlteration, ChordType } from './musicelements/ChordSymbol';
 import { TimeSlot } from './musicelements/TimeSlot';
 import { MetaInfo, MetaInfoElement, TimeSig, KeySig, Tempo, Title, Copyright, Composer, Lyricist, Patch, PartName, Lyric } from './musicelements/MetaInfo';
 import { splitHeaderValues, asLyrics, mergeBIntoA, times } from './util/MasciiUtil';
@@ -385,8 +385,18 @@ export class MasciiSyntaxEventListener extends MasciiParserListener {
         const rootAccCtx = (chordRootCtx as any).chord_accidental() as any;
         const rootAccidental: '#' | '@' | null =
             rootAccCtx == null ? null : rootAccCtx.SHARP() != null ? '#' : '@';
-        const chordTypeCtx = ctx.chord_type() as unknown as { getText(): string } | null;
-        const chordType = chordTypeCtx?.getText() ?? null;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const chordTypeCtx = ctx.chord_type() as any;
+        const chordType: ChordType | null = chordTypeCtx == null ? null
+            : chordTypeCtx.chord_type_major() != null ? ChordType.MAJ
+            : chordTypeCtx.chord_type_minor() != null ? ChordType.MIN
+            : chordTypeCtx.chord_type_aug()   != null ? ChordType.AUG
+            : chordTypeCtx.chord_type_hdim()  != null ? ChordType.HDIM
+            : chordTypeCtx.chord_type_dim()   != null ? ChordType.DIM
+            : chordTypeCtx.chord_type_dom()   != null ? ChordType.DOM
+            : chordTypeCtx.chord_type_sus()   != null ? ChordType.SUS
+            : chordTypeCtx.chord_type_add()   != null ? ChordType.ADD
+            : null;
 
         const alterations: ChordAlteration[] = [];
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

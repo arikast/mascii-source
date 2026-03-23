@@ -1,3 +1,14 @@
+export enum ChordType {
+    ADD  = 'ADD',
+    AUG  = 'AUG',
+    DIM  = 'DIM',
+    DOM  = 'DOM',
+    HDIM = 'HDIM',
+    MAJ  = 'MAJ',
+    MIN  = 'MIN',
+    SUS  = 'SUS',
+}
+
 export interface ChordAlteration {
     accidental: '#' | '@' | null;
     degree: number;
@@ -6,7 +17,7 @@ export interface ChordAlteration {
 export class ChordSymbol {
     root: string;
     rootAccidental: '#' | '@' | null;
-    chordType: string | null;
+    chordType: ChordType | null;
     alterations: ChordAlteration[];
     slashBass: string | null;
     start: number;
@@ -16,7 +27,7 @@ export class ChordSymbol {
     constructor(
         root: string,
         rootAccidental: '#' | '@' | null,
-        chordType: string | null,
+        chordType: ChordType | null,
         alterations: ChordAlteration[],
         slashBass: string | null,
         start: number,

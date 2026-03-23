@@ -74,6 +74,27 @@ F_OPEN_UNSCOPED:      '[';
 F_CLOSE_UNSCOPED:     ']' ; 
 
 
+CHORD_TYPE_MINOR:   [Mm] [Ii] ([Nn])? | 'm' | MINUS;
+CHORD_TYPE_MAJOR:   [Mm] [Aa] ([Jj])? | 'M' | CARET;
+CHORD_TYPE_AUG:     [Aa] [Uu] [Gg] | PLUS;
+CHORD_TYPE_HDIM:    [Hh] [Dd] [Ii] [Mm]; //ZERO has to be handled in parser to avoid ambiguity
+CHORD_TYPE_DIM:     [Dd] [Ii] [Mm] | [Oo];
+CHORD_TYPE_DOM:     [D] [Oo] [Mm];
+CHORD_TYPE_SUS:     [Ss] [Uu] [Ss];
+CHORD_TYPE_ADD:     [Aa] [Dd] [Dd];
+
+fragment
+PLUS:               '+';
+
+fragment
+MINUS:              '-';
+
+fragment
+CARET:              '^';
+
+SLASH:              '/';
+COLON:              ':';
+
 mode METAINFO_MODE;
 CLOSE_META:         '}' -> popMode;
 HEADER_NAME_VAL_SEP:         M_SPACE? ':' M_SPACE? ;

@@ -159,5 +159,14 @@ describe('ChordSymbolTests', () => {
         assert.equal(chords[0]!.alterations[1]!.degree, 13);
     });
 
+    test('chord symbol hdim chord vs abs pitch', () => {
+        const minuet = 'G09:';
+        const parts = parse(minuet).getParts() ?? [];
+        const chords = parts[0]!.getChordSymbolStream();
+        assert.equal(chords.length, 1);
+        assert.equal(chords[0]!.root, 'G');
+        assert.equal(chords[0]!.rootAccidental, null);
+        assert.equal(chords[0]!.chordType, '0');
+    });
 
 });

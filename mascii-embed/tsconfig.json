@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "skipLibCheck": true,
+    "noUncheckedIndexedAccess": true,
+    "paths": {
+      "@parser/*": ["../mascii2-typescript/src/*"],
+      "fs": ["./src/stubs/fs.ts"]
+    }
+  },
+  "include": [
+    "src",
+    "../mascii2-typescript/src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "../mascii2-typescript/src/index.ts"
+  ]
+}

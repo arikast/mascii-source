@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mascii Embed Demo</title>
+  <script src="dist/mascii.js"></script>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+    h1 { font-size: 1.4em; }
+    p { color: #555; }
+  </style>
+</head>
+<body>
+  <h1>Mascii Embed Demo</h1>
+  <p>Each <code>MASCII.render()</code> call below inserts a playable score at that position.</p>
+
+  <h2>Simple melody</h2>
+  <script type="text/javascript">MASCII.render(`c d e f | g a b c'`)</script>
+
+  <h2>With chords and rests</h2>
+  <script type="text/javascript">MASCII.render(`
+tempo 120
+c4 e4 g4 | r4 e4 g4 c5'
+  `)</script>
+
+  <h2>Explicit container</h2>
+  <p>You can also pass a container element:</p>
+  <div id="my-score"></div>
+  <script type="text/javascript">
+    MASCII.render(`d4 f4 a4 | d5 r2`, document.getElementById('my-score'))
+  </script>
+</body>
+</html>

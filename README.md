@@ -40,3 +40,40 @@ After building the project, use the command line tools:
 `mascii-typescript/mascii-2-midi.sh [yourfile.mascii]`
 
 
+# embedded Mascii
+For use in a webpage
+
+mascii-embed — project structure                                                                                                                                                                                
+                                  
+  mascii-embed/                                                                                                                                                                               
+  ├── package.json          # dependencies: OSMD, Tone.js, @tonejs/midi, antlr4, midi-writer-js                                                                                                                   
+  ├── vite.config.ts        # library mode → single UMD bundle at dist/mascii.js                                                                                                                                  
+  ├── tsconfig.json         # includes parser source directly (no pre-compile step needed)                                                                                                                        
+  ├── .gitignore                                                                                                                                                                                                  
+  ├── demo.html             # usage examples                                                                                                                                                                      
+  └── src/                                                                                                                                                                                                        
+      ├── index.ts          # exports render() → becomes window.MASCII.render                                                                                                                                   
+      ├── MasciiEmbed.ts    # widget: parse → OSMD → MidiPlayer + controls                                                                                                                                        
+      ├── MidiPlayer.ts     # identical copy from mascii-vue                                                                                                                                                      
+      └── stubs/fs.ts       # no-op fs stub (same as mascii-vue)                                                                                                                                                  
+                                                                                                                                                                                                                  
+  Usage                                                                                                                                                                                                           
+                                                                                                                                                                                                                  
+  <script src="mascii.js"></script>                                                                                                                                                                               
+  <!-- inserts score before this script tag: -->                                                                                                                                                                
+  <script>MASCII.render(`c d e f | g a b c'`)</script>                                                                                                                                                            
+                                                                                                                                                                                                                  
+  <!-- or with explicit container: -->                                                                                                                                                                            
+  <div id="score"></div>                                                                                                                                                                                          
+  <script>MASCII.render(`c d e f`, document.getElementById('score'))</script>                                                                                                                                   
+                                                                                                                                                                                                                  
+### Rebuild integration
+                                                                                                                                                                                                                  
+  `make all` rebuilds both the parser and mascii-embed. 
+
+  One-time setup: make embed-install (runs npm install in the embed dir).                              
+   
+
+  - single UMD bundle (dist/mascii.js) — self-contained, no external JS dependencies                                                                                                                        
+  - Audio samples loaded from CDN at play-time (Salamander piano + gleitz soundfonts) — keeps bundle size reasonable                                                                                            
+  - Tone.js loaded lazily on first play click (required for AudioContext user-gesture rules)      

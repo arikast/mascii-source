@@ -1,0 +1,25 @@
+{
+  "name": "mascii-embed",
+  "version": "1.0.0",
+  "description": "Embeddable Mascii sheet music player",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tonejs/midi": "^2.0.28",
+    "antlr4": "^4.13.2",
+    "midi-writer-js": "^3.2.1",
+    "opensheetmusicdisplay": "^1.4.5",
+    "tone": "^15.1.22"
+  },
+  "devDependencies": {
+    "@types/node": "^24.11.0",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.1"
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  }
+}

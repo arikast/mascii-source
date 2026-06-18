@@ -11,7 +11,7 @@
     "@tonejs/midi": "^2.0.28",
     "antlr4": "^4.13.2",
     "midi-writer-js": "^3.2.1",
-    "opensheetmusicdisplay": "^1.4.5",
+    "opensheetmusicdisplay": "^1.9.9",
     "tone": "^15.1.22"
   },
   "devDependencies": {

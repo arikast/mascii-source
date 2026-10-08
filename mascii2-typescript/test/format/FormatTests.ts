@@ -72,6 +72,28 @@ describe('FormatTests', () => {
         assert.ok(out.includes('d_'), `tie preserved: ${out}`);
     });
 
+    test('aligns lyric syllables under their notes', () => {
+        const out = format('c d e f\n" do re mi fa"');
+        const [staff, lyric] = out.split('\n');
+        // Staff rows get a leading-space gutter; lyric rows are wrapped in quotes.
+        assert.ok(staff!.startsWith(' '), `staff row has gutter: "${staff}"`);
+        assert.ok(lyric!.startsWith('"') && lyric!.endsWith('"'), `lyric is quoted: "${lyric}"`);
+        // Each syllable sits in the same column as its note.
+        for (const [note, syl] of [['c', 'do'], ['d', 're'], ['e', 'mi'], ['f', 'fa']] as const) {
+            assert.equal(staff!.indexOf(note), lyric!.indexOf(syl),
+                `"${syl}" should align under "${note}"\n${staff}\n${lyric}`);
+        }
+    });
+
+    test('lyric "%" skips a note without consuming a syllable', () => {
+        // First note gets no lyric; "la"/"la" map to the 2nd and 3rd notes.
+        const out = format('c d e\n" % la la"');
+        const [staff, lyric] = out.split('\n');
+        assert.equal(staff!.indexOf('d'), lyric!.indexOf('la'),
+            `first "la" aligns under "d"\n${staff}\n${lyric}`);
+        assert.ok(lyric!.indexOf('c') === -1, 'no lyric over the first note');
+    });
+
     test('is idempotent', () => {
         const src = '{time:3/4}\n\n!d [G a b] [c d e] | D G G\n[!Gbd]__ A | b G b';
         const once = format(src);

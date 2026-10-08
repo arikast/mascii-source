@@ -11,6 +11,7 @@ import {
     GroupContext,
     Scoped_groupContext,
     Unscoped_groupContext,
+    Lyrics_rowContext,
 } from './antlr-generated/MasciiParser';
 import { TimeSlot } from './musicelements/TimeSlot';
 import { TICKS_PER_BEAT } from './MasciiSyntaxEventListener';
@@ -19,6 +20,7 @@ import { TICKS_PER_BEAT } from './MasciiSyntaxEventListener';
 const WITHIN_BEAT_SEP = ' ';  // gap between tick columns inside a beat
 const BEAT_SEP = '  ';        // gap across a beat boundary (1 base + 1 beat marker)
 const BAR_SEP = ' | ';        // gap between measures (bar line)
+const LYRIC_REST = '%';       // placeholder syllable meaning "no lyric for this note"
 
 // A rendered token. Brackets have no timing; leaves carry the tick of their onset.
 interface Tok {
@@ -28,6 +30,23 @@ interface Tok {
     // true when this token begins a new (space-separated) timed_element, i.e. a
     // space is permitted before it. false for tokens glued within one element.
     boundary: boolean;
+    // For a 'leaf' that is a `notes` node: how many sounding note-starts it holds
+    // (a chord has >1). Lyric syllables map one-to-one onto these, in order.
+    noteStarts?: number;
+}
+
+// A note onset within a row, identified by its measure and tick, used to anchor
+// lyric syllables under the notes they belong to.
+interface NoteOnset {
+    measure: number;
+    tick: number;
+}
+
+// One formatted line and where it goes in the output.
+interface FormatRow {
+    line: number;
+    measures: Map<number, string>[];
+    kind: 'staff' | 'lyric';
 }
 
 /**
@@ -75,10 +94,11 @@ export class FormatGenerator {
         const mi = block.metainfo();
         if (mi) numerator = readTimeNumerator(mi, numerator);
 
-        // Collect each stavesrow as a list of measures. Each measure maps an
-        // onset tick -> the text that starts at that tick (notes/rests with their
-        // glued brackets).
-        const rows: { line: number; measures: Map<number, string>[] }[] = [];
+        // Collect every staff row and its lyric rows. Each measure maps an onset
+        // tick -> the text that starts at that tick (notes/rests with their glued
+        // brackets, or a lyric syllable).
+        const rows: FormatRow[] = [];
+        let hasLyrics = false;
         for (const snl of block.staves_n_lyricsrow_list()) {
             const sr = snl.stavesrow();
             if (!sr) continue;
@@ -89,10 +109,23 @@ export class FormatGenerator {
             // such a multi-line row would corrupt the text, so leave it verbatim.
             const stopLine = sr.stop?.line;
             if (stopLine != null && startLine !== stopLine) continue;
-            rows.push({
-                line: startLine - 1,
-                measures: this.buildRowMeasures(sr, numerator),
-            });
+
+            const { measures, noteOnsets } = this.buildRowMeasures(sr, numerator);
+            rows.push({ line: startLine - 1, measures, kind: 'staff' });
+
+            // Lyric rows beneath this staff row map their syllables onto its notes.
+            for (const lr of snl.lyrics_row_list()) {
+                const lStart = lr.start?.line;
+                if (lStart == null) continue;
+                const lStop = lr.stop?.line;
+                if (lStop != null && lStart !== lStop) continue;
+                hasLyrics = true;
+                rows.push({
+                    line: lStart - 1,
+                    measures: buildLyricMeasures(lr, noteOnsets, measures.length),
+                    kind: 'lyric',
+                });
+            }
         }
         if (rows.length === 0) return numerator;
 
@@ -127,26 +160,46 @@ export class FormatGenerator {
         }
 
         for (const r of rows) {
-            rowMap.set(r.line, renderRow(r.measures, tickLists, colWidths));
+            let content = renderRow(r.measures, tickLists, colWidths);
+            // When a block has lyrics, every row gains a one-column left gutter so
+            // that a lyric row's opening quote doesn't shift its syllables out of
+            // alignment with the notes above. Staff rows get a leading space; lyric
+            // rows get their quotes.
+            if (hasLyrics) {
+                content = r.kind === 'lyric' ? `"${content}"` : ` ${content}`;
+            }
+            rowMap.set(r.line, content);
         }
         return numerator;
     }
 
-    private buildRowMeasures(sr: StavesrowContext, numerator: number): Map<number, string>[] {
+    private buildRowMeasures(
+        sr: StavesrowContext,
+        numerator: number,
+    ): { measures: Map<number, string>[]; noteOnsets: NoteOnset[] } {
         const node = sr.stavesrow_first_empty() ?? sr.stavesrow_first_notempty();
         const measures: Map<number, string>[] = [];
+        const noteOnsets: NoteOnset[] = [];
+        let m = 0;
         for (const child of node?.children ?? []) {
             if (child instanceof StaffContext) {
-                measures.push(this.buildMeasureCells(child, numerator));
+                const { cells, onsets } = this.buildMeasureCells(child, numerator);
+                measures.push(cells);
+                for (const tick of onsets) noteOnsets.push({ measure: m, tick });
+                m++;
             } else if (child instanceof Empty_staffContext) {
                 measures.push(new Map<number, string>());
+                m++;
             }
             // STAFF_SEPARATOR terminals and spaces are implied by structure
         }
-        return measures;
+        return { measures, noteOnsets };
     }
 
-    private buildMeasureCells(staff: StaffContext, numerator: number): Map<number, string> {
+    private buildMeasureCells(
+        staff: StaffContext,
+        numerator: number,
+    ): { cells: Map<number, string>; onsets: number[] } {
         const barTicks = numerator * TICKS_PER_BEAT;
         const root = TimeSlot.init(0, barTicks);
         const toks: Tok[] = [];
@@ -154,6 +207,7 @@ export class FormatGenerator {
         if (tes) emitTimedElements(tes, root, toks);
 
         const cells = new Map<number, string>();
+        const onsets: number[] = [];
         let pendingOpens = '';
         let havePending = false;
         let pendingBoundary = false;
@@ -184,6 +238,9 @@ export class FormatGenerator {
                     cells.set(tick, prev + ' ' + piece);
                 }
 
+                // Record one onset per sounding note start (for lyric alignment).
+                for (let k = 0; k < (t.noteStarts ?? 0); k++) onsets.push(tick);
+
                 pendingOpens = '';
                 havePending = false;
                 lastTick = tick;
@@ -193,7 +250,7 @@ export class FormatGenerator {
             const tk = lastTick >= 0 ? lastTick : 0;
             cells.set(tk, (cells.get(tk) ?? '') + pendingOpens);
         }
-        return cells;
+        return { cells, onsets };
     }
 }
 
@@ -260,7 +317,14 @@ function emitTimedElement(child: Timed_elementContext, slot: TimeSlot, out: Tok[
                 out.push({ kind: 'close', text: closeChar(g), tick: 0, boundary: false });
             } else if (node instanceof NotesContext) {
                 bodyNodeStarts.push(out.length);
-                out.push({ kind: 'leaf', text: node.getText(), tick: slot.offset, boundary: true });
+                const noteStarts = node.notes_start()?.note_start_list().length ?? 0;
+                out.push({
+                    kind: 'leaf',
+                    text: node.getText(),
+                    tick: slot.offset,
+                    boundary: true,
+                    noteStarts,
+                });
             }
         }
     }
@@ -322,6 +386,35 @@ function renderRow(
         return s;
     });
     return measureStrs.join(BAR_SEP).replace(/\s+$/, '');
+}
+
+// Builds the tick-keyed cells for a lyric row by placing each syllable under the
+// note it belongs to. Syllables map one-to-one onto the staff row's note onsets,
+// in order; "%" skips a note (no lyric), mirroring the parser's lyric semantics.
+function buildLyricMeasures(
+    lr: Lyrics_rowContext,
+    noteOnsets: NoteOnset[],
+    measureCount: number,
+): Map<number, string>[] {
+    const measures: Map<number, string>[] = Array.from(
+        { length: measureCount },
+        () => new Map<number, string>(),
+    );
+
+    const raw = lr.LYRICS()?.getText() ?? '';
+    const syllables = raw.trim().split(/[\s|]+/).filter(s => s.length > 0);
+
+    for (let i = 0; i < syllables.length; i++) {
+        const syl = syllables[i]!;
+        if (syl === LYRIC_REST) continue;
+        // Extra syllables past the last note pile onto that final note's column.
+        const onset = noteOnsets[i] ?? noteOnsets[noteOnsets.length - 1];
+        if (!onset || onset.measure >= measures.length) continue;
+        const cell = measures[onset.measure]!;
+        const prev = cell.get(onset.tick) ?? '';
+        cell.set(onset.tick, prev === '' ? syl : `${prev} ${syl}`);
+    }
+    return measures;
 }
 
 function readTimeNumerator(mi: MetainfoContext, current: number): number {

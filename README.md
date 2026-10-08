@@ -19,7 +19,7 @@ The important directories are:
 - antlr/
 - mascii2-typescript/
 
-The other directory mascii2/ is the legacy java version, soon to be archived
+The legacy directory mascii2/ was the java version. It has been archived into branch legacy-java.
 
 
  

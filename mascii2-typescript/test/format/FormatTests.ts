@@ -94,6 +94,18 @@ describe('FormatTests', () => {
         assert.ok(lyric!.indexOf('c') === -1, 'no lyric over the first note');
     });
 
+    test('keeps glued group-plus-note elements contiguous and in order', () => {
+        // A group and a note glued with no space sound simultaneously; the note
+        // must stay outside the brackets and the inner note order preserved.
+        assert.equal(format('[e@ e=]g@'), '[e@ e=]g@');
+        assert.equal(format('a [b c]d e'), 'a  [b c]d  e');
+        assert.equal(format('[a b][c d] e'), '[a b][c d]  e');
+        // Scoped groups (parentheses) behave identically, including when mixed.
+        assert.equal(format('(e@ e=)g@'), '(e@ e=)g@');
+        assert.equal(format('(a b)(c d) e'), '(a b)(c d)  e');
+        assert.equal(format('[e@ (e=)]g@'), '[e@ (e=)]g@');
+    });
+
     test('is idempotent', () => {
         const src = '{time:3/4}\n\n!d [G a b] [c d e] | D G G\n[!Gbd]__ A | b G b';
         const once = format(src);

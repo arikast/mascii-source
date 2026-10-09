@@ -298,57 +298,104 @@ function applyDots(child: Timed_elementContext, slots: TimeSlot[], i: number): v
 }
 
 function emitTimedElement(child: Timed_elementContext, slot: TimeSlot, out: Tok[]): void {
-    const start = out.length;
-    // Index of the first emitted token for each direct body node of this element.
-    const bodyNodeStarts: number[] = [];
+    const prefix = dotPrefix(child);
+    const suffix = dotSuffix(child);
 
     const rest = child.rest();
     if (rest) {
-        bodyNodeStarts.push(out.length);
-        out.push({ kind: 'leaf', text: rest.getText(), tick: slot.offset, boundary: true });
-    } else {
-        for (const node of child.children ?? []) {
-            if (node instanceof GroupContext) {
-                const g = node.scoped_group() ?? node.unscoped_group();
-                bodyNodeStarts.push(out.length);
-                out.push({ kind: 'open', text: openChar(g), tick: 0, boundary: true });
-                const inner = g!.timed_elements();
-                if (inner) emitTimedElements(inner, slot, out);
-                out.push({ kind: 'close', text: closeChar(g), tick: 0, boundary: false });
-            } else if (node instanceof NotesContext) {
-                bodyNodeStarts.push(out.length);
-                const noteStarts = node.notes_start()?.note_start_list().length ?? 0;
-                out.push({
-                    kind: 'leaf',
-                    text: node.getText(),
-                    tick: slot.offset,
-                    boundary: true,
-                    noteStarts,
-                });
-            }
-        }
+        out.push({ kind: 'leaf', text: prefix + rest.getText() + suffix, tick: slot.offset, boundary: true, noteStarts: 0 });
+        return;
     }
 
-    if (out.length <= start) return;
+    const bodyNodes = (child.children ?? []).filter(
+        (n): n is GroupContext | NotesContext => n instanceof GroupContext || n instanceof NotesContext,
+    );
+    if (bodyNodes.length === 0) return;
 
-    // Direct body nodes within one timed_element are glued together (no spaces),
-    // so only the first keeps its boundary; nested tokens are left untouched.
-    for (let k = 1; k < bodyNodeStarts.length; k++) {
-        out[bodyNodeStarts[k]!]!.boundary = false;
+    // Multiple glued body nodes (e.g. a group and a note with no space between)
+    // sound simultaneously and share one onset tick. They must stay contiguous and
+    // in source order, so render the whole element as one atomic unit rather than
+    // spreading it across the grid (which would reorder notes across the brackets).
+    if (bodyNodes.length > 1) {
+        out.push({
+            kind: 'leaf',
+            text: prefix + renderTimedElementAtomic(child) + suffix,
+            tick: slot.offset,
+            boundary: true,
+            noteStarts: countNoteStarts(child),
+        });
+        return;
+    }
+
+    // A lone group is spread across the grid (its inner elements are sequential);
+    // a lone `notes` is a single leaf.
+    const start = out.length;
+    const node = bodyNodes[0]!;
+    if (node instanceof GroupContext) {
+        const g = node.scoped_group() ?? node.unscoped_group();
+        out.push({ kind: 'open', text: openChar(g), tick: 0, boundary: true });
+        const inner = g!.timed_elements();
+        if (inner) emitTimedElements(inner, slot, out);
+        out.push({ kind: 'close', text: closeChar(g), tick: 0, boundary: false });
+    } else {
+        const noteStarts = node.notes_start()?.note_start_list().length ?? 0;
+        out.push({ kind: 'leaf', text: node.getText(), tick: slot.offset, boundary: true, noteStarts });
     }
 
     // Glue the element's dot / double-duration decorations onto its own tokens.
-    const inv = child._inverse_dot;
-    const norm = child._normal_dot;
-    const dd = child.duration_doubled();
-    const prefix = inv ? inv.text : '';
-    const suffix = (dd ? dd.getText() : '') + (norm ? norm.text : '');
-
-    const first = out[start]!;
-    first.text = prefix + first.text;
-    first.boundary = true;
+    out[start]!.text = prefix + out[start]!.text;
+    out[start]!.boundary = true;
     const last = out[out.length - 1]!;
     last.text = last.text + suffix;
+}
+
+function dotPrefix(te: Timed_elementContext): string {
+    return te._inverse_dot ? te._inverse_dot.text : '';
+}
+
+function dotSuffix(te: Timed_elementContext): string {
+    const dd = te.duration_doubled();
+    return (dd ? dd.getText() : '') + (te._normal_dot ? te._normal_dot.text : '');
+}
+
+// Renders a timed_element to a single contiguous string (single-spaced), used when
+// its glued body nodes must not be split across the time grid.
+function renderTimedElementAtomic(te: Timed_elementContext): string {
+    const rest = te.rest();
+    const body = rest
+        ? rest.getText()
+        : (te.children ?? [])
+              .map(node => {
+                  if (node instanceof GroupContext) {
+                      const g = node.scoped_group() ?? node.unscoped_group();
+                      const inner = g!.timed_elements();
+                      return openChar(g) + (inner ? renderTimedElementsAtomic(inner) : '') + closeChar(g);
+                  }
+                  if (node instanceof NotesContext) return node.getText();
+                  return '';
+              })
+              .join('');
+    return dotPrefix(te) + body + dotSuffix(te);
+}
+
+function renderTimedElementsAtomic(tes: Timed_elementsContext): string {
+    return tes.timed_element_list().map(renderTimedElementAtomic).join(' ');
+}
+
+// Counts the sounding note-starts in a timed_element subtree (for lyric mapping).
+function countNoteStarts(te: Timed_elementContext): number {
+    if (te.rest()) return 0;
+    let n = 0;
+    for (const node of te.children ?? []) {
+        if (node instanceof GroupContext) {
+            const g = node.scoped_group() ?? node.unscoped_group();
+            const inner = g!.timed_elements();
+            if (inner) for (const t of inner.timed_element_list()) n += countNoteStarts(t);
+        } else if (node instanceof NotesContext) {
+            n += node.notes_start()?.note_start_list().length ?? 0;
+        }
+    }
+    return n;
 }
 
 function openChar(g: Scoped_groupContext | Unscoped_groupContext | null): string {

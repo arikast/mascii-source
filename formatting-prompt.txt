@@ -1,0 +1,29 @@
+Take a look at the generator, which currently can generate two targets, midi or musicxml.  I'd like to introduce a third target, which is to simply format the input mascii code.  Since one or more spaces
+  are functionally equivalent in mascii syntax, the formatter should use spaces to position mascii notes in an orderly way.  To some extent, the spacing will correlate with the timing of the note(s), akin to a piano roll.  These rules do not apply to the metainfo section or to comment rows.
+
+  Rules as follows: 
+  
+  1. as a first step, condense 2 or more spaces (not carriage returns, just spaces and tabs) into just one space (prior to following additional rules below to later restore some spaces meaningfully).
+  
+  2. based on denominator of time signature, add an extra space to indicate the beat.  For example, if time signature is 3/4, that means there are three quarter notes in a measure, which means to add a space one-third and two-thirds through the measure (when possible).  Example:
+    before: | a b c d ef |
+    after:  | a b  c d  e f |
+
+  3. when two parts are stacked, meaning they play concurrently (share the same concurrent_block in the AST), then try to align their bar lines.  Example:
+    before:
+        a b c d | e f g A 
+        A  | e A
+    after:
+        a b c d | e f g A 
+        A       | e A
+
+  4. when two parts are stacked as above, also try to line up their beats so that concurrently starting notes in each measure are aligned vertically with each other.  Example (this example uses three stacked parts):
+    before:
+      !c a A b c d e f g= a G A g a G A | f g= F A f g F A e f E A e f E A
+      [[!a E] [A b c d]] e_ | _e D__ C_
+      A . [. !A] [c  A] | . d f D . a c A
+    after:
+      !c a A b  c d e f    g= a G A  g a G A | f g= F A  f g F A  e f E A  e f E A
+      [[!a E]  [A b c d]]  e_                | _e        D__               C_
+      A         .          [. !A]   [c  A]   | .    d    f   D    .   a    c   A
+  
